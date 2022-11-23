@@ -8,7 +8,7 @@ It is easy to install the development version of MRAID package using the 'devtoo
 ```
 # install.packages("devtools")
 library(devtools)
-install_github("yuanzhongshang/MRAID")
+install_github("yuanzhongshang/GIFT")
 ```
 # Usage
 The main function in the package is GIFT, you can find the instructions by '?GIFT'.
