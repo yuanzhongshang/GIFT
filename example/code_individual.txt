@@ -1,0 +1,28 @@
+library(GIFT)
+
+#load the simulated scaled genenotype matrix in eQTL data (e.g. In chr1: 71,372,470-71,684,405 containing two genes, the combination of 465*24 cis-SNP genotype matrix of ZRANB2 gene and 465*33 cis-SNP genotype matrix of ZRANB2-AS2 gene from GEUVADIS data)
+Zx<-read.table("Zx.txt")
+Zx<-as.matrix(Zx)
+
+#load the simulated scaled genenotype matrix in GWAS data (e.g. the same cis-SNPs from UK data)
+Zy<-read.table("Zy.txt")
+Zy<-as.matrix(Zy)
+
+#load the simulated exposure or gene expression vector
+X<-read.table("X.txt")
+X<-as.matrix(X)
+
+#load the simulated phenotype vector
+Y<-read.table("Y.txt")$V1
+
+#load the number of cis-SNPs for each gene
+pindex=c(24,33)
+
+X<-scale(X)
+Y<-scale(Y)
+Zx<-scale(Zx)
+Zy<-scale(Zy)
+
+#run GIFT
+result<-GIFT_individual(X, Y, Zx, Zy, pindex, max_iterin =1000,epsin=1e-4,Cores=1)
+

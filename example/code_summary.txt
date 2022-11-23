@@ -1,0 +1,32 @@
+library(GIFT)
+
+#load the Zscore matrix for the cis-SNP effect size from the eQTL data
+Zscore1<-read.table("Zscore1.txt")
+Zscore1<-as.matrix(Zscore1)
+
+#load the Zscore vector for the cis-SNP effect size from the GWAS data
+Zscore2<-read.table("Zscore2.txt")$V1
+
+#load the LD matrix for the cis-SNPs in the eQTL data
+LDmatrix1<-read.table("LDmatrix1.txt")
+LDmatrix1<-as.matrix(LDmatrix1)
+
+#load the LD matrix for the cis-SNPs in the GWAS data
+LDmatrix2<-read.table("LDmatrix2.txt")
+LDmatrix2<-as.matrix(LDmatrix2)
+
+#LDmatrix_1 and LDmatrix_2 are often from the same reference panel data 
+
+#load the estimated correlated matrix of gene expressions
+R<-read.table("R.txt")
+R<-as.matrix(R)
+
+#load the sample size n1 from eQTL data and n2 from GWAS data 
+n1=465
+n2=5000
+
+#load the number of cis-SNPs for each gene
+pindex=c(24,33)
+
+#run GIFT
+result =GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, pindex, max_iterin =1000,epsin=1e-4, Cores=1)

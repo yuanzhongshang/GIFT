@@ -1,0 +1,15 @@
+Package: GIFT
+Type: Package
+Title: GIFT(Gene-based Integrative Fine-mapping through TWAS)
+Version: 1.0
+Date: 2022-10-31
+Author: Lu Liu, Zhongshang Yuan and Xiang Zhou
+Maintainer: Zhongshang Yuan <yuanzhongshang@sdu.edu.cn>
+Description: GIFT is an R package for efficient statistical inference of conditional TWAS fine-mapping. GIFT examines one genomic region at a time, jointly models the GReX of all genes residing in the focal region, and carries out TWAS conditional analysis in a maximum likelihood framework. In the process, GIFT explicitly models the gene expression correlation and cis-SNP LD across different genes in the region, accounts for the uncertainty in the constructed GReX through joint inference and provides calibrated p values.
+License: GPL (>= 2)
+Encoding: UTF-8
+RoxygenNote: 7.2.0
+Imports: Rcpp (>= 1.0.9)
+LinkingTo: Rcpp, RcppArmadillo, parallel
+NeedsCompilation: yes
+Packaged: 2022-10-31 07:05:08 UTC; zhongshy
