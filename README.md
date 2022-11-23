@@ -22,4 +22,4 @@ library(GIFT)
 One simple example to use the package can be found at https://github.com/yuanzhongshang/GIFT/tree/main/example
 
 # Development
-This R package is developed by Lu Liu, Zhongshang Yuan and Xiang Zhou
+This R package is developed by Lu Liu, Zhongshang Yuan and Xiang Zhou.
