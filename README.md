@@ -19,7 +19,7 @@ library(GIFT)
 ```
 
 # Example
-One simple example to use the package can be found at https://github.com/yuanzhongshang/GIFT/tree/master/example
+One simple example to use the package can be found at https://github.com/yuanzhongshang/GIFT/tree/main/example
 
 # Development
 This R package is developed by Lu Liu, Zhongshang Yuan and Xiang Zhou
