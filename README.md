@@ -1,9 +1,9 @@
 # GIFT
 
-GIFT(Gene-based Integrative Fine-mapping through conditional TWAS),is an R package for efficient statistical inference of conditional TWAS fine-mapping. GIFT examines one genomic region at a time, jointly models the GReX of all genes residing in the focal region, and carries out TWAS conditional analysis in a maximum likelihood framework. In the process, GIFT explicitly models the gene expression correlation and cis-SNP LD across different genes in the region, accounts for the uncertainty in the constructed GReX through joint inference and provides calibrated p values.
+GIFT(Gene-based Integrative Fine-mapping through conditional TWAS), is an R package for efficient statistical inference of conditional TWAS fine-mapping. GIFT examines one genomic region at a time, jointly models the GReX of all genes residing in the focal region, and carries out TWAS conditional analysis in a maximum likelihood framework. In the process, GIFT explicitly models the gene expression correlation and cis-SNP LD across different genes in the region, accounts for the uncertainty in the constructed GReX through joint inference and provides calibrated p values.
 
 # Installation
-It is easy to install the development version of MRAID package using the 'devtools' package. 
+It is easy to install the development version of GIFT package using the 'devtools' package. 
 
 ```
 # install.packages("devtools")
