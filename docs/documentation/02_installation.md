@@ -33,7 +33,7 @@ This package is supported for Windows 10, MAC and Linux. The package has been te
 #### 4. Some possible issues when installing the package, especially on the MacOS system
 (1) Cannot find tools necessary when using R in the MacOS system.
 ```r
-Error: Failed to install 'CARD' from GitHub:
+Error: Failed to install 'GIFT' from GitHub:
   Could not find tools necessary to compile a package
 Call `pkgbuild::check_build_tools(debug = TRUE)` to diagnose the problem.
 ``` 
