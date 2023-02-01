@@ -112,7 +112,7 @@ The function `GIFT_summary` is for conditional fine-mapping for in TWAS with sum
 pindex=c(24,33)
 n1=465
 n2=5000
-result<-GIFT_summary(Zscore1, Zscore2, Sigma1, Sigma2, R, n1, n2, pindex, max_iterin =1000,epsin=1e-4, Cores=1)
+result<-GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, pindex, max_iterin =1000,epsin=1e-4, Cores=1)
 
 ```
 The result is a list of estimated parameters including the causal effects and p values for each gene in a focal region. 
