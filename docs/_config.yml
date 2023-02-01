@@ -37,7 +37,7 @@ ui:
     light: "#36A7B9"
   border_color:
     dark: "#2A58C3"
-    light: "#CC6600"
+    light: "#00ceff"
   header:
     trianglify: true
     dark:
@@ -45,7 +45,7 @@ ui:
       color2: "#304e67"
     light:
       color1: "#306636"
-      color2: "#EF7415"
+      color2: "#CC6600"
   masthead:
     color:
       dark: "#fff"
