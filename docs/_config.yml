@@ -1,9 +1,9 @@
 remote_theme: allejo/jekyll-docs-theme
-name: CARD
+name: GIFT
 
 project:
   version: 1.0.0
-  download_url: https://github.com/YingMa0107/CARD/
+  download_url: https://github.com/yuanzhongshang/GIFT/
   download_text: Download
 
 license:
@@ -15,20 +15,20 @@ links:
     - title: GitHub
       icon: github
       brand: true
-      url: https://github.com/YingMa0107/CARD/
+      url: https://github.com/yuanzhongshang/GIFT/
   homepage:
     - title: View on GitHub
       icon: github
       brand: true
-      url: https://github.com/YingMa0107/CARD/
+      url: https://github.com/yuanzhongshang/GIFT/
   footer:
     - title: GitHub
       icon: github
       brand: true
-      url: https://github.com/YingMa0107/CARD/
+      url: https://github.com/yuanzhongshang/GIFT/
     - title: Issues
       icon: bug
-      url: https://github.com/YingMa0107/CARD/issues?state=open
+      url: https://github.com/yuanzhongshang/GIFT/issues?state=open
 
 ui:
   mode: 'auto' # 'auto', 'dark', 'light'
@@ -56,8 +56,8 @@ ui:
 
 social:
   github:
-    user: YingMa0107
-    repo: CARD
+    user: yuanzhongshang
+    repo: GIFT
   twitter:
     enabled: false
     via:
