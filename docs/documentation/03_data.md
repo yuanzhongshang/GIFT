@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Data Input
-description: Link to download the example dataset
+description: ~
 ---
 The following are the links for the example dataset used in the GIFT. 
 
