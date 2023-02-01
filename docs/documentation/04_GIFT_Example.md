@@ -3,10 +3,10 @@ layout: page
 title: Example Analysis
 description: ~
 ---
-This tutorial is the example analysis with GIFT for the individual-level data and summary statistics, respectively. Before runing the tutorial, make sure that the GIFT package is installed. Installation instructions see the [link](https://github.com/yuanzhongshang/GIFT/docs/documentation/02_installation.html)
+This tutorial is the example analysis with GIFT for the individual-level data and summary statistics, respectively. Before runing the tutorial, make sure that the GIFT package is installed. Installation instructions see the [link](https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html)
 
 ## For the individual-level data
-The example data for runing the tutorial can be downloaded in this [page](https://github.com/yuanzhongshang/GIFT/docs/documentation/03_data.html)
+The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html)
 Here are the details about the required data input illustrated. 
 ### 1. Standardized cis-genotype matrix in eQTL data, e.g.,
 ```r
@@ -56,7 +56,7 @@ result<-GIFT_individual(X, Y, Zx, Zy, pindex, max_iterin =1000,epsin=1e-4,Cores=
 The result is a list of estimated parameters including the causal effects and p values for each gene in a focal region. 
 
 ## For the summary statistics
-The example data for runing the tutorial can be downloaded in this [page](https://github.com/yuanzhongshang/GIFT/docs/documentation/03_data.html)
+The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html)
 Here are the details about the required data input illustrated. 
 ### 1. Zscore matrix of the cis-SNP effect size matrix, e.g.,
 ```r
