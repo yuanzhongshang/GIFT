@@ -52,7 +52,6 @@ The function `GIFT_individual` is for conditional fine-mapping for in TWAS with 
 ```r
 pindex=c(24,33)
 result<-GIFT_individual(X, Y, Zx, Zy, pindex, max_iterin =1000,epsin=1e-4,Cores=1)
-
 ```
 The result is a list of estimated parameters including the causal effects and p values for each gene in a focal region. 
 
@@ -90,6 +89,7 @@ LDmatrix2<-as.matrix(LDmatrix2)
 #### load the estimated correlated matrix of gene expressions
 R<-read.table("R.txt")
 R<-as.matrix(R)
+``` 
 
 ## Conditional fine-mapping for TWAS analysis
 ```r
