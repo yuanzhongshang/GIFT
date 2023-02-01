@@ -4,11 +4,11 @@ title: Installation
 description: ~
 ---
 
-`CARD` is implemented as an R package, which can be installed from GitHub by:
+`GIFT` is implemented as an R package, which can be installed from GitHub by:
 
 ### Dependencies 
 * R version >= 4.0.0.
-* R packages: SingleCellExperiment, SummarizedExperiment, concaveman, sp, Matrix, methods, ggplot2, ggcorrplot, MuSiC, fields, MCMCpack, dplyr, sf, RANN, stats, reshape2, RColorBrewe, scatterpie, grDevices, stats, nnls, pbmcapply, spatstat, gtools, RcppML, NMF
+* R packages: Rcpp, RcppArmadillo, parallel
 
 
 #### 1. Install `devtools` if necessary
@@ -18,11 +18,11 @@ install.packages('devtools')
 
 #### 2. Install `CARD`
 ```r
-devtools::install_github('YingMa0107/CARD')
+devtools::install_github('yuanzhongshang/GIFT')
 ```
 #### 3. Load package
 ```r
-library(CARD)
+library(GIFT)
 ```
 
 This package is supported for Windows 10, MAC and Linux. The package has been tested on the following systems:
