@@ -3,15 +3,15 @@ layout: page
 title: About
 ---
 
-We developed a deconvolution method, 'CARD', that leverages cell type specific expression information from single cell RNA sequencing (scRNA-seq) for the deconvolution of spatial transcriptomics. A unique feature of CARD is its ability to model the spatial correlation in cell type composition across tissue locations, thus enabling spatially informed cell type deconvolution. Modeling spatial correlation allows us to not only borrow the cell type composition information across locations on the entire tissue to accurately infer the cell type composition on each individual location, but also impute cell type compositions and gene expression levels on unmeasured tissue locations, facilitating the construction of a refined spatial tissue map with a resolution much higher than that measured in the original study. We demonstrate the benefits of CARD through extensive simulations and in-depth analysis of four spatial transcriptomics data sets that are paired with different scRNA-seq references. In the real data applications, CARD revealed refined tissue structures with enhanced spatial resolution and identified novel marker genes that underlie the functional and structural organization of the olfactory bulb and hippocampus. CARD also revealed distinct spatial localization of multiple cell types and molecular markers that define the progression, heterogeneity and compartmentalization of pancreatic cancer. 
+GIFT is a Gene-based Integrative Fine-mapping for performing conditional TWAS analysis. GIFT examines one genomic region at a time, jointly models the GReX of all genes residing in the focal region, and carries out TWAS conditional analysis in a maximum likelihood framework. In the process, GIFT explicitly models the gene expression correlation and cis-SNP LD across different genes in the region and accounts for the uncertainty in the constructed GReX. As a result, GIFT provides effective type I error control, refines marginal TWAS associations into a much smaller set of putatively causal associations, and yields high statistical power with reduced false discoveries. The software is distributed under the GNU General Public License.
 
-Cite `CARD`
+Cite `GIFT`
 -------------------
-Ying Ma, Xiang Zhou#, Spatially Informed Cell Type Deconvolution for Spatial Transcriptomics, 2021 
+Lu Liu, Ran Yan, Ping Guo, Jiadong Ji, Weiming Gong, Fuzhong Xue, Zhongshang Yuan, and Xiang Zhou (2023). Conditional transcriptome-wide association study for fine-mapping causal genes.
 
 Contact
 -------------------
-if you have questions, feel free to leave messages on the [github issues](https://github.com/YingMa1993/CARD/issues) or contact me through email: yingma@umich.edu
+if you have questions, feel free to leave messages on the [github issues](https://github.com/LULIU1816/GIFT/issues) or contact me through email: 201815769@mail.sdu.edu.cn
 
 Our group
 -------------------
