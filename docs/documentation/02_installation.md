@@ -16,7 +16,7 @@ description: ~
 install.packages('devtools')
 ```
 
-#### 2. Install `CARD`
+#### 2. Install `GIFT`
 ```r
 devtools::install_github('yuanzhongshang/GIFT')
 ```
