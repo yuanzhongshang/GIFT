@@ -18,3 +18,9 @@ The following are the links for the example dataset used in the GIFT.
   * [LD matrix for the cis-SNPs in the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/LDmatrix2.txt)
   * [Estimated correlated matrix of gene expressions](https://github.com/yuanzhongshang/GIFT/blob/main/example/R.txt)
 
+3. For the two-stage version data:
+   * [Weight matrix of the cis-SNP effect size from the eQTL data](https://github.com/yuanzhongshang/GIFT/blob/main/example/betax.txt)
+   * [Beta vector of the cis-SNP effect size from the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/betay.txt)
+   * [Se vector of the cis-SNP effect size from the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/se_betay.txt)
+   * [LD matrix for the cis-SNPs in the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/LDmatrix2.txt)
+  
