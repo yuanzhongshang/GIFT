@@ -1,0 +1,26 @@
+library(GIFT)
+
+#load the weight matrix for the cis-SNP effect size from the eQTL data
+betax<-read.table("betax.txt")
+betax<-as.matrix(betax)
+
+#load the beta vector and the corresponding se vector for the cis-SNP effect size from the GWAS data
+betay<-read.table("betay.txt")
+betay<-as.matrix(betay)
+
+se_betay<-read.table("se_betay.txt")
+se_betay<-as.matrix(se_betay)
+
+#load the LD matrix for the cis-SNPs in the GWAS data
+Sigma<-read.table("Sigma.txt")
+Sigma<-as.matrix(Sigma)
+
+#load the sample size n from GWAS data 
+n=5000
+
+#load the gene names for the region
+gene <- c("ZRANB2","ZRANB2-AS2")
+
+#run two stage version of GIFT
+result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene)
+
