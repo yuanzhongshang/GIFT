@@ -166,4 +166,4 @@ The function `GIFT_two_stage_summ` is for conditional fine-mapping for in TWAS w
 ```r
 result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene)
 ```
-The result is a data frame of estimated parameters including the z-scores and p values for each gene in a focal region. 
+The result is a data frame including the z-scores and p values for each gene in a focal region. 
