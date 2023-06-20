@@ -116,3 +116,54 @@ result<-GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, pindex, 
 
 ```
 The result is a list of estimated parameters including the causal effects and p values for each gene in a focal region. 
+
+## For the two-stage version
+The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html)
+Here are the details about the required data input illustrated. 
+### 1. Weight matrix for the cis-SNP effect size, e.g.,
+```r
+#### load the weight matrix for the cis-SNP effect size from the eQTL data
+betax<-read.table("betax.txt")
+betax<-as.matrix(betax)
+```
+
+### 2. Beta vector and the corresponding se vector for the cis-SNP effect size vector for one specific trait in GWAS data,  e.g.,
+```r
+#### load the beta vector and the corresponding se vector for the cis-SNP effect size from the GWAS data
+betay<-read.table("betay.txt")
+betay<-as.matrix(betay)
+
+se_betay<-read.table("se_betay.txt")
+se_betay<-as.matrix(se_betay)
+```
+
+### 3. LD matrix in GWAS data,  e.g.,
+```r
+#### load the LD matrix for the cis-SNPs in the GWAS data
+Sigma<-read.table("Sigma.txt")
+Sigma<-as.matrix(Sigma)
+```
+### 4. Sample size n from GWAS data,  e.g.,
+```r
+n=5000
+``` 
+### 5. Vector of gene names,  e.g.,
+```r
+gene <- c("ZRANB2","ZRANB2-AS2")
+``` 
+## Conditional fine-mapping for TWAS analysis
+```r
+library(GIFT)
+``` 
+The function `GIFT_two_stage_summ` is for conditional fine-mapping for in TWAS with summary statistics. The essential inputs are:
+- betax: The weight matrix for the cis-SNP effect size from the eQTL data.
+- betay: The beta vector of the cis-SNP effect size vector for one specific trait in GWAS data.
+- se_betay: The se vector of the cis-SNP effect size vector for one specific trait in GWAS data.
+- Sigma: The LD matrix in GWAS data, Sigma is often from the reference panel.
+- n: The sample size of GWAS data.
+- gene: The vector of gene names.
+
+```r
+result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene)
+```
+The result is a data frame of estimated parameters including the z-scores and p values for each gene in a focal region. 
