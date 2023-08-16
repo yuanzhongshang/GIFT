@@ -24,3 +24,6 @@ The following are the links for the example dataset used in the GIFT.
   * [Se vector of the cis-SNP effect size from the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/se_betay.txt)
   * [LD matrix for the cis-SNPs in the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/Sigma.txt)
   
+4. For the visualization:
+  * [GWAS results](https://github.com/yuanzhongshang/GIFT/blob/main/example/GWASresult.txt)
+  * [TWAS results](https://github.com/yuanzhongshang/GIFT/blob/main/example/TWASresult.txt)
