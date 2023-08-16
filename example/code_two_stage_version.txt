@@ -19,7 +19,7 @@ Sigma<-as.matrix(Sigma)
 n=5000
 
 #load the gene names for the region
-gene <- c("ZRANB2","ZRANB2-AS2")
+gene=c("RASA1", "COX7C", "CCNH", "TMEM161B")
 
 #run two stage version of GIFT
 result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene)

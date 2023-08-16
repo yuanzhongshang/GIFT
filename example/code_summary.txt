@@ -1,5 +1,7 @@
 library(GIFT)
 
+#The data of this example was the summary statistic version of that from individual-level version.
+
 #load the Zscore matrix for the cis-SNP effect size from the eQTL data
 Zscore1<-read.table("Zscore1.txt")
 Zscore1<-as.matrix(Zscore1)
@@ -25,8 +27,9 @@ R<-as.matrix(R)
 n1=465
 n2=5000
 
-#load the number of cis-SNPs for each gene
-pindex=c(24,33)
+#load the gene names and number of cis-SNPs for each gene
+gene=c("RASA1", "COX7C", "CCNH", "TMEM161B")
+pindex=c(63, 23, 41, 96)
 
 #run GIFT
-result =GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, pindex, max_iterin =1000,epsin=1e-4, Cores=1)
+result =GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, gene, pindex, max_iterin =1000,epsin=1e-4, Cores=1)
