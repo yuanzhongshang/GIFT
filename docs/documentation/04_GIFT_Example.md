@@ -3,14 +3,14 @@ layout: page
 title: Example Analysis
 description: ~
 ---
-This tutorial is the example analysis with GIFT for the individual-level data and summary statistics, respectively. Before runing the tutorial, make sure that the GIFT package is installed. Installation instructions see the [link](https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html)
+This tutorial is the example analysis with GIFT for the individual-level data and summary statistics, respectively. Before runing the tutorial, make sure that the GIFT package is installed. Installation instructions see the [link](https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html).
 
 ## For the individual-level data
 The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html)
 Here are the details about the required data input illustrated. 
 ### 1. Standardized cis-genotype matrix in eQTL data, e.g.,
 ```r
-#### load the simulated scaled genenotype matrix in eQTL data,
+#### load the simulated scaled genenotype matrix in eQTL data
 Zx<-read.table("Zx.txt")
 Zx<-as.matrix(Zx)
 ```
@@ -44,16 +44,26 @@ The function `GIFT_individual` is for conditional fine-mapping for in TWAS with 
 - Y: The standarized trait vector.
 - Zx: The standardized cis-genotype matrix in eQTL data.
 - Zy: The standardized cis-genotype matrix in GWAS data.
+- gene: The gene name vector.
 - pindex: A vector with each element represents the number of cis-SNPs for each gene.
 - max_iterin: The maximum iteration, which can be determined by users. Default is 1000. 
 - epsin: The convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, which can be determined by users. Default is 1e-4. 
 - Cores: The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux. Default is 1.
 
 ```r
-pindex=c(24,33)
-result<-GIFT_individual(X, Y, Zx, Zy, pindex, max_iterin =1000,epsin=1e-4,Cores=1)
+gene=c("RASA1", "COX7C", "CCNH", "TMEM161B")
+pindex=c(63, 23, 41, 96)
+result<-GIFT_individual(X, Y, Zx, Zy, gene, pindex, max_iterin =1000, epsin=1e-4, Cores=1)
 ```
-The result is a list of estimated parameters including the causal effects and p values for each gene in a focal region. 
+The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
+```r
+result
+      gene causal_effect            p
+1    RASA1    0.35441121 7.132522e-06
+2    COX7C    0.02106124 8.028767e-01
+3     CCNH    0.01116380 8.598955e-01
+4 TMEM161B   -0.03302958 3.257469e-01
+```
 
 ## For the summary statistics
 The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html)
@@ -103,19 +113,29 @@ The function `GIFT_summary` is for conditional fine-mapping for in TWAS with sum
 - R: The estimated correlation matrix of gene expressions.
 - n1: The sample size of eQTL data.
 - n2: The sample size of GWAS data.
+- gene: The gene name vector.
 - pindex: A vector with each element represents the number of cis-SNPs for each gene.
 - max_iterin: The maximum iteration, which can be determined by users. Default is 1000. 
 - epsin: The convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, which can be determined by users. Default is 1e-4. 
 - Cores: The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux. Default is 1.
 
 ```r
-pindex=c(24,33)
+gene=c("RASA1", "COX7C", "CCNH", "TMEM161B")
+pindex=c(63, 23, 41, 96)
 n1=465
 n2=5000
-result<-GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, pindex, max_iterin =1000,epsin=1e-4, Cores=1)
+result<-GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, gene, pindex, max_iterin =1000, epsin=1e-4, Cores=1)
 
 ```
-The result is a list of estimated parameters including the causal effects and p values for each gene in a focal region. 
+The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
+```r
+result
+      gene causal_effect            p
+1    RASA1    0.35439571 7.088416e-06
+2    COX7C    0.02104398 8.029700e-01
+3     CCNH    0.01114944 8.609294e-01
+4 TMEM161B   -0.03302900 3.257526e-01
+```
 
 ## For the two-stage version
 The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html)
@@ -167,3 +187,12 @@ The function `GIFT_two_stage_summ` is for conditional fine-mapping for in TWAS w
 result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene)
 ```
 The result is a data frame including the z-scores and p values for each gene in a focal region. 
+```r
+result
+      gene         Z         P NSNP
+1    RASA1  1.473215 0.1406930  223
+2    COX7C -1.216562 0.2237709  223
+3     CCNH  1.251621 0.2107080  223
+4 TMEM161B -0.758564 0.4481134  223
+```
+
