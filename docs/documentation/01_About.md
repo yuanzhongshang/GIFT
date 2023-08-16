@@ -11,7 +11,7 @@ Lu Liu, Ran Yan, Ping Guo, Jiadong Ji, Weiming Gong, Fuzhong Xue, Zhongshang Yua
 
 Contact
 -------------------
-if you have questions, feel free to leave messages on the [github issues](https://github.com/LULIU1816/GIFT/issues) or contact me through email: 201815769@mail.sdu.edu.cn
+if you have questions, feel free to leave messages on the [github issues](https://github.com/yuanzhongshang/GIFT/issues) or contact me through email: luliuu@umich.edu
 
 Our group
 -------------------
