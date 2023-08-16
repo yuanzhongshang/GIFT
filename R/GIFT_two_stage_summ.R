@@ -22,7 +22,7 @@ GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene){
     se <- matrix(sqrt(diag(solve(t(betax) %*% Sigma %*% betax) * c(sigma0))), ncol = 1)
     Z <- matrix(beta/se, ncol = 1)
     p <- matrix(2*pnorm(-abs(Z), 0, 1), ncol = 1)
-    result <- data.frame(GENE = gene, Z = Z, P = p, NSNP = nsnps)
+    result <- data.frame(gene = gene, Z = Z, P = p, NSNP = nsnps)
     
     return(result)
   }
