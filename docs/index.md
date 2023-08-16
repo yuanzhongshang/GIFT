@@ -12,7 +12,7 @@ Installation
 ------------
 You can install the released version of GIFT from Github with the following code, for more installation details or solutions that might solve related issues (specifically MacOS system) see the [link](https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html).
 
-## Dependencies 
+### Dependencies 
 * R version >= 4.0.0.
 * R packages: Rcpp, RcppArmadillo, parallel
 
@@ -36,7 +36,7 @@ This package is supported for Windows 10, MAC and Linux. The package has been te
 - MAC: OSX (10.14.1)
 - Linux: Ubuntu (16.04.6)
 
-# Issues
+### Issues
 All feedback, bug reports and suggestions are warmly welcomed! Please make sure to raise issues with a detailed and reproducible example and also please provide the output of your sessionInfo() in R! 
 
 How to cite `GIFT`
