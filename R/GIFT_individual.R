@@ -11,7 +11,7 @@
 #' @return A list of estimated parameters including the p values for the gene-based test. 
 #' \item{causal_effect}{The estimates of causal effect for each gene in a specific region}
 #' \item{gene_based_test_pvalue}{The p values for each gene by the gene-based test}
-GIFT_individual<-function(X, Y, Zx, Zy, pindex, max_iterin =1000,epsin=1e-4,Cores=1){
+GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, max_iterin =1000,epsin=1e-4,Cores=1){
   
   k<-length(pindex)
   eQTLdata<-na.omit(cbind(X,Zx))
@@ -60,12 +60,13 @@ GIFT_individual<-function(X, Y, Zx, Zy, pindex, max_iterin =1000,epsin=1e-4,Core
       gene_specific_test_pvalue <- unlist(mclapply(ti_list, perform_func, mc.cores = Cores))
     }
 	
-    result=list()
-    result$causal_effect=H1$alpha
-    result$gene_based_test_pvalue=gene_specific_test_pvalue
+    #result=list()
+    #result$causal_effect=H1$alpha
+    #result$gene_based_test_pvalue=gene_specific_test_pvalue
     #result$sigma_cisSNP=H1$sigmaZ
     #result$sigma_error_1=H1$sigmaX
     #result$sigma_error_2=H1$sigmaY
+    result <- data.frame(gene = gene, causal_effect = H1$alpha, p = gene_specific_test_pvalue)
     return(result)
     
     ######################
