@@ -12,21 +12,21 @@ Installation
 ------------
 You can install the released version of GIFT from Github with the following code, for more installation details or solutions that might solve related issues (specifically MacOS system) see the [link](https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html).
 
-### Dependencies 
+## Dependencies 
 * R version >= 4.0.0.
 * R packages: Rcpp, RcppArmadillo, parallel
 
 
-#### 1. Install `devtools` if necessary
+### 1. Install `devtools` if necessary
 ```r
 install.packages('devtools')
 ```
 
-#### 2. Install `GIFT`
+### 2. Install `GIFT`
 ```r
 devtools::install_github('yuanzhongshang/GIFT')
 ```
-#### 3. Load package
+### 3. Load package
 ```r
 library(GIFT)
 ```
@@ -35,7 +35,6 @@ This package is supported for Windows 10, MAC and Linux. The package has been te
 - Windows 10
 - MAC: OSX (10.14.1)
 - Linux: Ubuntu (16.04.6)
-``` r
 
 # Issues
 All feedback, bug reports and suggestions are warmly welcomed! Please make sure to raise issues with a detailed and reproducible example and also please provide the output of your sessionInfo() in R! 
@@ -47,4 +46,5 @@ Lu Liu, Ran Yan, Ping Guo, Jiadong Ji, Weiming Gong, Fuzhong Xue, Zhongshang Yua
 How to use `GIFT`
 -------------------
 Example Analysis with GIFT: [here](https://yuanzhongshang.github.io/GIFT/documentation/04_GIFT_Example.html).
+
 The GIFT Manual: [here](https://github.com/yuanzhongshang/GIFT/blob/main/docs/GIFT%20manual.pdf).
