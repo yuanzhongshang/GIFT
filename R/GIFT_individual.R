@@ -8,9 +8,7 @@
 #' @param max_iterin The maximum iteration, which can be determined by users.
 #' @param epsin The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.
 #' @param Cores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
-#' @return A list of estimated parameters including the p values for the gene-based test. 
-#' \item{causal_effect}{The estimates of causal effect for each gene in a specific region}
-#' \item{gene_based_test_pvalue}{The p values for each gene by the gene-based test}
+#' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, max_iterin =1000,epsin=1e-4,Cores=1){
   
   k<-length(pindex)
