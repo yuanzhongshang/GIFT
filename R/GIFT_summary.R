@@ -8,12 +8,12 @@
 #' @param n1 the sample size of eQTL data
 #' @param n2 the sample size of GWAS data
 #' @param pindex a vector with each element represents the number of cis-SNPs for each gene.
-#' @param max_iterin The maximum iteration, which can be determined by users.
-#' @param epsin The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.
-#' @param Cores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
+#' @param maxiter The maximum iteration, which can be determined by users.
+#' @param tol The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.
+#' @param ncores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 
-GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, R, n1, n2, gene, pindex, max_iterin =1000,epsin=1e-4, Cores=1){
+GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, R, n1, n2, gene, pindex, maxiter =1000,tol=1e-4, ncores=1){
   
   betax<-Zscore1/sqrt(n1-1)
   betay<-Zscore2/sqrt(n2-1)
@@ -23,23 +23,23 @@ GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, R, n1, n2, gene, pindex
   Sigma1 <- as.matrix(Sigma1)
   Sigma2 <- as.matrix(Sigma2)
   constrFactor <- numeric(k)
-  H1=GIFT_summarycpp(betax, betay, Sigma1, Sigma2, R, constrFactor, pindex, k, n1, n2, max_iterin, epsin)
+  H1=GIFT_summarycpp(betax, betay, Sigma1, Sigma2, R, constrFactor, pindex, k, n1, n2, maxiter, tol)
   loglik0 <- H1$loglik[length(H1$loglik)]
 
-  Cores=min(c(k,Cores))
+  Cores=min(c(k,ncores))
   gene_specific_test_pvalue <- NULL 
   if(Cores == 1){
     for (i in 1:k) {
       constrFactor <- numeric(k)
       constrFactor[i] <- 1
-      fit <- GIFT_summarycpp(betax, betay, Sigma1, Sigma2, R, constrFactor, pindex, k, n1, n2, max_iterin, epsin)
+      fit <- GIFT_summarycpp(betax, betay, Sigma1, Sigma2, R, constrFactor, pindex, k, n1, n2, maxiter, tol)
       gene_specific_test_pvalue[i] <- pchisq(2*(loglik0-fit$loglik[length(fit$loglik)]), 1, lower.tail=F)
     }
   }else{
     perform_func <- function(ti){
       constrFactor <- numeric(k)
       constrFactor[ti] <- 1
-      fit <- GIFT_summarycpp(betax, betay, Sigma1, Sigma2, R, constrFactor, pindex, k, n1, n2, max_iterin, epsin)
+      fit <- GIFT_summarycpp(betax, betay, Sigma1, Sigma2, R, constrFactor, pindex, k, n1, n2, maxiter, tol)
       pvalue <- pchisq(2*(loglik0-fit$loglik[length(fit$loglik)]), 1, lower.tail=F)
       return(pvalue)
     }
