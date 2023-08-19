@@ -1,10 +1,11 @@
 #' @title The main function for conditional fine-mapping for in transcriptome-wide association studies with individual-level data
 #' @description GIFT_individual applies a likelihood-based approach, accounting for the correlated cis-SNPs and genes in a region 
-#' @param X complex gene expression matrix, each column is the standardized specific expression.
-#' @param Y standarized trait vector.
-#' @param Zx standardized cis-genotype matrix in eQTL data.
-#' @param Zy standardized cis-genotype matrix in GWAS data.
-#' @param pindex a vector with each element represents the number of cis-SNPs for each gene.
+#' @param X Complex gene expression matrix, each column is the standardized specific expression.
+#' @param Y Standarized trait vector.
+#' @param Zx Standardized cis-genotype matrix from eQTL data.
+#' @param Zy Standardized cis-genotype matrix from GWAS data.
+#' @param gene The gene names vector.
+#' @param pindex A vector with each element represents the number of cis-SNPs for each gene.
 #' @param maxiter The maximum iteration, which can be determined by users.
 #' @param tol The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.
 #' @param ncores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
