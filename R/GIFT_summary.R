@@ -1,13 +1,14 @@
 #' @title The main function for conditional fine-mapping for in transcriptome-wide association studies with summary-level data
-#' @description GIFT_individual applies a likelihood-based approach, accounting for the correlated cis-SNPs and genes in a region 
-#' @param Zscore_1 the Zscore matrix of the cis-SNP effect size matrix, each column for one specific gene in eQTL data
-#' @param Zscore_2 the Zscore vector of the cis-SNP effect size vector for one specific trait in GWAS data
-#' @param Sigma1 the LD matrix in eQTL data
-#' @param Sigma2 the LD matrix in GWAS data,both Sigma2sin and sigma1sin are often the same from the reference panel
-#' @param R the estimated correlation matrix of gene expressions
-#' @param n1 the sample size of eQTL data
-#' @param n2 the sample size of GWAS data
-#' @param pindex a vector with each element represents the number of cis-SNPs for each gene.
+#' @description GIFT_summary applies a likelihood-based approach, accounting for the correlated cis-SNPs and genes in a region 
+#' @param Zscore_1 Zscore matrix of the cis-SNP effect size matrix, each column for one specific gene from eQTL data.
+#' @param Zscore_2 Zscore vector of the cis-SNP effect size vector from GWAS data.
+#' @param Sigma1 LD matrix from eQTL data.
+#' @param Sigma2 LD matrix from GWAS data, both Sigma1 and Sigma2 are often the same from the reference panel.
+#' @param R Estimated correlation matrix of gene expressions.
+#' @param n1 Sample size of eQTL data.
+#' @param n2 Sample size of GWAS data.
+#' @param gene The gene names vector.
+#' @param pindex A vector with each element represents the number of cis-SNPs for each gene.
 #' @param maxiter The maximum iteration, which can be determined by users.
 #' @param tol The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.
 #' @param ncores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
