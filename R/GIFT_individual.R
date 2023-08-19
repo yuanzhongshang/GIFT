@@ -11,7 +11,7 @@
 #' @param ncores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 
-GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =1000,tol=1e-4,ncores=1){
+GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =1000, tol=1e-4, ncores=1){
   
   k<-length(pindex)
   eQTLdata<-na.omit(cbind(X,Zx))
