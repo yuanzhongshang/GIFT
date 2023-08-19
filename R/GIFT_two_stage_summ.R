@@ -4,9 +4,10 @@
 #' @param betay Beta vector for the cis-SNP effect size from GWAS data.
 #' @param se_betay Corresponding se vector for the cis-SNP effect size vector from GWAS data.
 #' @param Sigma LD matrix from GWAS data.
-#' @param n Sample size n from GWAS data.
+#' @param n Sample size of GWAS data.
 #' @param gene The gene names vector.
 #' @return A data frame including the z scores, p values, number of SNPs analyzed for the gene-based test. 
+
 GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene){
   
   if(sum(is.na(Sigma)) != 0){
