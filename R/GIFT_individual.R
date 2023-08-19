@@ -10,6 +10,7 @@
 #' @param tol The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.
 #' @param ncores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
+
 GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =1000,tol=1e-4,ncores=1){
   
   k<-length(pindex)
