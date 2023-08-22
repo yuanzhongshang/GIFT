@@ -6,7 +6,7 @@
 #' @param Sigma LD matrix from GWAS data.
 #' @param n Sample size of GWAS data.
 #' @param gene The gene names vector.
-#' @return A data frame including the z scores, p values, number of SNPs analyzed for the gene-based test. 
+#' @return A data frame including the z scores and p values for the gene-based test. 
 
 GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene){
   
@@ -31,7 +31,7 @@ GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene){
     se <- matrix(sqrt(diag(solve(t(betax) %*% Sigma %*% betax) * c(sigma0))), ncol = 1)
     Z <- matrix(beta/se, ncol = 1)
     p <- matrix(2*pnorm(-abs(Z), 0, 1), ncol = 1)
-    result <- data.frame(gene = gene, Z = Z, P = p, NSNP = nsnps)
+    result <- data.frame(gene = gene, z = Z, p = p)
     
     return(result)
   }
