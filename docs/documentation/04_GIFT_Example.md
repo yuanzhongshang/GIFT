@@ -41,7 +41,7 @@ pindex <- convert$pindex
 The required example data can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). 
 ```r
 #### load the Rdata file containing X, Zy and Y
-load("individual_data.Rdata")
+load("./simulation/individual_data.Rdata")
 ```
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
@@ -230,7 +230,7 @@ Here is an example output:
 We used GIFT to perform the condition TWAS fine-mapping in a region on chr 9 (107,581,749-109,298,754) for HDL. This region includes eight genes: NIPSNAP3A, NIPSNAP3B, ABCA1, SLC44A1, FSD1L, FKTN, TAL2, and TMEM38B. The data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
 ```r
 #### load the required data
-load(/realdata/.realdataRdata)
+load(./realdata/.realdataRdata)
 #### perform conditional fine-mapping for TWAS analysis
 library(GIFT)
 library(parallel)
