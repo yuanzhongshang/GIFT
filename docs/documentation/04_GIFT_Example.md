@@ -25,6 +25,7 @@ The optional inputs are:
 #### Step 1: pre-process the genotype data in various formats.
 The function `pre_process_individual` can convert common genotype formats to match GIFT input. Specifically, this function is fexible to handle plink binary format (.bim/.fam./.bed), vcf, ped/map format, csv, and tsv file. Here, we provide various genotype formats from GEUVADIS data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html) for example. Note that, in this step, cis-genotype matrix has been standardized to have a mean of zero and standard derivation of one. 
 ```r
+library(GIFT)
 #### load the directory contains the files to be processed only (e.g., plink binary format)
 filelocation <- "./simulation/individual/pre_process/plink_binary"
 #### load the directory of plink exe file
@@ -45,7 +46,6 @@ load("individual_data.Rdata")
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-library(GIFT)
 result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, ncores=1)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
@@ -108,7 +108,6 @@ R <- as.matrix(read.table("./simulation/summary/R.txt"))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-library(GIFT)
 result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, gene, pindex, maxiter=1000, tol=1e-4, ncores=1)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
@@ -170,7 +169,6 @@ gene=c("CCNH", "COX7C", "RASA1", "TMEM161B")
 
 #### Step 4: Conditional fine-mapping for TWAS analysis.
 ```r
-library(GIFT)
 result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene)
 ```
 The result is a data frame including the z-scores and p values for each gene in a focal region. 
