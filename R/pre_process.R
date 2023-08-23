@@ -1,5 +1,5 @@
 #' @title The pro-process function converts common genotype formats to match GIFT input using individual-level data.
-#' @description pre_process_individual is fexible to handle plink binary format (.bim/.fam./.bed), vcf, ped/map format, csv, and tsv file.
+#' @description pre_process_individual is flexible to handle plink binary format (.bim/.fam./.bed), vcf, ped/map format, csv, and tsv file.
 #' @param filelocation A file location only contains the genotype files to be processed.
 #' @param plinkexe A path for the executable plink software.
 #' @return A list including the gene names, z-scores and cis-SNP numbers for each gene. 
@@ -85,7 +85,7 @@ pre_process_individual <- function(filelocation, plinkexe="plink"){
 
 
 #' @title The pro-process function converts common summary statistics and LD matrix format to match GIFT input using summary statistics.
-#' @description pre_process_summary fexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt); and LD matrix either from matrix or a long format such as h5 format. 
+#' @description pre_process_summary flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt); and LD matrix either from matrix or a long format such as h5 format. 
 #' @param eQTLfilelocation A file location only contains the summary statistics files from eQTL data.
 #' @param eQTLLDfile A file path for the LD matrix from eQTL data.
 #' @param GWASfile A file path for the summary statistics from GWAS data.
@@ -196,7 +196,7 @@ weightconvert <- function(weightlist){
 
 
 #' @title The pro-process function converts common summary statistics and LD matrix format from GWAS data to match a required input of two-stage version of GIFT.
-#' @description pre_process_twostage fexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt); and LD matrix either from matrix or a long format such as h5 format. 
+#' @description pre_process_twostage flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt); and LD matrix either from matrix or a long format such as h5 format. 
 #' @param GWASfile A file path for the summary statistics from GWAS data.
 #' @param GWASLDfile A file path for the LD matrix from GWAS data.
 #' @param snplist A vector represents the cis-SNP list for all the ordered genes in a region.
