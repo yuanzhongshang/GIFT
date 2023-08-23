@@ -276,16 +276,4 @@ Here is a real data output:
 ![GIFT\_pipeline](visualization_real.png)
 
 After performing the conditional fine-mapping analysis for HDL across all GWAS risk regions with TWAS significant genes, GIFT produces calibrated p-values for the conditional TWAS tests, see the quantile–quantile plot of -log10 p-values below. In addition, we also provided a Manhattan plot to show different levels of evidence: a gene is “Known” (red) if its association with the trait has been previously reported and well documented; a gene is a significant “TWAS” gene (blue) if its marginal TWAS p-value is below the Bonferroni corrected transcriptome-wide threshold; a genes is significant “GWAS” gene (purple) if its marginal GWAS p-value is below the usual genome-wide threshold 5×10-8 or previously reported; otherwise, a gene is denoted as “NA” (brown). Details are in the Supplementary Tables 4.
-<style>
-  .image-container {
-    display: inline-block;
-    vertical-align: top;
-    margin-left: 20px;
-  }
-</style>
-<p align="left"> 
-<img src="qqplot.png" width="300">
-  <div class="image-container">
-    <img src="Manhattan_plot.png" width="700">
-  </div>
-</p>
+![GIFT\_pipeline](realdata.png)
