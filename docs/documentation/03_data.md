@@ -5,25 +5,18 @@ description: ~
 ---
 The following are the links for the example dataset used in the GIFT. 
 
-1. For the individual-level data:
-  * [Simulated scaled genenotype matrix in eQTL data](https://github.com/yuanzhongshang/GIFT/blob/main/example/Zx.txt)
-  * [Simulated scaled genenotype matrix in GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/Zy.txt)
-  * [Simulated gene expression vector](https://github.com/yuanzhongshang/GIFT/blob/main/example/X.txt)
-  * [Simulated phenotype vector](https://github.com/yuanzhongshang/GIFT/blob/main/example/Y.txt)
+## Simulation
+1. GIFT: Using individual-level data as input:
+  * [link](https://github.com/yuanzhongshang/GIFT/tree/main/example/simulation/individual)
   
-2. For the summary statistics:
-  * [Zscore matrix for the cis-SNP effect size from the eQTL data](https://github.com/yuanzhongshang/GIFT/blob/main/example/Zscore1.txt)
-  * [Zscore vector for the cis-SNP effect size from the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/Zscore2.txt)
-  * [LD matrix for the cis-SNPs in the eQTL data](https://github.com/yuanzhongshang/GIFT/blob/main/example/LDmatrix1.txt)
-  * [LD matrix for the cis-SNPs in the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/LDmatrix2.txt)
-  * [Estimated correlated matrix of gene expressions](https://github.com/yuanzhongshang/GIFT/blob/main/example/R.txt)
+2. GIFT: Using summary statistics as input:
+  * [link](https://github.com/yuanzhongshang/GIFT/tree/main/example/simulation/summary)
 
-3. For the two-stage version data:
-  * [Weight matrix of the cis-SNP effect size from the eQTL data](https://github.com/yuanzhongshang/GIFT/blob/main/example/betax.txt)
-  * [Beta vector of the cis-SNP effect size from the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/betay.txt)
-  * [Se vector of the cis-SNP effect size from the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/se_betay.txt)
-  * [LD matrix for the cis-SNPs in the GWAS data](https://github.com/yuanzhongshang/GIFT/blob/main/example/Sigma.txt)
+3. Two-stage version of GIFT: Using pre-trained weights and summary statistics as input:
+  * [link](https://github.com/yuanzhongshang/GIFT/tree/main/example/simulation/two_stage/weights)
   
 4. For the visualization:
-  * [GWAS results](https://github.com/yuanzhongshang/GIFT/blob/main/example/GWASresult.txt)
-  * [TWAS results](https://github.com/yuanzhongshang/GIFT/blob/main/example/TWASresult.txt)
+  * [link](https://github.com/yuanzhongshang/GIFT/tree/main/example/simulation/visualization)
+
+## Real data application
+  * [link](https://github.com/yuanzhongshang/GIFT/blob/main/example/realdata/realdata.RData)
