@@ -90,7 +90,7 @@ pre_process_individual <- function(filelocation, plinkexe="plink"){
 #' @param eQTLLDfile A file path for the LD matrix from eQTL data.
 #' @param GWASfile A file path for the summary statistics from GWAS data.
 #' @param GWASLDfile A file path for the LD matrix from GWAS data.
-#' @param snplist A vector represents the cis-SNP list for all the ordered genes in a region.
+#' @param snplist A vector represents the cis-SNP list for all genes in a region.
 #' @param pindex A vector with each element represents the number of cis-SNPs for each gene.
 #' @return A list including the gene names, cis-SNP numbers for each gene, z-scores from eQTL data and GWAS data, LD matrix from eQTL data and GWAS data. 
 
@@ -199,7 +199,7 @@ weightconvert <- function(weightlist){
 #' @description pre_process_twostage flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt); and LD matrix either from matrix or a long format such as h5 format. 
 #' @param GWASfile A file path for the summary statistics from GWAS data.
 #' @param GWASLDfile A file path for the LD matrix from GWAS data.
-#' @param snplist A vector represents the cis-SNP list for all the ordered genes in a region.
+#' @param snplist A vector represents the cis-SNP list for all genes in a region.
 #' @return A list including the beta vector, corresponding se vector and LD matrix from GWAS data.
 
 pre_process_twostage <- function(GWASfile, GWASLDfile, snplist){
