@@ -67,7 +67,7 @@ The function `GIFT_summary` is the main function for GIFT with summary statistic
 - R: Estimated correlation matrix of gene expressions.
 - n1: Sample size of eQTL data.
 - n2: Sample size of GWAS data.
-- gene: The gene name vector.
+- gene: The gene name vector, the order of the gene name should be consistent with that in Zscore_1.
 - pindex: A vector with each element represents the number of cis-SNPs for each gene.
 
 The optional inputs are:
