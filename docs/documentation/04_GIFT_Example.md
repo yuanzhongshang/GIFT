@@ -79,12 +79,12 @@ The optional inputs are:
 The function `pre_process_summary` can convert common summary statistics and LD matrix format to match GIFT input. Specifically, this function is fexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also fexible to handle LD matrix either from matrix or a long format such as h5 format. Here, we provide various formats from example data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). Note that, the summary statistics version of GIFT often requires the in-sample LD matrix. If we cannot have the in-sample LD matrix, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project), it would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data. 
 ```r
 #### load the directory contains files of summary statistics from eQTL data only (e.g., the SAIGE output)
-eQTLfilelocation <- "./simulation/summary/pre_process/saige/eQTL"
+eQTLfilelocation <- paste0(getwd(), "/simulation/summary/pre_process/saige/eQTL")
 #### load the directory of summary statistics from GWAS data (e.g., the SAIGE output)
-GWASfile <- "./summary/pre_process/saige/GWAS.txt"
+GWASfile <- "./simulation/summary/pre_process/saige/GWAS.txt"
 #### load the directory of LD matrix from eQTL data and GWAS data (e.g., a long format: h5 format)
-eQTLLDfile <- "./summary/pre_process/LDmatrix1.h5"
-GWASLDfile <- "./summary/pre_process/LDmatrix2.h5"
+eQTLLDfile <- "./simulation/summary/pre_process/LDmatrix1.h5"
+GWASLDfile <- "./simulation/summary/pre_process/LDmatrix2.h5"
 #### load the SNP list and cis-SNP number for each gene in a region
 snplist <- read.table("./simulation/summary/pre_process/snplist.txt")$V1
 pindex <- c(41, 23, 63, 96)
@@ -103,6 +103,7 @@ LDmatrix2 <- convert$LDmatrix2
 n1 <- 465
 n2 <- 5000
 ### load the estimated correlated matrix of gene expressions
+setwd(gsub("/simulation/summary/pre_process/saige/eQTL", "", getwd()))
 R <- as.matrix(read.table("./simulation/summary/R.txt"))
 ```
 
@@ -147,11 +148,11 @@ betax <- weightconvert(weightlist)
 The function `pre_process_twostage` can convert common summary statistics and LD matrix format to match GIFT input. Specifically, this function is fexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also fexible to handle LD matrix either from a matrix or a long format such as h5 format. The example data is same as the section from GWAS data above in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). Note that, the two-stage version of GIFT often requires the in-sample LD matrix. If we cannot have the in-sample LD matrix, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project), it would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data. 
 ```r
 #### load the directory of summary statistics from GWAS data (e.g., the plink output)
-GWASfile="./summary/pre_process/plink/GWAS.qassoc"
+GWASfile <- "./simulation/summary/pre_process/plink/GWAS.qassoc"
 #### load LD matrix from eQTL data and GWAS data (e.g., a matrix)
-GWASLDfile="./summary/pre_process/LDmatrix2.txt"
+GWASLDfile <- "./simulation/summary/pre_process/LDmatrix2.txt"
 #### load the SNP list and cis-SNP number for each gene in a region
-snplist=read.table("./simulation/summary/pre_process/snplist.txt")$V1
+snplist <- read.table("./simulation/summary/pre_process/snplist.txt")$V1
 #### pre-process the file to a list including the beta vector, corresponding se vector and LD matrix from GWAS data
 convert <- pre_process_twostage(GWASfile, GWASLDfile, snplist)
 betay <- as.matrix(convert$beta)
@@ -184,7 +185,7 @@ The result is a data frame including the z-scores and p values for each gene in 
 We visualize the GIFT result incorporating with the marginal GWAS and TWAS results in a Manhattan plot. Here, we load the analyzed results of GWAS and TWAS directly using the example data. The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
 ```r
 #### load the GWAS results (e.g., the GEMMA output)
-GWASresult=read.table("./summary/pre_process/gemma/GWAS.assoc.txt",header=T)
+GWASresult=read.table("./simulation/summary/pre_process/gemma/GWAS.assoc.txt",header=T)
 GWASresult=GWASresult[,c(2,3,11)]
 GWASresult$index="GWAS"
 colnames(GWASresult)=c("X","BP","P","index")
@@ -230,7 +231,7 @@ Here is an example output:
 We used GIFT to perform the condition TWAS fine-mapping in a region on chr 9 (107,581,749-109,298,754) for HDL. This region includes eight genes: NIPSNAP3A, NIPSNAP3B, ABCA1, SLC44A1, FSD1L, FKTN, TAL2, and TMEM38B. The data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
 ```r
 #### load the required data
-load(./realdata/.realdataRdata)
+load("./realdata/realdata.Rdata")
 #### perform conditional fine-mapping for TWAS analysis
 library(GIFT)
 library(parallel)
