@@ -16,6 +16,7 @@ The function `GIFT_individual` is for conditional fine-mapping for in TWAS with 
 - Zy: The standardized cis-genotype matrix for all genes in a specific region from GWAS data.
 - gene: The gene name vector represents the genes in a specific region.
 - pindex: A vector with each element represents the number of cis-SNPs for each gene.
+
 The optional inputs are:
 - maxiter: The maximum iteration, which can be determined by users. Default is 1000. 
 - tol: The convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, which can be determined by users. Default is 1e-4. 
@@ -68,6 +69,7 @@ The function `GIFT_summary` is for conditional fine-mapping for in TWAS with sum
 - n2: Sample size of GWAS data.
 - gene: The gene name vector.
 - pindex: A vector with each element represents the number of cis-SNPs for each gene.
+
 The optional inputs are:
 - maxiter: The maximum iteration, which can be determined by users. Default is 1000. 
 - tol: The convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, which can be determined by users. Default is 1e-4. 
