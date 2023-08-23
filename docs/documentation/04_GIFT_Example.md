@@ -41,7 +41,7 @@ pindex <- convert$pindex
 The required example data can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). 
 ```r
 #### load the Rdata file containing X, Zy and Y
-load("./simulation/individual_data.Rdata")
+load("./simulation/individual/individual_data.Rdata")
 ```
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
