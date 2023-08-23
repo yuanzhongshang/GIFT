@@ -6,7 +6,7 @@ description: ~
 GIFT examines one genomic region at a time, explicitly models the gene expression correlation and cis-SNP LD across different genes in the region and accounts for the uncertainty in the constructed GReX, and carries out TWAS conditional analysis in a maximum likelihood framework. This tutorial is the example analysis with GIFT. Before runing the tutorial, make sure that the GIFT package is installed. Installation instructions see the [link](https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html). The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
 
 ## Simulation
-We generated the simulation data from the realistic genotypes from GEUVADIS (n1=465) and UK Biobank (n2=5,000) in a region of chr 5. This region includes four genes: RASA1, COX7C, CCNH and TMEM161B. We set RASA1 to be causal with the effect size being sqrt(0.1).
+We generated the simulation data using the realistic genotypes from GEUVADIS (n1=465) and UK Biobank (n2=5,000) in a region of chr 5. This region includes four genes: RASA1, COX7C, CCNH and TMEM161B. We set RASA1 to be causal with the effect size being sqrt(0.1).
 
 ### GIFT: Using individual-level data as input
 The function `GIFT_individual` is for conditional fine-mapping for in TWAS with individual-level data. The essential inputs are:
@@ -80,9 +80,9 @@ The function `pre_process_summary` can convert common summary statistics and LD 
 ```r
 #### load the directory contains files of summary statistics from eQTL data only (e.g., the SAIGE output)
 eQTLfilelocation <- "./simulation/summary/pre_process/saige/eQTL"
-#### load summary statistics from GWAS data (e.g., the SAIGE output)
+#### load the directory of summary statistics from GWAS data (e.g., the SAIGE output)
 GWASfile <- "./summary/pre_process/saige/GWAS.txt"
-#### load LD matrix from eQTL data and GWAS data (e.g., a long format: h5 format)
+#### load the directory of LD matrix from eQTL data and GWAS data (e.g., a long format: h5 format)
 eQTLLDfile <- "./summary/pre_process/LDmatrix1.h5"
 GWASLDfile <- "./summary/pre_process/LDmatrix2.h5"
 #### load the SNP list and cis-SNP number for each gene in a region
@@ -140,13 +140,14 @@ COX7C <- as.matrix(read.table("COX7Cweight.txt"))
 RASA1 <- as.matrix(read.table("RASA1weight.txt"))
 TMEM161B <- as.matrix(read.table("TMEM161Bweight.txt"))
 weightlist <- list(CCNH = CCNH, COX7C = COX7C, RASA1 = RASA1, TMEM161B = TMEM161B)
+#### convert the weights from all genes into a block diagonal matrix
 betax <- weightconvert(weightlist)
 ```
 
 #### Step 2: Read the beta vector, corresponding se vector and LD matrix from GWAS data.
 The function `pre_process_twostage` can convert common summary statistics and LD matrix format to match GIFT input. Specifically, this function is fexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also fexible to handle LD matrix either from a matrix or a long format such as h5 format. The example data is same as the section from GWAS data above in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). Note that, the two-stage version of GIFT often requires the in-sample LD matrix. If we cannot have the in-sample LD matrix, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project), it would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data. 
 ```r
-#### load summary statistics from GWAS data (e.g., the plink output)
+#### load the directory of summary statistics from GWAS data (e.g., the plink output)
 GWASfile="./summary/pre_process/plink/GWAS.qassoc"
 #### load LD matrix from eQTL data and GWAS data (e.g., a matrix)
 GWASLDfile="./summary/pre_process/LDmatrix2.txt"
@@ -228,7 +229,7 @@ Here is an example output:
 ![GIFT\_pipeline](visualization.png)
 
 ## Real data application
-We used GIFT to perform the condition TWAS fine-mapping in a region on chr 9 (107,581,749-109,298,754) for HDL. This region includes four genes: NIPSNAP3A, NIPSNAP3B, ABCA1, SLC44A1, FSD1L, FKTN, TAL2, and TMEM38B. The data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
+We used GIFT to perform the condition TWAS fine-mapping in a region on chr 9 (107,581,749-109,298,754) for HDL. This region includes eight genes: NIPSNAP3A, NIPSNAP3B, ABCA1, SLC44A1, FSD1L, FKTN, TAL2, and TMEM38B. The data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
 ```r
 #### load the required data
 load(/realdata/.realdataRdata)
