@@ -57,7 +57,7 @@ result
 4 TMEM161B   -0.03306309 3.257628e-01
 ```
 
-## GIFT: Using summary statistics as input
+### GIFT: Using summary statistics as input
 The function `GIFT_summary` is for conditional fine-mapping for in TWAS with summary statistics. The essential inputs are:
 - Zscore_1: Zscore matrix of the cis-SNP effect size matrix, each column from eQTL data.
 - Zscore_2: Zscore vector of the cis-SNP effect size vector from GWAS data.
@@ -119,7 +119,7 @@ result
 4 TMEM161B   -0.03373786 3.197526e-01 
 ```
 
-## Two-stage version of GIFT: Using pre-trained weights and summary statistics as input
+### Two-stage version of GIFT: Using pre-trained weights and summary statistics as input
 The function `GIFT_two_stage_summ` is for conditional fine-mapping for in TWAS using pre-trained weights and summary statistics. The two-stage version of GIFT is not only computationally efficient but also allows us to make use of existing gene expression prediction models for more convenient TWAS fine-mapping. The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). The essential inputs are:
 - betax: Weight matrix for the cis-SNP effect size from eQTL data.
 - betay: Beta vector of the cis-SNP effect size vector from GWAS data.
@@ -128,7 +128,7 @@ The function `GIFT_two_stage_summ` is for conditional fine-mapping for in TWAS u
 - n: Sample size of GWAS data.
 - gene: The vector of gene names.
   
-### 1. Read the eQTL weight.
+#### Step 1: Read the eQTL weight.
 Gene expression prediction is a critical component of two-stage TWAS methods. Examples of prediction models include lasso and elastic net (enet) as implemented in prediXcan, Best Linear Unbiased Prediction (BLUP), the top SNPs (top1) and Bayesian sparse linear mixed model (BSLMM) as implemented in TWAS/FUSION, latent Dirichlet process regression (DPR) as implemented in both DPR and TIGAR. For a specific region, the weights from all genes consist a block diagonal matrix. Each block is a vector of cis-SNP effect using the same gene expression prediction model. The function `weightconvert` can convert a list including weights for multiple genes into a required block diagonal matrix.
 ```r
 #### load the weight matrix from the eQTL data (e.g., BLUP)
@@ -141,7 +141,7 @@ weightlist <- list(CCNH = CCNH, COX7C = COX7C, RASA1 = RASA1, TMEM161B = TMEM161
 betax <- weightconvert(weightlist)
 ```
 
-### 2. Read the beta vector, corresponding se vector and LD matrix from GWAS data.
+#### Step 2: Read the beta vector, corresponding se vector and LD matrix from GWAS data.
 The function `pre_process_twostage` can convert common summary statistics and LD matrix format to match GIFT input. Specifically, this function is fexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also fexible to handle LD matrix either from a matrix or a long format such as h5 format. The example data is same as the section from GWAS data above in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). Note that, the two-stage version of GIFT often requires the in-sample LD matrix. If we cannot have the in-sample LD matrix, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project), it would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data. 
 ```r
 #### load summary statistics from GWAS data (e.g., the plink output)
@@ -157,7 +157,7 @@ se_betay <- as.matrix(convert$se)
 Sigma <- convert$LDmatrix
 ```
 
-### 3. Read other required data.
+#### Step 3: Read other required data.
 ```r
 #### load the sample size from GWAS data
 n=5000
@@ -165,7 +165,7 @@ n=5000
 gene=c("CCNH", "COX7C", "RASA1", "TMEM161B")
 ``` 
 
-### 4. Conditional fine-mapping for TWAS analysis.
+#### Step 4: Conditional fine-mapping for TWAS analysis.
 ```r
 library(GIFT)
 result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene)
@@ -179,7 +179,7 @@ The result is a data frame including the z-scores and p values for each gene in 
 4 TMEM161B -0.7940135 0.4271876
 ```
 
-## Visualization for the GIFT result
+### Visualization for the GIFT result
 We visualize the GIFT result incorporating with the marginal GWAS and TWAS results in a Manhattan plot. Here, we load the analyzed results of GWAS and TWAS directly using the example data. The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
 ```r
 #### load the GWAS results (e.g., the GEMMA output)
