@@ -15,7 +15,7 @@ The following are the links for the example dataset used in the GIFT.
   * [tsv](https://github.com/yuanzhongshang/GIFT/tree/main/example/simulation/individual/pre_process/tsv)
  
  Other dataset:
-  *[individual_data.Rdata](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/individual/individual_data.Rdata)
+  * [individual_data.Rdata](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/individual/individual_data.Rdata)
   
 ### GIFT: Using summary statistics as input:
   Different summary statistics data formats:
@@ -30,8 +30,8 @@ The following are the links for the example dataset used in the GIFT.
   * [long format from GWAS data (.h5)](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/pre_process/LDmatrix2.h5)
 
   Other dataset:
-  *[SNP list](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/pre_process/snplist.txt)
-  *[estimated correlated matrix of gene expressions](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/R.txt)
+  * [SNP list](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/pre_process/snplist.txt)
+  * [estimated correlated matrix of gene expressions](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/R.txt)
   
 ### Two-stage version of GIFT: Using pre-trained weights and summary statistics as input:
   eQTL weight:
@@ -42,7 +42,7 @@ The following are the links for the example dataset used in the GIFT.
   * [GEMMA](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/pre_process/gemma/GWAS.assoc.txt)
   * [SAIGE](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/pre_process/saige/GWAS.txt)  
   
-4. For the visualization:
+### For the visualization:
   * [TWAS result](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/visualization/TWASresult.txt)
 
 ## Real data application
