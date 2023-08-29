@@ -5,7 +5,7 @@ description: ~
 ---
 GIFT examines one genomic region at a time, explicitly models the gene expression correlation and cis-SNP LD across different genes in the focal region and accounts for the uncertainty in the constructed GReX, and carries out TWAS conditional analysis in a maximum likelihood framework. This tutorial is the example analysis with GIFT. Before running the tutorial, make sure that the GIFT package is successfully installed. Please see the [link](https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html) for the installation instructions. The example data for the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
 
-## Simulation
+## A simulated data example
 We conducted the simulations based on the realistic genotypes from GEUVADIS (n1=465) and UK Biobank (n2=5,000) in a region on chr 5. This region includes four genes: RASA1, COX7C, CCNH and TMEM161B. We set RASA1 as the causal gene with the effect size being sqrt(0.1).
 
 ### GIFT: Using individual-level data as input
@@ -227,7 +227,7 @@ ggplot(data) +
 Here is an example output:
 ![GIFT\_pipeline](visualization.png)
 
-## Real data application
+## A real data example
 We used GIFT to perform the condition TWAS fine-mapping in a region on chr 9 (107,581,749-109,298,754) for HDL. This region includes eight genes: NIPSNAP3A, NIPSNAP3B, ABCA1, SLC44A1, FSD1L, FKTN, TAL2, and TMEM38B. The data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
 ```r
 #### load the required data
