@@ -22,7 +22,7 @@ The optional inputs are:
 - tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4. 
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux. 
 
-#### Step 1: pre-process the genotype data with different formats.
+#### Step 1: Pre-process the genotype data with different formats.
 The function `pre_process_individual` is able to convert different genotype data formats to GIFT inputs. In particular, this function is flexible to handle plink binary format (.bim/.fam./.bed), vcf, ped/map format, csv, and tsv file. Here, we take various genotype data formats from GEUVADIS data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html) for example. Of note, in this step, cis-genotype matrix has been standardized to have a mean of zero and standard derivation of one. 
 ```r
 library(GIFT)
@@ -60,8 +60,8 @@ result
 
 ### GIFT: Using summary statistics as input
 The function `GIFT_summary` is the main function for GIFT with summary statistics. The essential inputs are:
-- Zscore_1: Zscore matrix of the cis-SNP effect size from eQTL data.
-- Zscore_2: Zscore vector of the cis-SNP effect size from GWAS data.
+- Zscore_1: Zscore matrix of the cis-SNP effect size for all genes in a specific region from eQTL data.
+- Zscore_2: Zscore vector of the cis-SNP effect size for all genes in a specific region from GWAS data.
 - Sigma1: LD matrix from eQTL data.
 - Sigma2: LD matrix from GWAS data, both Sigma1 and Sigma2 are often from the same reference panel.
 - R: Estimated correlation matrix of gene expressions.
@@ -75,7 +75,7 @@ The optional inputs are:
 - tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4. 
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux. 
 
-#### Step 1: pre-process the summary statistics with different formats.
+#### Step 1: Pre-process the summary statistics with different formats.
 The function `pre_process_summary` is able to convert different summary statistics and LD matrix data formats to GIFT inputs. In particular, this function is flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also flexible to handle LD matrix either from matrix or a long format such as h5 format. Here, we take various data formats from example data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). Note that, the summary statistics version of GIFT often requires the in-sample LD matrix. If the in-sample LD matrix is not available, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project). It would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data. 
 ```r
 #### load the directory containing files of summary statistics from eQTL data only (e.g., the SAIGE output)
