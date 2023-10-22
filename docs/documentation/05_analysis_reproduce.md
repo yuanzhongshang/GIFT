@@ -4,11 +4,11 @@ title: Analysis Reproduce
 description: ~
 ---
 
-## generate the simulation data
-We randomly selected 50 regions from 1,533 regions.The region information is [here](https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html). For each region in turn, we performed 20 simulation replicates, resulting in a total of 1,000 simulation replicates per setting.
+## Generate the simulation data
+We randomly selected 50 regions from 1,533 regions. The region information is [here](https://github.com/yuanzhongshang/GIFT/blob/main/reproduce/LDetectregion1533.txt). For each region in turn, we performed 20 simulation replicates, resulting in a total of 1,000 simulation replicates per setting.
 For each region, we conducted the simulations based on the realistic genotypes from GEUVADIS (n1=465) and UK Biobank (n2=5,000). Take a region on chr 5 for example. This region includes four genes: RASA1, COX7C, CCNH and TMEM161B. We set RASA1 as the causal gene with the effect size being sqrt(0.1).
 
-### generate the individual level data
+### Generate the individual level data
 ```r
 ##load the genotypes from GEUVADIS
 
@@ -89,7 +89,7 @@ Zy=scale(Zy)
 save(X, Y, Zx, Zy, gene, pindex, file = "./reproduce/simulation_data_generate/data_generate_individual.Rdata")
 ```
 
-### convert the individual level data into the summary statistics
+### Convert the individual level data into the summary statistics
 ```r
 ###calculate the z-score from GEUVADIS
 n1=dim(Zx)[1]
