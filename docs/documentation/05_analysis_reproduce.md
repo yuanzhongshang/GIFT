@@ -273,6 +273,7 @@ dbWriteTable(mydb, "refpanel", refpanel)
 dbWriteTable(mydb, "weight", weight)
 
 ##perform GWAS using PLINK or process the obtained GWAS summary statistics
+##If you perform GWAS using other software, please provide a .txt file contains columns: "CHR", "SNP", "BP", "A1", "A2", "Z", "P", "N".
 ##conduct the pheotype file used in plink
 FID <- read.table(paste0(dir,"/reproduce/simulation_data_generate/Zy.fam"))$V1
 IID <- FID
@@ -291,7 +292,7 @@ write.table(summary,"./reproduce/FOCUS/gwas.txt",quote=F,row.names=F)
 ###clean GWAS summary data
 system("focus munge ./reproduce/FOCUS/gwas.txt --output ./reproduce/FOCUS/GWAS.cleaned")
 
-##Run FOCUS
+##run FOCUS
 system("focus finemap ./reproduce/FOCUS/GWAS.cleaned.sumstats.gz ./reproduce/simulation_data_generate/Zy ./reproduce/FOCUS/weight.db --locations 37:EUR --chr 4 --start 128996665 --stop 130591885 --prior-prob ./reproduce/gencodev12.tsv --p-threshold 1 --out ./reproduce/FOCUS/result")
 
 result <- read.table("./reproduce/FOCUS/result", header = T)
@@ -344,13 +345,14 @@ write.table(weightsn, weightsave, col.names = T, row.names = F, quote = F)
 weights <- paste0(dir,"/reproduce/FOGS/weight.txt")
 
 ##prepare the summary statistics
+##If you perform GWAS using other software, please provide a .txt file contains columns: "CHR", "SNP", "POS", "A1", "A2", "beta", "se", "Z", "P", "samplesize".
 setwd(paste0(dir, "/reproduce/FOGS"))
 source("munge.R")
 
 data <- fread(paste0(dir,"/reproduce/FOCUS/gwas.qassoc"))
 bim <- fread(paste0(dir,"/reproduce/simulation_data_generate/Zy.bim"))
-summary <- cbind(data[,1:3],bim[,5:6],data[,5:6],data[,8],data[,9],data[,4])
-colnames(summary) <- c("CHR","SNP","POS","A1","A2","beta","se","Z","P","samplesize")
+summary <- cbind(data[,1:3], bim[,5:6], data[,5:6], data[,8], data[,9],d ata[,4])
+colnames(summary) <- c("CHR", "SNP", "POS", "A1", "A2", "beta", "se", "Z", "P", "samplesize")
 write.table(summary, "gwas.txt", quote = F, row.names = F)
 
 sumstats <- paste0(dir,"/reproduce/FOGS/gwas.txt")
@@ -376,6 +378,7 @@ outd <- paste0(dir,"/reproduce/FOGS/result")
 saveprefix <- paste0(dir,"/reproduce/FOGS/result")
 loci <-paste0(dir,"/reproduce/LDetect/EUR/")
 
+##run FOGS
 system(paste0("Rscript FOGS.R --refld ",refld," --outd ",outd," --loci ",loci," --weights ",weights," --genelist ",genelist," --sumstat ",sumstat," --saveprefix ",saveprefix," --chr_id ",chr_id," --locus_id ",locus_id))
 
 result <- read.table(paste0(dir,"/reproduce/FOGS/result/resultCHR_4_Locus",locus_id,".txt"),header = T)
@@ -392,3 +395,60 @@ CHR ID P0 P1 n.SNP n.condSNP FOGS-aSPU TWAS Focus Runtime(s)
 ```
 
 ## Run MV-IWAS
+MV-IWAS takes GWAS summary statistics, reference LD, eQTL weight database as input. Here we used the same data as above.
+```r
+library(MVIWAS)
+
+##load the simulation data or the real data with the specific format from the summary statistics
+###Here we used the simulation data.
+dir=getwd()
+load("./reproduce/simulation_data_generate/data_generate_summary.Rdata")
+
+##prepare the eQTL-derived weights
+p=sum(pindex)
+
+##Here we used the BSLMM weight for the fair comparison.
+betax <- NULL
+setwd("./reproduce/FOCUS/weight")
+for(i in 1:length(gene)){
+  if(i == length(gene)){
+    load(paste0(gene[i],".wgt.RDat"))
+    betax1 <- wgt.matrix[,colnames(wgt.matrix)=="bslmm"]
+    betax <- c(betax,betax1)
+  }else{
+   load(paste0(gene[i],".wgt.RDat"))
+   betax1 <- wgt.matrix[,colnames(wgt.matrix)=="bslmm"]
+   betax <- c(betax, betax1, rep(0,p))
+  }
+}
+betax <- matrix(betax, p, length(gene))
+
+betay <- Zscore2/sqrt(n2-1)
+se_betaZY <- matrix(1/sqrt(n2-1),p,1)
+
+##run MV-IWAS
+result <- mv_iwas_summ(betay, se_betaZY, betax, LDmatrix2, n2, "Continuous", n_case = NULL, n_control = NULL)
+result$TERM <- gene
+write.table(result,paste0(dir,"/reproduce/MVIWAS/result.txt"), quote = F, row.names = F)
+
+result
+    MODEL          TERM         BETA         SE          Z            P NSNP
+1 MV-IWAS       C4orf29  0.221597362 0.05474690  4.0476699 5.173003e-05 1231
+2 MV-IWAS       C4orf33 -0.008441355 0.06985365 -0.1208434 9.038150e-01 1231
+3 MV-IWAS        LARP1B -0.105409347 0.06662337 -1.5821678 1.136113e-01 1231
+4 MV-IWAS        PGRMC2  0.055406960 0.05005174  1.1069938 2.682966e-01 1231
+5 MV-IWAS         PHF17 -0.024894469 0.02305678 -1.0797030 2.802745e-01 1231
+6 MV-IWAS RP11-420A23.1  0.062661326 0.12442069  0.5036246 6.145252e-01 1231
+7 MV-IWAS         SCLT1 -0.005552580 0.03470806 -0.1599796 8.728972e-01 1231
+  DiseaseType
+1  Continuous
+2  Continuous
+3  Continuous
+4  Continuous
+5  Continuous
+6  Continuous
+7  Continuous
+
+##Note that, matrix objects now also inherit from class "array" since R 4.0.0. mv_iwas_summ() contains some class checks which should modify to avoid the bug.
+##If you used the R verion over 4.0.0, source("./reproduce/MVIWAS/mv_iwas_summ.R")
+```
