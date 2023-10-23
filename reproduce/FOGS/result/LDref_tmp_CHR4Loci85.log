@@ -1,0 +1,36 @@
+PLINK v1.90b6.9 64-bit (4 Mar 2019)
+Options in effect:
+  --bfile /net/mulan/disk2/zhongshy/finemapping/github/1022/reproduce/simulation_data_generate/Zy
+  --chr 4
+  --from-kb 128590.392
+  --maf 0.01
+  --make-bed
+  --out /net/mulan/disk2/zhongshy/finemapping/github/1022/reproduce/FOGS/result/LDref_tmp_CHR4Loci85
+  --to-kb 130634.487
+
+Hostname: mulan
+Working directory: /net/mulan/disk2/zhongshy/finemapping/github/1022/reproduce/FOGS
+Start time: Sun Oct 22 23:42:12 2023
+
+Random number seed: 1698032532
+515882 MB RAM detected; reserving 257941 MB for main workspace.
+Allocated 108818 MB successfully, after larger attempt(s) failed.
+721 variants loaded from .bim file.
+5000 people (2317 males, 2683 females) loaded from .fam.
+4989 phenotype values loaded from .fam.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 5000 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+0 variants removed due to minor allele threshold(s)
+(--maf/--max-maf/--mac/--max-mac).
+721 variants and 5000 people pass filters and QC.
+Phenotype data is quantitative.
+--make-bed to
+/net/mulan/disk2/zhongshy/finemapping/github/1022/reproduce/FOGS/result/LDref_tmp_CHR4Loci85.bed
++
+/net/mulan/disk2/zhongshy/finemapping/github/1022/reproduce/FOGS/result/LDref_tmp_CHR4Loci85.bim
++
+/net/mulan/disk2/zhongshy/finemapping/github/1022/reproduce/FOGS/result/LDref_tmp_CHR4Loci85.fam
+... done.
+
+End time: Sun Oct 22 23:42:12 2023
