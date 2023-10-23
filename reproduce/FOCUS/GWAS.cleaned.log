@@ -1,0 +1,36 @@
+===================================
+             FOCUS v0.802             
+===================================
+focus munge
+	./reproduce/FOCUS/gwas.txt
+	--output ./reproduce/FOCUS/GWAS.cleaned
+
+Starting log...
+[2023-10-22 20:25:43 - INFO] Interpreting column names as follows:
+[2023-10-22 20:25:43 - INFO] CHR: Chromsome
+[2023-10-22 20:25:43 - INFO] SNP: Variant ID (e.g., rs number)
+[2023-10-22 20:25:43 - INFO] BP: Base position
+[2023-10-22 20:25:43 - INFO] A1: Allele 1, interpreted as ref allele for signed sumstat
+[2023-10-22 20:25:43 - INFO] A2: Allele 2, interpreted as non-ref allele for signed sumstat
+[2023-10-22 20:25:43 - INFO] Z: Z-score (0 --> no effect; above 0 --> A1 is trait/risk increasing)
+[2023-10-22 20:25:43 - INFO] P: p-Value
+[2023-10-22 20:25:43 - INFO] N: Sample size
+[2023-10-22 20:25:43 - INFO] Reading sumstats from ./reproduce/FOCUS/gwas.txt into memory 5000000 SNPs at a time
+[2023-10-22 20:25:43 - INFO] Reading SNP chunk 1
+[2023-10-22 20:25:43 - INFO] Done reading SNP chunks
+[2023-10-22 20:25:43 - INFO] Read 721 SNPs from --sumstats file
+[2023-10-22 20:25:43 - INFO] Removed 0 SNPs with missing values
+[2023-10-22 20:25:43 - INFO] Removed 0 SNPs with INFO <= 0.9
+[2023-10-22 20:25:43 - INFO] Removed 0 SNPs with MAF <= 0.01
+[2023-10-22 20:25:43 - INFO] Removed 0 SNPs with out-of-bounds p-values
+[2023-10-22 20:25:43 - INFO] Removed 0 variants that were not SNPs or were strand-ambiguous
+[2023-10-22 20:25:43 - INFO] 721 SNPs remain
+[2023-10-22 20:25:43 - INFO] Removed 0 SNPs with duplicated rs numbers (721 SNPs remain).
+[2023-10-22 20:25:43 - INFO] Removed 0 SNPs with N < 3333.3333333333335 (721 SNPs remain)
+[2023-10-22 20:25:43 - WARNING] Median value of Z is 0.33 (should be close to 0). This column may be mislabeled.
+[2023-10-22 20:25:43 - INFO] Writing summary statistics for 721 SNPs (721 with nonmissing beta) to ./reproduce/FOCUS/GWAS.cleaned.sumstats.gz.
+[2023-10-22 20:25:43 - INFO] METADATA - Mean chi^2 = 2.154
+[2023-10-22 20:25:43 - INFO] METADATA - Lambda GC = 2.057
+[2023-10-22 20:25:43 - INFO] METADATA - Max chi^2 = 20.827
+[2023-10-22 20:25:43 - INFO] METADATA - 0 Genome-wide significant SNPs (some may have been removed by filtering)
+[2023-10-22 20:25:43 - INFO] Conversion finished

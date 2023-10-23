@@ -1,0 +1,34 @@
+===================================
+             FOCUS v0.802             
+===================================
+focus finemap
+	./reproduce/FOCUS/GWAS.cleaned.sumstats.gz
+	./reproduce/simulation_data_generate/Zy
+	./reproduce/FOCUS/weight.db
+	--locations 37:EUR
+	--chr 4
+	--start 128996665
+	--stop 130591885
+	--prior-prob ./reproduce/gencodev12.tsv
+	--p-threshold 1
+	--out ./reproduce/FOCUS/result
+
+Starting log...
+[2023-10-22 20:28:51 - INFO] Detecting 1 populations for fine-mapping.
+[2023-10-22 20:28:51 - INFO] As a result, running single-population FOCUS.
+[2023-10-22 20:28:51 - INFO] Preparing GWAS summary file for population at ./reproduce/FOCUS/GWAS.cleaned.sumstats.gz.
+[2023-10-22 20:28:51 - INFO] Preparing reference SNP data for population at ./reproduce/simulation_data_generate/Zy.
+[2023-10-22 20:28:51 - INFO] Preparing weight database at ./reproduce/FOCUS/weight.db.
+[2023-10-22 20:28:51 - INFO] Preparing user-defined locations at 37:EUR.
+[2023-10-22 20:28:51 - INFO] Found 1703 independent regions on the entire genome.
+[2023-10-22 20:28:51 - INFO] 1 independent regions currently used after being filtered on chromosome, start, and stop.
+[2023-10-22 20:28:51 - INFO] Preparing data at region 4:128996665-4:130591885. Skipping if following warning occurs.
+[2023-10-22 20:28:51 - INFO] Deciding prior probability for a gene to be causal.
+[2023-10-22 20:28:51 - INFO] Using gencode file prior probability 0.14285714285714285.
+[2023-10-22 20:28:51 - INFO] Fine-mapping starts at region 4:128996665-4:130591885.
+[2023-10-22 20:28:51 - INFO] Aligning GWAS, LD, and eQTL weights for the single population. Region 4:128996665-4:130591885 will skip if following errors occur.
+[2023-10-22 20:28:52 - INFO] Find 7 common genes to be fine-mapped at region 4:128996665-4:130591885.
+[2023-10-22 20:28:52 - INFO] Running TWAS for the single population.
+[2023-10-22 20:28:52 - INFO] Calculating PIPs.
+[2023-10-22 20:28:53 - INFO] Completed fine-mapping at region 4:128996665-4:130591885.
+[2023-10-22 20:28:53 - INFO] Finished TWAS & fine-mapping. Thanks for using FOCUS, and have a nice day!

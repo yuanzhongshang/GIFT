@@ -1,0 +1,27 @@
+PLINK v1.90b6.9 64-bit (4 Mar 2019)
+Options in effect:
+  --allow-no-sex
+  --assoc
+  --bfile ./reproduce/simulation_data_generate/Zy
+  --out ./reproduce/FOCUS/gwas
+  --pheno ./reproduce/FOCUS/gwasY.txt
+  --pheno-name V1
+
+Hostname: mulan
+Working directory: /net/mulan/disk2/zhongshy/finemapping/github/1022
+Start time: Sun Oct 22 20:24:49 2023
+
+Random number seed: 1698020689
+515882 MB RAM detected; reserving 257941 MB for main workspace.
+Allocated 108818 MB successfully, after larger attempt(s) failed.
+721 variants loaded from .bim file.
+5000 people (2317 males, 2683 females) loaded from .fam.
+5000 phenotype values present after --pheno.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 5000 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+721 variants and 5000 people pass filters and QC.
+Phenotype data is quantitative.
+Writing QT --assoc report to ./reproduce/FOCUS/gwas.qassoc ... done.
+
+End time: Sun Oct 22 20:24:49 2023
