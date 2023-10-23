@@ -5,7 +5,7 @@ description: ~
 ---
 
 ## Generate the simulation data
-We randomly selected 50 regions from 1,533 regions. The region information is [here](https://github.com/yuanzhongshang/GIFT/blob/main/reproduce/LDetectregion1533.txt). The full information about the region can be found in [https://bitbucket.org/nygcresearch/ldetect-data/src/master/](https://bitbucket.org/nygcresearch/ldetect-data/src/master/). For each region in turn, we performed 20 simulation replicates, resulting in a total of 1,000 simulation replicates per setting.
+We randomly selected 50 regions from 1,533 regions. The 1,533 region information is [here](https://github.com/yuanzhongshang/GIFT/blob/main/reproduce/LDetectregion1533.txt). The full information about the region can be found in [here](https://github.com/yuanzhongshang/GIFT/blob/main/reproduce/LDetect). For each region in turn, we performed 20 simulation replicates, resulting in a total of 1,000 simulation replicates per setting.
 For each region, we conducted the simulations based on the realistic genotypes from GEUVADIS (n1=465) and UK Biobank (n2=5,000). Take a region on chr 4 for example. This region includes seven genes: C4orf29, C4orf33, LARP1B, PGRMC2, PHF17, RP11-420A23.1, and SCLT1. We set C4orf29 as the causal gene with the effect size being sqrt(0.1).
 
 ### Generate the individual level data
@@ -172,6 +172,8 @@ FOCUS takes GWAS summary statistics, reference LD, eQTL weight database as input
 ```r
 library("data.table")
 library("gtools")
+library(RSQLite)
+library(gtools)
 
 ##load the simulation data or the real data with the specific format from individual level data.
 ###Here we used the simulation data.
@@ -195,8 +197,6 @@ for(i in 1:length(gene)){
 ##the function outputs above and the downloaded existing weight often in the .wgt.RDat format
 
 ###conduct .db
-library(RSQLite)
-library(gtools)
 
 ####model.txt
 setwd("./reproduce/FOCUS/weight")
@@ -310,4 +310,85 @@ block	ens_gene_id	ens_tx_id	mol_name	tissue	ref_name	type	chrom	tx_start	tx_stop
 
 ## Run FOGS
 FOGS takes eQTL-derived weights, reference LD, GWAS summary statistics and gene list as inputs.
+```r
+library("data.table")
+library(RSQLite)
 
+##load the pindex from the simulation data.
+##You can also load from the weight file directly.
+dir=getwd()
+load("./reproduce/simulation_data_generate/data_generate_individual.Rdata")
+
+##prepare the eQTL-derived weights
+weights <- "./reproduce/FOCUS/weight.db"
+weightsave <- paste0(dir,"/reproduce/FOGS/weight.txt")
+sqlite.driver <- dbDriver("SQLite")
+db <- dbConnect(sqlite.driver,dbname = weights)
+dbListTables(db)
+weights <- dbReadTable(db, "weight")
+
+setwd("./reproduce/FOCUS/weight")
+library(gtools)
+ot <- mixedsort(list.files(".",full.names=F))
+dn <- NULL
+for(i in 1:length(gene)){
+  onfi <- ot[i]
+  gen1 <- gsub(".wgt.RDat","",onfi)
+  dn <- c(dn, rep(gen1, pindex[which(gene %in% gen1)]))
+}
+weightsn <- cbind(weights, dn)
+weightsn <- weightsn[,c(2,10,7,6,5)]
+colnames(weightsn) <- c("rsid", "gene", "weight", "ref_allele", "eff_allele")
+write.table(weightsn, weightsave, col.names = T, row.names = F, quote = F)
+
+weights <- paste0(dir,"/reproduce/FOGS/weight.txt")
+
+##prepare the summary statistics
+setwd(paste0(dir, "/reproduce/FOGS"))
+source("munge.R")
+
+data <- fread(paste0(dir,"/reproduce/FOCUS/gwas.qassoc"))
+bim <- fread(paste0(dir,"/reproduce/simulation_data_generate/Zy.bim"))
+summary <- cbind(data[,1:3],bim[,5:6],data[,5:6],data[,8],data[,9],data[,4])
+colnames(summary) <- c("CHR","SNP","POS","A1","A2","beta","se","Z","P","samplesize")
+write.table(summary, "gwas.txt", quote = F, row.names = F)
+
+sumstats <- paste0(dir,"/reproduce/FOGS/gwas.txt")
+data_processed <- munge_sumstat(sumstats)
+write.table(data_processed, "gwas_processed_data.txt", col.names = T, row.names = F, quote = F)
+
+sumstat <- paste0(dir,"/reproduce/FOGS/gwas_processed_data.txt")
+
+##load the directory of LD reference
+##Here we used the same data as above.
+refld <- paste0(dir,"/reproduce/simulation_data_generate/Zy")
+
+##load the directory of gene list
+genelist <- paste0(dir,"/reproduce/FOGS/genelist15577.txt")
+
+##match the locus in LDetect region used in the FOGS
+ldetect <- read.table(paste0(dir,"/reproduce/FOGS/LDetectregion.txt"),header=T)
+chr_id <- 4
+locus_id <- which(ldetect[ldetect$chr=="chr4",]$start==128996665)
+
+##other inputs
+outd <- paste0(dir,"/reproduce/FOGS/result")
+saveprefix <- paste0(dir,"/reproduce/FOGS/result")
+loci <-paste0(dir,"/reproduce/LDetect/EUR/")
+
+system(paste0("Rscript FOGS.R --refld ",refld," --outd ",outd," --loci ",loci," --weights ",weights," --genelist ",genelist," --sumstat ",sumstat," --saveprefix ",saveprefix," --chr_id ",chr_id," --locus_id ",locus_id))
+
+result <- read.table(paste0(dir,"/reproduce/FOGS/result/resultCHR_4_Locus",locus_id,".txt"),header = T)
+
+result
+CHR ID P0 P1 n.SNP n.condSNP FOGS-aSPU TWAS Focus Runtime(s)
+4 C4orf33 129914472 130134487 239 112 0.948051948051948 0.912378129020417 0.00015761489003644 24.856
+4 RP11-420A23.1 129113906 129540549 252 91 0.68031968031968 0.0666979609501761 0.000805957175765842 18.123
+4 SCLT1 129686076 130114764 324 101 0.405594405594406 0.261608296740732 0.000289547991162607 27.113
+4 PHF17 129630779 129896379 163 120 0.175824175824176 0.0951010742555474 0.00060903461396202 17.343
+4 PGRMC2 129090392 129309984 103 131 0.010989010989011 0.0493022814419665 0.00102967099297041 12.53
+##Of note, FOGS fails to perform one gene when the cis-SNPs of one gene are fully contained in the cis-SNPs of another gene. 
+##Here cis-SNPs of C4orf29 and LARP1B are included in that of C4orf33. Thus, the result does not contain these two genes.
+```
+
+## Run MV-IWAS
