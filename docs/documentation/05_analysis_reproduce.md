@@ -452,3 +452,85 @@ result
 ##Note that, matrix objects now also inherit from class "array" since R 4.0.0. mv_iwas_summ() contains some class checks which should modify to avoid the bug.
 ##If you used the R verion over 4.0.0, source("./reproduce/MVIWAS/mv_iwas_summ.R")
 ```
+## Run marginal GWAS
+We used PLINK-1.9 to perform the GWAS analysis. 
+```r
+##conduct the pheotype file used in plink
+FID <- read.table(paste0(dir,"/reproduce/simulation_data_generate/Zy.fam"))$V1
+IID <- FID
+data <- cbind(FID,IID,Y)
+colnames(data)[3] <- "V1"
+write.table(data,"gwasY.txt",quote=F,row.names=F)
+
+setwd(dir)
+system("plink --bfile ./reproduce/simulation_data_generate/Zy --pheno  ./reproduce/FOCUS/gwasY.txt --pheno-name V1  --allow-no-sex --assoc --out ./reproduce/FOCUS/gwas")
+data <- fread("./reproduce/FOCUS/gwas.qassoc")
+
+head(data)
+   CHR         SNP        BP NMISS     BETA      SE        R2      T         P
+1:   4  rs34350456 129000314  5000 -0.07705 0.02115 0.0026490 -3.644 0.0002717
+2:   4   rs1993722 129002172  5000 -0.07705 0.02115 0.0026490 -3.644 0.0002717
+3:   4   rs7684955 129007262  5000 -0.07705 0.02115 0.0026490 -3.644 0.0002717
+4:   4 rs116213612 129011061  5000  0.06143 0.03414 0.0006473  1.799 0.0720400
+5:   4   rs2306054 129012181  5000 -0.07705 0.02115 0.0026490 -3.644 0.0002717
+6:   4   rs1064205 129012638  5000 -0.07705 0.02115 0.0026490 -3.644 0.0002717
+```
+
+## Run marginal TWAS
+```r
+library(gtools)
+library("BEDMatrix")
+
+##Here we also used the BSLMM weight above.
+dir=getwd()
+setwd("./reproduce/FOCUS/weight")
+
+ot <- mixedsort(list.files(".",full.names=F))
+gene <- NULL
+for(i in 1:length(ot)){
+  onfi <- ot[i]
+  gene[i] <- gsub(".wgt.RDat","",onfi)
+}
+
+##impute function
+##We impute the genotypes from the UK Biobank.
+impu <- function(x) {
+  x[is.na(x)] <- mean(x, na.rm = TRUE)
+  x
+}
+
+##load the phenotype
+setwd(dir)
+load("./reproduce/simulation_data_generate/data_generate_individual.Rdata")
+
+Z <- NULL
+P <- NULL
+setwd("./reproduce/FOCUS/weight")
+for(i in 1:length(gene)){
+  load(ot[i])
+  beta <- wgt.matrix[,colnames(wgt.matrix)=="bslmm"]
+  Zy <- BEDMatrix(paste0(dir,"/reproduce/simulation_data_generate/UKB/",gene[i]))
+  Zy <- apply(Zy ,2, impu)
+  p <- dim(Zy)[2]
+  tmp <- cbind(Zy,Y)
+  tmp <- scale(na.omit(tmp))
+  Zy <- tmp[,1:p]
+  Y <- tmp[,p+1]
+  pred <- Zy %*% beta
+  fit <- lm(Y ~ pred)
+  Z[i] <- coefficients(summary(fit))[2,3]
+  P[i] <- coefficients(summary(fit))[2,4]
+}
+result <- data.frame(gene, Z, P)
+write.table(result,paste0(dir, "/reproduce/TWAS/result.txt"), quote = F, row.names = F)
+
+result
+           gene          Z            P
+1       C4orf29  4.9493385 7.691249e-07
+2       C4orf33  0.1629571 8.705588e-01
+3        LARP1B -3.1384610 1.708262e-03
+4        PGRMC2 -1.9652850 4.943655e-02
+5         PHF17 -1.6692476 9.513096e-02
+6 RP11-420A23.1 -1.8330907 6.684853e-02
+7         SCLT1 -1.1222759 2.617990e-01
+```
