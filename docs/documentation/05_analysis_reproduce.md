@@ -194,7 +194,7 @@ for(i in 1:length(gene)){
   system(paste0("Rscript FUSION.weights.R --bfile ./reproduce/simulation_data_generate/GEUVADIS/",gene[i]," --tmp ./reproduce/FOCUS/tmp --out ./reproduce/FOCUS/weight/",gene[i]," --verbose 0 --models bslmm,lasso,top1,enet,blup"))
 }
 
-##the function outputs above and the downloaded existing weight often in the .wgt.RDat format
+##the function outputs above and the downloaded existing weight often in the .wgt.RDat format (for example, [http://gusevlab.org/projects/fusion/](http://gusevlab.org/projects/fusion/))
 
 ###conduct .db
 
@@ -452,7 +452,7 @@ result
 ##Note that, matrix objects now also inherit from class "array" since R 4.0.0. mv_iwas_summ() contains some class checks which should modify to avoid the bug.
 ##If you used the R verion over 4.0.0, source("./reproduce/MVIWAS/mv_iwas_summ.R")
 ```
-## Run marginal GWAS
+## Run Marginal GWAS
 We used PLINK-1.9 to perform the GWAS analysis. 
 ```r
 ##conduct the pheotype file used in plink
@@ -476,7 +476,8 @@ head(data)
 6:   4   rs1064205 129012638  5000 -0.07705 0.02115 0.0026490 -3.644 0.0002717
 ```
 
-## Run marginal TWAS
+## Run Marginal TWAS
+### Using individual-level data as input 
 ```r
 library(gtools)
 library("BEDMatrix")
@@ -522,7 +523,7 @@ for(i in 1:length(gene)){
   P[i] <- coefficients(summary(fit))[2,4]
 }
 result <- data.frame(gene, Z, P)
-write.table(result,paste0(dir, "/reproduce/TWAS/result.txt"), quote = F, row.names = F)
+write.table(result,paste0(dir, "/reproduce/TWAS/result_individual.txt"), quote = F, row.names = F)
 
 result
            gene          Z            P
@@ -533,4 +534,35 @@ result
 5         PHF17 -1.6692476 9.513096e-02
 6 RP11-420A23.1 -1.8330907 6.684853e-02
 7         SCLT1 -1.1222759 2.617990e-01
+```
+
+### Using summary statistics as input
+```r
+##load the simulation data or the real data with the specific format from the summary statistics
+###Here we used the simulation data.
+dir=getwd()
+load("./reproduce/simulation_data_generate/data_generate_summary.Rdata")
+
+Z <- NULL
+P <- NULL
+pindexsum <- c(0,cumsum(pindex))
+setwd("./reproduce/FOCUS/weight")
+for(i in 1:length(gene)){
+  load(ot[i])
+  beta <- wgt.matrix[,colnames(wgt.matrix)=="bslmm"]
+  Z[i] <- sum(beta * Zscore2[(pindexsum[i]+1):pindexsum[i+1]])/sqrt(sum(beta*(LDmatrix2[(pindexsum[i]+1):pindexsum[i+1],(pindexsum[i]+1):pindexsum[i+1]] %*% beta)))
+  P[i] <- 2*pnorm(-abs(Z[i]), 0, 1)
+}
+result <- data.frame(gene, Z, P)
+write.table(result,paste0(dir, "/reproduce/TWAS/result_summary.txt"), quote = F, row.names = F)
+
+result
+           gene         Z            P
+1       C4orf29  4.937748 7.902983e-07
+2       C4orf33  0.162973 8.705397e-01
+3        LARP1B -3.135687 1.714523e-03
+4        PGRMC2 -1.964723 4.944635e-02
+5         PHF17 -1.668949 9.512741e-02
+6 RP11-420A23.1 -1.832658 6.685343e-02
+7         SCLT1 -1.122247 2.617575e-01
 ```
