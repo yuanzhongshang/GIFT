@@ -8,7 +8,7 @@ description: ~
 We randomly selected 50 regions from 1,533 regions. The 1,533 region information is [here](https://github.com/yuanzhongshang/GIFT/blob/main/reproduce/LDetectregion1533.txt). The full information about the region can be found in [here](https://github.com/yuanzhongshang/GIFT/blob/main/reproduce/LDetect). For each region in turn, we performed 20 simulation replicates, resulting in a total of 1,000 simulation replicates per setting.
 For each region, we conducted the simulations based on the realistic genotypes from GEUVADIS (n1=465) and UK Biobank (n2=5,000). Take a region on chr 4 for example. This region includes seven genes: C4orf29, C4orf33, LARP1B, PGRMC2, PHF17, RP11-420A23.1, and SCLT1. We set C4orf29 as the causal gene with the effect size being sqrt(0.1).
 
-### Generate the individual level data
+### Generate the individual-level data
 ```r
 library("data.table")
 library("BEDMatrix")
@@ -75,7 +75,7 @@ for(i in 1:length(gene)){
 }
 
 ###set the heritability (PVEzy),here we set RASA1 as the causal gene with the effect size being sqrt(0.1).
-PVEzy <- c(0,0,0.01,0)
+PVEzy <- c(0.01,0,0,0,0,0,0)
 casual_effect <- sqrt(PVEzy/PVEzx)
 
 ###generate the phenotype
@@ -99,7 +99,7 @@ Zy=scale(Zy)
 save(X, Y, Zx, Zy, gene, pindex, file = "./reproduce/simulation_data_generate/data_generate_individual.Rdata")
 ```
 
-### Convert the individual level data into the summary statistics
+### Convert the individual-level data into the summary statistics
 ```r
 ###calculate the z-score from GEUVADIS
 n1=dim(Zx)[1]
@@ -128,7 +128,7 @@ library(GIFT)
 ```
 ### Using individual-level data as input 
 ```r
-##load the simulation data or the real data with the specific format from individual level data.
+##load the simulation data or the real data with the specific format from individual-level data.
 ###Here we used the simulation data above.
 load("./reproduce/simulation_data_generate/data_generate_individual.Rdata")
 
@@ -167,7 +167,7 @@ result
 ```
 
 ## Run FOCUS
-FOCUS takes GWAS summary statistics, reference LD, eQTL weight database as input. Here we used the same data as above. If you do not have the in-sample LD, you may use the LD from 1000 Genomes reference: [https://alkesgroup.broadinstitute.org/FUSION/LDREF.tar.bz2](https://alkesgroup.broadinstitute.org/FUSION/LDREF.tar.bz2).
+FOCUS takes GWAS summary statistics, reference LD, eQTL weight database as inputs. Here we used the same data as above. If you do not have the in-sample LD, you may use the LD from 1000 Genomes reference: [https://alkesgroup.broadinstitute.org/FUSION/LDREF.tar.bz2](https://alkesgroup.broadinstitute.org/FUSION/LDREF.tar.bz2).
 
 ```r
 library("data.table")
@@ -175,7 +175,7 @@ library("gtools")
 library(RSQLite)
 library(gtools)
 
-##load the simulation data or the real data with the specific format from individual level data.
+##load the simulation data or the real data with the specific format from individual-level data.
 ###Here we used the simulation data.
 dir=getwd()
 load("./reproduce/simulation_data_generate/data_generate_individual.Rdata")
@@ -395,7 +395,7 @@ CHR ID P0 P1 n.SNP n.condSNP FOGS-aSPU TWAS Focus Runtime(s)
 ```
 
 ## Run MV-IWAS
-MV-IWAS takes GWAS summary statistics, reference LD, eQTL weight database as input. Here we used the same data as above.
+MV-IWAS takes GWAS summary statistics, reference LD, eQTL weight database as inputs. Here we used the same data as above.
 ```r
 library(MVIWAS)
 
