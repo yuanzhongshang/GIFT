@@ -81,10 +81,10 @@ The function `pre_process_summary` is able to convert different summary statisti
 #### load the directory containing files of summary statistics from eQTL data only (e.g., the SAIGE output)
 eQTLfilelocation <- paste0(getwd(), "/simulation/summary/pre_process/saige/eQTL")
 #### load the directory of summary statistics from GWAS data (e.g., the SAIGE output)
-GWASfile <- "./simulation/summary/pre_process/saige/GWAS.txt"
+GWASfile <- paste0(getwd(),"/simulation/summary/pre_process/saige/GWAS.txt")
 #### load the directory of LD matrix from eQTL data and GWAS data (e.g., a long format: h5 format)
-eQTLLDfile <- "./simulation/summary/pre_process/LDmatrix1.h5"
-GWASLDfile <- "./simulation/summary/pre_process/LDmatrix2.h5"
+eQTLLDfile <- paste0(getwd(), "/simulation/summary/pre_process/LDmatrix1.h5")
+GWASLDfile <- paste0(getwd(), "/simulation/summary/pre_process/LDmatrix2.h5")
 #### load the SNP list and cis-SNP number for each gene in a region
 snplist <- read.table("./simulation/summary/pre_process/snplist.txt")$V1
 pindex <- c(41, 23, 63, 96)
