@@ -73,10 +73,11 @@ The function `GIFT_summary` is the main function for GIFT with summary statistic
 The optional inputs are:
 - maxiter: The user-defined maximum iteration, with the default to be 1000.
 - tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4. 
-- ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux. 
+- ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux.
+- in_sample_LD: A logical value represents whether in-sample LD was used, with the default to be False. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E where s1 and s2 is estimated by estimate_s_rss in susieR. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".
 
 #### Step 1: Pre-process the summary statistics with different formats.
-The function `pre_process_summary` is able to convert different summary statistics and LD matrix data formats to GIFT inputs. In particular, this function is flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also flexible to handle LD matrix either from matrix or a long format such as h5 format. Here, we take various data formats from example data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). Note that, the summary statistics version of GIFT often requires the in-sample LD matrix. If the in-sample LD matrix is not available, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project). It would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data. 
+The function `pre_process_summary` is able to convert different summary statistics and LD matrix data formats to GIFT inputs. In particular, this function is flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also flexible to handle LD matrix either from matrix or a long format such as h5 format. Here, we take various data formats from example data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). 
 ```r
 #### load the directory containing files of summary statistics from eQTL data only (e.g., the SAIGE output)
 eQTLfilelocation <- paste0(getwd(), "/simulation/summary/pre_process/saige/eQTL")
@@ -109,7 +110,7 @@ R <- as.matrix(read.table("./simulation/summary/R.txt"))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, gene, pindex, maxiter=1000, tol=1e-4, ncores=1)
+result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, R, n1, n2, gene, pindex, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=T)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
 ```r
@@ -119,6 +120,18 @@ result
 2    COX7C    0.02205361 7.943974e-01
 3    RASA1    0.35339282 8.671951e-06
 4 TMEM161B   -0.03373786 3.197526e-01 
+```
+Note that, the summary statistics version of GIFT often requires the in-sample LD matrix. If the in-sample LD matrix is not available, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project). It would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E where s1 and s2 is estimated by [estimate_s_rss](https://stephenslab.github.io/susieR/reference/estimate_s_rss.html) in susieR. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The LD matrix from 1,000 Genomes project is also provided. As shown in the simulation, similar with other methods, GIFT will provides inflated p-values using the LD matrix from the reference panel. 
+```r
+### load the LD matrix from 1,000 Genomes project
+LD <- as.matrix(read.table("./simulation/summary/LDmatrix10000G.txt"))
+result <- GIFT_summary(Zscore1, Zscore2, LD, LD, R, n1, n2, gene, pindex, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=F)
+result
+      gene causal_effect            p
+1     CCNH   0.018184848 7.947008e-01
+2    COX7C   0.006001928 8.894354e-01
+3    RASA1   0.323391569 2.281911e-05
+4 TMEM161B  -0.065659508 3.244583e-02
 ```
 
 ### Two-stage version of GIFT: Using pre-trained weights and summary statistics as input
@@ -235,7 +248,7 @@ load("./realdata/realdata.Rdata")
 #### perform conditional fine-mapping for TWAS analysis
 library(GIFT)
 library(parallel)
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, ncores=8)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, ncores=8, in_sample_LD=T)
 result
        gene causal_effect             p
 1     ABCA1 -1.857260e+00 2.938669e-179
