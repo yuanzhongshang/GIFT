@@ -12,7 +12,7 @@
 #' @param maxiter The maximum iteration, which can be determined by users.
 #' @param tol The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.
 #' @param ncores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
-#' @param in_sample_LD A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E. s1 and s2 is estimated by estimate_s_rss in susieR and a grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".
+#' @param in_sample_LD A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E, where s1 and s2 are estimated by estimate_s_rss in susieR, and E is an identity matrix. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 
 GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, R, n1, n2, gene, pindex, maxiter = 1000, tol = 1e-4, ncores = 1, in_sample_LD = F){
