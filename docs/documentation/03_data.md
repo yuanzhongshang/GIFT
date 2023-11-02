@@ -32,6 +32,7 @@ The following are the links for the example dataset used in the GIFT.
   Other dataset:
   * [SNP list](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/pre_process/snplist.txt)
   * [estimated correlated matrix of gene expressions](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/R.txt)
+  * [LD matrix from 1,000 Genomes project](https://github.com/yuanzhongshang/GIFT/blob/main/example/simulation/summary/LDmatrix10000G.txt)
   
 ### Two-stage version of GIFT: Using pre-trained weights and summary statistics as input:
   eQTL weight:
