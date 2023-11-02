@@ -20,7 +20,7 @@ using namespace arma;
 using namespace std;
 
 
-void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arma::mat Omega, int n, const int& maxIter,
+void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arma::mat Omega, arma::mat Omega_inv, arma::mat XK24, int n, const int& maxIter,
                      arma::mat& SigG, arma::vec& d, const arma::vec& constrp,int k, double& loglik_max,
                      int& iteration, arma::mat& Sigb, arma::vec& mub){
   
@@ -36,6 +36,7 @@ void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arm
     
   double lambda, lambda2;  // parameter expansion
   double G = 0, G1 = 0;
+  
   // initialize
   vec SigGdiag = zeros<vec>(k);
   for(int v=0; v < k; v++){
@@ -71,29 +72,9 @@ void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arm
   vec loglik(maxIter);
   loglik(0) = -datum::inf;
   
-  mat SigG_inv(k,k),Sigb_inv(p,p),Op = ones<mat>(p,1), K1(p,p), Omega_inv(k,k), OR(k,k),invOR(k,k);
+  mat SigG_inv(k,k),Sigb_inv(p,p),Op = ones<mat>(p,1), K1(p,p);
 
   double  E, M;
-
-  OR = chol(Omega);
-  invOR = inv(OR);
-  Omega_inv = invOR*invOR.t(); 
-  
-  mat XK23=zeros<mat>(1,p+1);
-  for(int v=0; v < k; v++){	 
-	mat XK21=zeros<mat>(constrp(v),1);
-  if(v!=0){
-	XK21 = zeros<mat>(constrp(v),constrp2(v)+1);
-  }
-  for(int u=v; u < k; u++){	 
-      mat XK22 = Sigma1.submat(constrp2(v),constrp2(u),constrp2(v+1)-1,constrp2(u+1)-1)* as_scalar(Omega_inv(v,u));
-	  XK21 = join_rows(XK21,XK22); 
-  }
-  XK23 =join_cols(XK23,XK21);
-  }
-  XK23.shed_col(0);
-  XK23.shed_row(0);
-  mat XK24 = symmatu(XK23);
 
   mat RR(p,p),invRR(p,p);
 
@@ -157,10 +138,15 @@ void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arm
 	  double p1=(G* as_scalar(Omega_inv(g,g)) +lambda2*trace((XK24.submat(constrp2(g),constrp2(g),constrp2(g+1)-1,constrp2(g+1)-1))*(Sigb.submat(constrp2(g),constrp2(g),constrp2(g+1)-1,constrp2(g+1)-1))));
 	  double p2=0;
 	  for(int u = 0; u < k; u++){
-	  G1 = as_scalar((n-1)*Omega(g,u)-2*(n-1)*lambda*sum(mub.subvec(constrp2(g),constrp2(g+1)-1) % betaxh.submat(constrp2(g),u,constrp2(g+1)-1,u)) + lambda2 * mub.subvec(constrp2(g),constrp2(g+1)-1).t() * Sigma1.submat(constrp2(g),constrp2(u),constrp2(g+1)-1,constrp2(u+1)-1) * mub.subvec(constrp2(u),constrp2(u+1)-1));
-	  p2 += (G1* as_scalar(Omega_inv(g,u)) +lambda2*trace((XK24.submat(constrp2(u),constrp2(g),constrp2(u+1)-1,constrp2(g+1)-1))*(Sigb.submat(constrp2(g),constrp2(u),constrp2(g+1)-1,constrp2(u+1)-1))))/SigGdiag(u);
+		G1 = as_scalar((n-1)*Omega(g,u)-2*(n-1)*lambda*sum(mub.subvec(constrp2(g),constrp2(g+1)-1) % betaxh.submat(constrp2(g),u,constrp2(g+1)-1,u)) + lambda2 * mub.subvec(constrp2(g),constrp2(g+1)-1).t() * Sigma1.submat(constrp2(g),constrp2(u),constrp2(g+1)-1,constrp2(u+1)-1) * mub.subvec(constrp2(u),constrp2(u+1)-1));
+		p2 += (G1* as_scalar(Omega_inv(g,u)) +lambda2*trace((XK24.submat(constrp2(u),constrp2(g),constrp2(u+1)-1,constrp2(g+1)-1))*(Sigb.submat(constrp2(g),constrp2(u),constrp2(g+1)-1,constrp2(u+1)-1))))/SigGdiag(u);
 	  }
-	  SigGdiag(g)= 2*p1/(-(p2-p1/SigGdiag(g))+sqrt(pow((p2-p1/SigGdiag(g)),2)+4*n*p1));
+	  if((pow((p2-p1/SigGdiag(g)),2)+4*n*p1) >= 0){
+		SigGdiag(g)= 2*p1/(-(p2-p1/SigGdiag(g))+sqrt(pow((p2-p1/SigGdiag(g)),2)+4*n*p1));
+	  }
+	  if((pow((p2-p1/SigGdiag(g)),2)+4*n*p1) < 0){
+		SigGdiag(g)= 1;
+	  }
 	}
 	SigG = diagmat(SigGdiag);
 
@@ -224,20 +210,16 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
   mat Sigma1 = Sigma1s* (n1-1);
   mat Sigma2 = Sigma2s* (n2-1);
 
-  // initialization using lmm_pxem
+  //initialization of parameters
   double sigma2y,loglik0;
   int iter0;
   mat SigG = zeros<mat>(k,k);
   mat Sigb = zeros<mat>(p,p);
   vec mub  = zeros<vec>(p), d = zeros<vec>(p);
   
-  lmm_pxem_ptr2_summary(betaxh, Sigma1, Omega, n1, maxIter , SigG , d , constrp, k, loglik0 , iter0 , Sigb , mub);
-  //cout<<mub<<endl;
-  //declaration of variables used within loop
-  mat  Omega_inv(k,k), OR(k,k), invOR(k,k),Sigb_inv(p,p), R(p,p), invR(p,p), SigG_inv(k,k), K1(p,p), K2(p,p);
+  mat Omega_inv(k,k), OR(k,k), invOR(k,k),Sigb_inv(p,p), R(p,p), invR(p,p), SigG_inv(k,k), K1(p,p), K2(p,p);
   vec mutmp(p),  mu(p);
-	
-  //initialization of parameters
+ 
   double lambda = 1, lambda2 = lambda*lambda, G = 0, G1 = 0;
   mat alpha = zeros<mat>(k,1), alpha2(k,k);
   sigma2y = 1;
@@ -274,12 +256,15 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
   XK23.shed_row(0);
   mat XK24 = symmatu(XK23);
   
+  // initialization using lmm_pxem
+  lmm_pxem_ptr2_summary(betaxh, Sigma1, Omega, Omega_inv, XK24, n1, maxIter, SigG, d, constrp, k, loglik0, iter0, Sigb, mub);
+  
   // initialization of likelihood
   loglik(0) = NAN;
   int Iteration = 1;
   for (int iter = 2; iter <= maxIter; iter ++ ) {
+		
     // E-step
-
 	SigG_inv = diagmat(1.0/(SigG.diag()));
 	vec eVal =  SigG.diag() % SigG.diag();
 	mat B1=zeros(1,1);
@@ -359,9 +344,9 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
         tmp1 += as_scalar(alpha(j)) * trace((Sigma2.submat(constrp1(a),constrp1(j),constrp1(a+1)-1,constrp1(j+1)-1)) * (A.submat(constrp1(j),constrp1(a),constrp1(j+1)-1,constrp1(a+1)-1)));
 		}
 	  }
-	trde = trace((Sigma2.submat(constrp1(a),constrp1(a),constrp1(a+1)-1,constrp1(a+1)-1))*(A.submat(constrp1(a),constrp1(a),constrp1(a+1)-1,constrp1(a+1)-1)));
-    tmp = (n2-1)*sum(mu.subvec(constrp1(a),constrp1(a+1)-1) % (betayh.submat(constrp1(a),0,constrp1(a+1)-1,0)));
-    alpha(a) = (tmp-tmp1)/trde;
+	  trde = trace((Sigma2.submat(constrp1(a),constrp1(a),constrp1(a+1)-1,constrp1(a+1)-1))*(A.submat(constrp1(a),constrp1(a),constrp1(a+1)-1,constrp1(a+1)-1)));
+      tmp = (n2-1)*sum(mu.subvec(constrp1(a),constrp1(a+1)-1) % (betayh.submat(constrp1(a),0,constrp1(a+1)-1,0)));
+      alpha(a) = (tmp-tmp1)/trde;
 	}
     alpha2 = alpha*alpha.t();
 	
@@ -372,10 +357,15 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
 	  double p1=(G* as_scalar(Omega_inv(g,g)) +lambda2*trace((XK24.submat(constrp1(g),constrp1(g),constrp1(g+1)-1,constrp1(g+1)-1))*(Sigb.submat(constrp1(g),constrp1(g),constrp1(g+1)-1,constrp1(g+1)-1))));
 	  double p2=0;
 	  for(int u = 0; u < k; u++){
-	  G1 = as_scalar((n1-1)*as_scalar(Omega(g,u))-2*(n1-1)*lambda*sum(mu.subvec(constrp1(g),constrp1(g+1)-1) % betaxh.submat(constrp1(g),u,constrp1(g+1)-1,u)) + lambda2 * mu.subvec(constrp1(g),constrp1(g+1)-1).t() * Sigma1.submat(constrp1(g),constrp1(u),constrp1(g+1)-1,constrp1(u+1)-1) * mu.subvec(constrp1(u),constrp1(u+1)-1));
-	  p2 += (G1* as_scalar(Omega_inv(g,u)) +lambda2*trace((XK24.submat(constrp1(u),constrp1(g),constrp1(u+1)-1,constrp1(g+1)-1))*(Sigb.submat(constrp1(g),constrp1(u),constrp1(g+1)-1,constrp1(u+1)-1))))/SigGdiag(u);
+		G1 = as_scalar((n1-1)*as_scalar(Omega(g,u))-2*(n1-1)*lambda*sum(mu.subvec(constrp1(g),constrp1(g+1)-1) % betaxh.submat(constrp1(g),u,constrp1(g+1)-1,u)) + lambda2 * mu.subvec(constrp1(g),constrp1(g+1)-1).t() * Sigma1.submat(constrp1(g),constrp1(u),constrp1(g+1)-1,constrp1(u+1)-1) * mu.subvec(constrp1(u),constrp1(u+1)-1));
+		p2 += (G1* as_scalar(Omega_inv(g,u)) +lambda2*trace((XK24.submat(constrp1(u),constrp1(g),constrp1(u+1)-1,constrp1(g+1)-1))*(Sigb.submat(constrp1(g),constrp1(u),constrp1(g+1)-1,constrp1(u+1)-1))))/SigGdiag(u);
 	  }
-	  SigGdiag(g)= 2*p1/(-(p2-p1/SigGdiag(g))+sqrt(pow((p2-p1/SigGdiag(g)),2)+4*n1*p1));
+	  if((pow((p2-p1/SigGdiag(g)),2)+4*n1*p1) >= 0){
+		SigGdiag(g)= 2*p1/(-(p2-p1/SigGdiag(g))+sqrt(pow((p2-p1/SigGdiag(g)),2)+4*n1*p1));
+	  }
+	  if((pow((p2-p1/SigGdiag(g)),2)+4*n1*p1) < 0){
+		SigGdiag(g)= 1;
+	  }
 	}
 	SigG = diagmat(SigGdiag);
 
