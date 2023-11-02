@@ -26,6 +26,7 @@ The optional inputs are:
 The function `pre_process_individual` is able to convert different genotype data formats to GIFT inputs. In particular, this function is flexible to handle plink binary format (.bim/.fam./.bed), vcf, ped/map format, csv, and tsv file. Here, we take various genotype data formats from GEUVADIS data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html) for example. Of note, in this step, cis-genotype matrix has been standardized to have a mean of zero and standard derivation of one. 
 ```r
 library(GIFT)
+dir <- getwd()
 #### load the directory containing the files to be processed only (e.g., plink binary format)
 filelocation <- "./simulation/individual/pre_process/plink_binary"
 #### load the directory of plink exe file
@@ -41,7 +42,7 @@ pindex <- convert$pindex
 The required example data can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). 
 ```r
 #### load the Rdata file containing X, Zy and Y
-load("./simulation/individual/individual_data.Rdata")
+load(paste0(dir, "/simulation/individual/individual_data.Rdata"))
 ```
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
@@ -147,6 +148,7 @@ The function `GIFT_two_stage_summ` is developed for conditional fine-mapping in 
 Gene expression prediction is the key for two-stage TWAS methods. The commonly used prediction models include lasso and elastic net (enet) as implemented in prediXcan, Best Linear Unbiased Prediction (BLUP), the top SNPs (top1) and Bayesian sparse linear mixed model (BSLMM) as implemented in TWAS/FUSION, latent Dirichlet process regression (DPR) as implemented in both DPR and TIGAR. For a specific region, the weights from all genes can be represented to be a block diagonal matrix. The function `weightconvert` is able to convert a list including weights for multiple genes into a required block diagonal matrix for GIFT.
 ```r
 #### load the weight matrix from the eQTL data (e.g., BLUP)
+dir <- getwd()
 setwd("./simulation/two_stage/weights")
 CCNH <- as.matrix(read.table("CCNHweight.txt"))
 COX7C <- as.matrix(read.table("COX7Cweight.txt"))
@@ -160,6 +162,7 @@ betax <- weightconvert(weightlist)
 #### Step 2: Read the beta vector, corresponding se vector and LD matrix from GWAS data.
 The function `pre_process_twostage` is able to convert common summary statistics and LD matrix data formats to GIFT inputs. Specifically, this function is flexible to handle output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). Meanwhile, this function is also flexible to handle LD matrix either from a matrix or a long format such as h5 format. The example data is the same as above in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). Note that, the two-stage version of GIFT often requires the in-sample LD matrix. If the in-sample LD matrix is not available, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project). It would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data. 
 ```r
+setwd(dir)
 #### load the directory of summary statistics from GWAS data (e.g., the plink output)
 GWASfile <- "./simulation/summary/pre_process/plink/GWAS.qassoc"
 #### load LD matrix from eQTL data and GWAS data (e.g., a matrix)
@@ -187,6 +190,7 @@ result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene)
 ```
 The result is a data frame including the z-scores and p values for each gene in a focal region. 
 ```r
+result
       gene          z         p
 1     CCNH  0.9994516 0.3175760
 2    COX7C -1.1635643 0.2446006
@@ -248,7 +252,7 @@ load("./realdata/realdata.Rdata")
 #### perform conditional fine-mapping for TWAS analysis
 library(GIFT)
 library(parallel)
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, ncores=8, in_sample_LD=T)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, ncores=8)
 result
        gene causal_effect             p
 1     ABCA1 -1.857260e+00 2.938669e-179
