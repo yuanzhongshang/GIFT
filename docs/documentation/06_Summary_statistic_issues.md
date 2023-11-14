@@ -65,6 +65,7 @@ All methods provide inflated p-values, although GIFT achieves the lowest GIF. Th
 
 ### Alternative simulation results
 Again, all methods provided inflated p-values, although GIFT achieved the lowest GIF. 
+
 | | GIFT |	FOGS |	MV-IWAS | 
 |:------------------:|:-----------------:|:------------------:|:------------------:|
 | EUR |	1.291 |	7.544 |	1.732 |
