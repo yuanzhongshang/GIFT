@@ -75,4 +75,4 @@ Again, all methods provided inflated p-values, although GIFT achieved the lowest
 
 The PIPs from FOCUS are also not calibrated when the LD matrix from the external reference panel is used.
 
-![GIFT\_pipeline](alterref.png)
+![GIFT\_pipeline](alterrefPIP.png)
