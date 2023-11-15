@@ -15,7 +15,7 @@
 #' @param in_sample_LD A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E, where s1 and s2 are estimated by estimate_s_rss in susieR, and E is an identity matrix. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 
-GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, R = NULL, n1, n2, gene, pindex, maxiter = 1000, tol = 1e-4, ncores = 1, in_sample_LD = F){
+GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, n1, n2, gene, pindex, R = NULL, maxiter = 1000, tol = 1e-4, ncores = 1, in_sample_LD = F){
   
   betax<-Zscore1/sqrt(n1-1)
   betay<-Zscore2/sqrt(n2-1)
