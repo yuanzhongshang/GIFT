@@ -269,6 +269,7 @@ GIFTresult$BP=TWASresult$BP
 GIFTresult=GIFTresult[,c(1,4,3)]
 GIFTresult$index="GIFT"
 colnames(GIFTresult)=c("X","BP","P","index")
+GWASresult=GWASresult[GWASresult$BP>=107581749 & GWASresult$BP<=109298754,]
 data=rbind(GWASresult,TWASresult)
 data=rbind(data,GIFTresult)
 data$BP=data$BP/1000000
