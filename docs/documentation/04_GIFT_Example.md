@@ -90,7 +90,7 @@ GWASfile <- paste0(dir,"/example/simulation/summary/pre_process/saige/GWAS.txt")
 eQTLLDfile <- paste0(dir, "/example/simulation/summary/pre_process/LDmatrix1.h5")
 GWASLDfile <- paste0(dir, "/example/simulation/summary/pre_process/LDmatrix2.h5")
 #### load the SNP list and cis-SNP number for each gene in a region
-snplist <- read.table("./example/simulation/summary/pre_process/snplist.txt")$V1
+snplist <- read.table(paste0(dir, "/example/simulation/summary/pre_process/snplist.txt"))$V1
 pindex <- c(41, 23, 63, 96)
 #### pre-process the file to be a list including gene names vector, z-score matrix and LD matrix of eQTL data and GWAS data
 convert <- pre_process_summary(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfile, snplist, pindex)
@@ -107,8 +107,7 @@ LDmatrix2 <- convert$LDmatrix2
 n1 <- 465
 n2 <- 5000
 ### load the estimated correlated matrix of gene expressions
-setwd(gsub("/example/simulation/summary/pre_process/saige/eQTL", "", getwd()))
-R <- as.matrix(read.table("./example/simulation/summary/R.txt"))
+R <- as.matrix(read.table(paste0(dir, "/example/simulation/summary/R.txt")))
 ```
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
