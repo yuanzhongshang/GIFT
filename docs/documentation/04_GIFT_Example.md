@@ -65,13 +65,13 @@ The function `GIFT_summary` is the main function for GIFT with summary statistic
 - Zscore_2: Zscore vector of the cis-SNP effect size for all genes in a specific region from GWAS data.
 - Sigma1: LD matrix from eQTL data.
 - Sigma2: LD matrix from GWAS data, both Sigma1 and Sigma2 are often from the same reference panel.
-- R: Estimated correlation matrix of gene expressions.
 - n1: Sample size of eQTL data.
 - n2: Sample size of GWAS data.
 - gene: The gene name vector, the order of the gene name should be consistent with that in Zscore_1.
 - pindex: A vector with each element represents the number of cis-SNPs for each gene.
 
 The optional inputs are:
+- R: Estimated correlation matrix of gene expressions, with the default to be an identity matrix.
 - maxiter: The user-defined maximum iteration, with the default to be 1000.
 - tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4. 
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux.
