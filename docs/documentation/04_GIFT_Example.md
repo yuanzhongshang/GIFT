@@ -80,6 +80,8 @@ The optional inputs are:
 #### Step 1: Pre-process the summary statistics with different formats.
 The function `pre_process_summary` is able to convert different summary statistics and LD matrix data formats to GIFT inputs. In particular, this function is flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also flexible to handle LD matrix either from matrix or a long format such as h5 format. Here, we take various data formats from example data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). 
 ```r
+library(GIFT)
+dir <- getwd()
 #### load the directory containing files of summary statistics from eQTL data only (e.g., the SAIGE output)
 eQTLfilelocation <- paste0(getwd(), "/simulation/summary/pre_process/saige/eQTL")
 #### load the directory of summary statistics from GWAS data (e.g., the SAIGE output)
@@ -147,8 +149,9 @@ The function `GIFT_two_stage_summ` is developed for conditional fine-mapping in 
 #### Step 1: Read the eQTL weight.
 Gene expression prediction is the key for two-stage TWAS methods. The commonly used prediction models include lasso and elastic net (enet) as implemented in prediXcan, Best Linear Unbiased Prediction (BLUP), the top SNPs (top1) and Bayesian sparse linear mixed model (BSLMM) as implemented in TWAS/FUSION, latent Dirichlet process regression (DPR) as implemented in both DPR and TIGAR. For a specific region, the weights from all genes can be represented to be a block diagonal matrix. The function `weightconvert` is able to convert a list including weights for multiple genes into a required block diagonal matrix for GIFT.
 ```r
-#### load the weight matrix from the eQTL data (e.g., BLUP)
+library(GIFT)
 dir <- getwd()
+#### load the weight matrix from the eQTL data (e.g., BLUP)
 setwd("./simulation/two_stage/weights")
 CCNH <- as.matrix(read.table("CCNHweight.txt"))
 COX7C <- as.matrix(read.table("COX7Cweight.txt"))
