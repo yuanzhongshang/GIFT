@@ -7,8 +7,7 @@
 pre_process_individual <- function(filelocation, plinkexe="plink"){
   setwd(filelocation)
   file <- list.files(filelocation)
-  split_character <- "."
-  gene <- gsub(".bim","",file[grep(".bim",file)])
+  gene <- unique(sub("\\.[^.]*$", "", file))
   
   if(length(grep(".ped",file)) > 0){
     system("mkdir ./plink_binary")
@@ -100,7 +99,7 @@ pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfi
   eQTLfile <- list.files(eQTLfilelocation)
   eQTLgene <- gsub("eQTL","",eQTLfile)
   split_character <- "."
-  gene <- unique(sub(paste0("^(.*?)\\", split_character, ".*$"), "\\1", eQTLgene))
+  gene <- unique(sub("\\.[^.]*$", "", eQTLgene))
   
   eQTLz <- NULL
   for(i in 1:length(gene)){
