@@ -28,7 +28,7 @@ The function `pre_process_individual` is able to convert different genotype data
 library(GIFT)
 dir <- getwd()
 #### load the directory containing the files to be processed only (e.g., plink binary format)
-filelocation <- "./example/simulation/individual/pre_process/plink_binary"
+filelocation <- paste0(dir,"/example/simulation/individual/pre_process/plink_binary")
 #### load the directory of plink exe file
 plinkexe <- "plink"
 #### pre-process the file to be a list including gene names vector, cis-genotype matrix and pindex
