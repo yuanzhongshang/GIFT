@@ -8,7 +8,7 @@ pre_process_individual <- function(filelocation, plinkexe="plink"){
   setwd(filelocation)
   file <- list.files(filelocation)
   split_character <- "."
-  gene <- unique(sub(paste0("^(.*?)\\", split_character, ".*$"), "\\1", file))
+  gene <- gsub(".bim","",file[grep(".bim",file)])
   
   if(length(grep(".ped",file)) > 0){
     system("mkdir ./plink_binary")
