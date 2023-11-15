@@ -111,7 +111,7 @@ R <- as.matrix(read.table("./simulation/summary/R.txt"))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=T)
+result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=T)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
 ```r
@@ -126,7 +126,7 @@ Note that, the summary statistics version of GIFT often requires the in-sample L
 ```r
 ### load the LD matrix from 1,000 Genomes project
 LD <- as.matrix(read.table("./simulation/summary/LDmatrix10000G.txt"))
-result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=F)
+result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=F)
 result
       gene causal_effect            p
 1     CCNH   0.018184848 7.947008e-01
