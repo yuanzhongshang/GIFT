@@ -105,7 +105,7 @@ save(X, Y, Zx, Zy, gene, pindex, file = "./reproduce/simulation_data_generate/da
 n1=dim(Zx)[1]
 Zscore1 =NULL
 for(i in 1:length(gene)){
-  Zscore1 <- rbind(Zscore1,(1/sqrt(n1-1))*t(Zx[,(pindexsum[i]+1):pindexsum[i+1]]) %*% X[,i])
+  Zscore1 <- cbind(Zscore1,(1/sqrt(n1-1))*t(Zx) %*% X[,i])
 }
 
 ###calculate the LD matrix from GEUVADIS
@@ -173,7 +173,6 @@ FOCUS takes GWAS summary statistics, reference LD, eQTL weight database as input
 library("data.table")
 library("gtools")
 library(RSQLite)
-library(gtools)
 
 ##load the simulation data or the real data with the specific format from individual-level data.
 ###Here we used the simulation data.
@@ -215,7 +214,7 @@ setwd(gsub("/db", "/weight", getwd()))
 for(i in 1:n){
     onfi <- ot[i]
     load(onfi)
-    genefile < -gsub(".wgt.RDat","",onfi)
+    genefile <- gsub(".wgt.RDat","",onfi)
     bim <- as.data.frame(fread(paste0(dir,"/reproduce/simulation_data_generate/GEUVADIS/",genefile,".bim"),header=F))
     p <- nrow(bim)
     ##Here we choose the BSLMM weight.
@@ -249,7 +248,7 @@ infos=as.data.frame(fread(paste0(dir,"/reproduce/simulation_data_generate/genein
 info <- infos[infos$genetype2 %in% o1,]
 sub <- info[order(match(info$genetype2,o1)),]
 mole <- cbind.data.frame(c(1:n), sub[,5], rep("<NA>",n), sub[,4], sub[,3], sub[,6], sub[,1:2])
-colnames(mole)= <- ("id", "ens_gene_id", "ens_tx_id", "mol_name", "type", "chrom", "tx_start", "tx_stop")
+colnames(mole) <- c("id", "ens_gene_id", "ens_tx_id", "mol_name", "type", "chrom", "tx_start", "tx_stop")
 write.table(mole, "molecularfeature.txt",row.names = F, quote = F, col.names = T, sep = "\t")
 
 ####refpanel.txt
@@ -285,7 +284,7 @@ setwd(dir)
 system("plink --bfile ./reproduce/simulation_data_generate/Zy --pheno  ./reproduce/FOCUS/gwasY.txt --pheno-name V1  --allow-no-sex --assoc --out ./reproduce/FOCUS/gwas")
 data <- fread("./reproduce/FOCUS/gwas.qassoc")
 bim <- fread("./reproduce/simulation_data_generate/Zy.bim")
-summar <- cbind(data[,1:3], bim[,5:6], data[,8], data[,9], data[,4])
+summary <- cbind(data[,1:3], bim[,5:6], data[,8], data[,9], data[,4])
 colnames(summary) <- c("CHR", "SNP", "BP", "A1", "A2", "Z", "P", "N")
 write.table(summary,"./reproduce/FOCUS/gwas.txt",quote=F,row.names=F)
 
@@ -295,7 +294,7 @@ system("focus munge ./reproduce/FOCUS/gwas.txt --output ./reproduce/FOCUS/GWAS.c
 ##run FOCUS
 system("focus finemap ./reproduce/FOCUS/GWAS.cleaned.sumstats.gz ./reproduce/simulation_data_generate/Zy ./reproduce/FOCUS/weight.db --locations 37:EUR --chr 4 --start 128996665 --stop 130591885 --prior-prob ./reproduce/gencodev12.tsv --p-threshold 1 --out ./reproduce/FOCUS/result")
 
-result <- read.table("./reproduce/FOCUS/result", header = T)
+result <- read.table("./reproduce/FOCUS/result.focus.tsv", header = T)
 
 result
 block	ens_gene_id	ens_tx_id	mol_name	tissue	ref_name	type	chrom	tx_start	tx_stop	block_genes	trait	inference_pop1	inter_z_pop1	cv.R2_pop1	cv.R2.pval_pop1	ldregion_pop1	twas_z_pop1	pips_pop1	in_cred_set_pop1
@@ -351,7 +350,7 @@ source("munge.R")
 
 data <- fread(paste0(dir,"/reproduce/FOCUS/gwas.qassoc"))
 bim <- fread(paste0(dir,"/reproduce/simulation_data_generate/Zy.bim"))
-summary <- cbind(data[,1:3], bim[,5:6], data[,5:6], data[,8], data[,9],d ata[,4])
+summary <- cbind(data[,1:3], bim[,5:6], data[,5:6], data[,8], data[,9],data[,4])
 colnames(summary) <- c("CHR", "SNP", "POS", "A1", "A2", "beta", "se", "Z", "P", "samplesize")
 write.table(summary, "gwas.txt", quote = F, row.names = F)
 
@@ -381,7 +380,7 @@ loci <-paste0(dir,"/reproduce/LDetect/EUR/")
 ##run FOGS
 system(paste0("Rscript FOGS.R --refld ",refld," --outd ",outd," --loci ",loci," --weights ",weights," --genelist ",genelist," --sumstat ",sumstat," --saveprefix ",saveprefix," --chr_id ",chr_id," --locus_id ",locus_id))
 
-result <- read.table(paste0(dir,"/reproduce/FOGS/result/resultCHR_4_Locus",locus_id,".txt"),header = T)
+result <- read.table(paste0(dir,"/reproduce/FOGS/resultCHR_4_Locus",locus_id,".txt"),header = T)
 
 result
 CHR ID P0 P1 n.SNP n.condSNP FOGS-aSPU TWAS Focus Runtime(s)
