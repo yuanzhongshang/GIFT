@@ -28,7 +28,7 @@ The function `pre_process_individual` is able to convert different genotype data
 library(GIFT)
 dir <- getwd()
 #### load the directory containing the files to be processed only (e.g., plink binary format)
-filelocation <- "./simulation/individual/pre_process/plink_binary"
+filelocation <- "./example/simulation/individual/pre_process/plink_binary"
 #### load the directory of plink exe file
 plinkexe <- "plink"
 #### pre-process the file to be a list including gene names vector, cis-genotype matrix and pindex
@@ -42,7 +42,7 @@ pindex <- convert$pindex
 The required example data can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). 
 ```r
 #### load the Rdata file containing X, Zy and Y
-load(paste0(dir, "/simulation/individual/individual_data.Rdata"))
+load(paste0(dir, "/example/simulation/individual/individual_data.Rdata"))
 ```
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
@@ -83,14 +83,14 @@ The function `pre_process_summary` is able to convert different summary statisti
 library(GIFT)
 dir <- getwd()
 #### load the directory containing files of summary statistics from eQTL data only (e.g., the SAIGE output)
-eQTLfilelocation <- paste0(getwd(), "/simulation/summary/pre_process/saige/eQTL")
+eQTLfilelocation <- paste0(dir, "/example/simulation/summary/pre_process/saige/eQTL")
 #### load the directory of summary statistics from GWAS data (e.g., the SAIGE output)
-GWASfile <- paste0(getwd(),"/simulation/summary/pre_process/saige/GWAS.txt")
+GWASfile <- paste0(dir,"/example/simulation/summary/pre_process/saige/GWAS.txt")
 #### load the directory of LD matrix from eQTL data and GWAS data (e.g., a long format: h5 format)
-eQTLLDfile <- paste0(getwd(), "/simulation/summary/pre_process/LDmatrix1.h5")
-GWASLDfile <- paste0(getwd(), "/simulation/summary/pre_process/LDmatrix2.h5")
+eQTLLDfile <- paste0(dir, "/example/simulation/summary/pre_process/LDmatrix1.h5")
+GWASLDfile <- paste0(dir, "/example/simulation/summary/pre_process/LDmatrix2.h5")
 #### load the SNP list and cis-SNP number for each gene in a region
-snplist <- read.table("./simulation/summary/pre_process/snplist.txt")$V1
+snplist <- read.table("./example/simulation/summary/pre_process/snplist.txt")$V1
 pindex <- c(41, 23, 63, 96)
 #### pre-process the file to be a list including gene names vector, z-score matrix and LD matrix of eQTL data and GWAS data
 convert <- pre_process_summary(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfile, snplist, pindex)
@@ -107,8 +107,8 @@ LDmatrix2 <- convert$LDmatrix2
 n1 <- 465
 n2 <- 5000
 ### load the estimated correlated matrix of gene expressions
-setwd(gsub("/simulation/summary/pre_process/saige/eQTL", "", getwd()))
-R <- as.matrix(read.table("./simulation/summary/R.txt"))
+setwd(gsub("/example/simulation/summary/pre_process/saige/eQTL", "", getwd()))
+R <- as.matrix(read.table("./example/simulation/summary/R.txt"))
 ```
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
@@ -127,7 +127,7 @@ result
 Note that, the summary statistics version of GIFT often requires the in-sample LD matrix. If the in-sample LD matrix is not available, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project). It would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data, details in [here](https://yuanzhongshang.github.io/GIFT/documentation/06_Summary_statistic_issues.html). If in-sample LD was not used, the LD matrix is regularized to be (1-s1)\*Sigma1+s1\*E and (1-s2)\*Sigma2+s2\*E where both s1 and s2 are estimated by [estimate_s_rss](https://stephenslab.github.io/susieR/reference/estimate_s_rss.html) in susieR. A grid search algorithm is performed over the range from 0.1 to 1 once the estimation from susieR does not work well. The LD matrix from 1,000 Genomes project is also provided.
 ```r
 ### load the LD matrix from 1,000 Genomes project
-LD <- as.matrix(read.table("./simulation/summary/LDmatrix10000G.txt"))
+LD <- as.matrix(read.table("./example/simulation/summary/LDmatrix10000G.txt"))
 result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=F)
 result
       gene causal_effect            p
@@ -152,7 +152,7 @@ Gene expression prediction is the key for two-stage TWAS methods. The commonly u
 library(GIFT)
 dir <- getwd()
 #### load the weight matrix from the eQTL data (e.g., BLUP)
-setwd("./simulation/two_stage/weights")
+setwd("./example/simulation/two_stage/weights")
 CCNH <- as.matrix(read.table("CCNHweight.txt"))
 COX7C <- as.matrix(read.table("COX7Cweight.txt"))
 RASA1 <- as.matrix(read.table("RASA1weight.txt"))
@@ -167,11 +167,11 @@ The function `pre_process_twostage` is able to convert common summary statistics
 ```r
 setwd(dir)
 #### load the directory of summary statistics from GWAS data (e.g., the plink output)
-GWASfile <- "./simulation/summary/pre_process/plink/GWAS.qassoc"
+GWASfile <- "./example/simulation/summary/pre_process/plink/GWAS.qassoc"
 #### load LD matrix from eQTL data and GWAS data (e.g., a matrix)
-GWASLDfile <- "./simulation/summary/pre_process/LDmatrix2.txt"
+GWASLDfile <- "./example/simulation/summary/pre_process/LDmatrix2.txt"
 #### load the SNP list and cis-SNP number for each gene in a region
-snplist <- read.table("./simulation/summary/pre_process/snplist.txt")$V1
+snplist <- read.table("./example/simulation/summary/pre_process/snplist.txt")$V1
 #### pre-process the file to be a list including the beta vector, corresponding se vector and LD matrix from GWAS data
 convert <- pre_process_twostage(GWASfile, GWASLDfile, snplist)
 betay <- as.matrix(convert$beta)
@@ -205,12 +205,12 @@ result
 The GIFT result can be visualized with the marginal GWAS and TWAS results in a Manhattan plot. Here, we load the results from GWAS and TWAS directly using the example data. The example data for runing the tutorial can be downloaded in this [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html).
 ```r
 #### load the GWAS results (e.g., the GEMMA output)
-GWASresult=read.table("./simulation/summary/pre_process/gemma/GWAS.assoc.txt",header=T)
+GWASresult=read.table("./example/simulation/summary/pre_process/gemma/GWAS.assoc.txt",header=T)
 GWASresult=GWASresult[,c(2,3,11)]
 GWASresult$index="GWAS"
 colnames(GWASresult)=c("X","BP","P","index")
 #### load the TWAS results (e.g., using the BSLMM weight)
-TWASresult=read.table("./simulation/visualization/TWASresult.txt",header=T)
+TWASresult=read.table("./example/simulation/visualization/TWASresult.txt",header=T)
 TWASresult$BP=apply(TWASresult[,c(3,4)],1,mean)
 TWASresult=TWASresult[,c(1,6,5)]
 TWASresult$index="TWAS"
