@@ -10,7 +10,6 @@ For each region, we conducted the simulations based on the realistic genotypes f
 
 ### Generate the individual-level data
 ```r
-library("data.table")
 library("BEDMatrix")
 library(mvtnorm)
 library(GIFT)
@@ -96,6 +95,7 @@ Zx=scale(Zx)
 Zy=scale(Zy)
 
 ###save these variables
+setwd(dir)
 save(X, Y, Zx, Zy, gene, pindex, file = "./reproduce/simulation_data_generate/data_generate_individual.Rdata")
 ```
 
@@ -313,6 +313,7 @@ FOGS takes eQTL-derived weights, reference LD, GWAS summary statistics and gene 
 ```r
 library("data.table")
 library(RSQLite)
+library(gtools)
 
 ##load the pindex from the simulation data.
 ##You can also load from the weight file directly.
@@ -328,7 +329,6 @@ dbListTables(db)
 weights <- dbReadTable(db, "weight")
 
 setwd("./reproduce/FOCUS/weight")
-library(gtools)
 ot <- mixedsort(list.files(".",full.names=F))
 dn <- NULL
 for(i in 1:length(gene)){
@@ -454,7 +454,10 @@ result
 ## Run Marginal GWAS
 We used PLINK-1.9 to perform the GWAS analysis. 
 ```r
+library("data.table")
+
 ##conduct the pheotype file used in plink
+dir <- getwd()
 FID <- read.table(paste0(dir,"/reproduce/simulation_data_generate/Zy.fam"))$V1
 IID <- FID
 data <- cbind(FID,IID,Y)
