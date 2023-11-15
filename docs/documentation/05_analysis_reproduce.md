@@ -153,7 +153,7 @@ result
 load("./reproduce/simulation_data_generate/data_generate_summary.Rdata")
 
 ##run GIFT
-result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=T)
+result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=T)
 
 result
          gene    causal_effect           p
