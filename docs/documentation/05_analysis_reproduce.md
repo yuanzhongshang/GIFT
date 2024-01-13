@@ -96,7 +96,7 @@ Zy=scale(Zy)
 
 ###save these variables
 setwd(dir)
-save(X, Y, Zx, Zy, gene, pindex, file = "./reproduce/simulation_data_generate/data_generate_individual.Rdata")
+save(X, Y, Zx, Zy, gene, pindex, file = "./reproduce/simulation_data_generate/data_generate_individual.RData")
 ```
 
 ### Convert the individual-level data into the summary statistics
@@ -119,7 +119,7 @@ LDmatrix2 <- (1/(n2-1))*t(Zy) %*% Zy
 Zscore2 <- (1/sqrt(n2-1))* (t(Zy) %*% Y)
 
 ###save these variables
-save(Zscore1, LDmatrix1, Zscore2, LDmatrix2, R, n1, n2, gene, pindex, file = "./reproduce/simulation_data_generate/data_generate_summary.Rdata")
+save(Zscore1, LDmatrix1, Zscore2, LDmatrix2, R, n1, n2, gene, pindex, file = "./reproduce/simulation_data_generate/data_generate_summary.RData")
 ```
 
 ## Run GIFT
@@ -130,7 +130,7 @@ library(GIFT)
 ```r
 ##load the simulation data or the real data with the specific format from individual-level data.
 ###Here we used the simulation data above.
-load("./reproduce/simulation_data_generate/data_generate_individual.Rdata")
+load("./reproduce/simulation_data_generate/data_generate_individual.RData")
 
 ##run GIFT
 result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, ncores=1)
@@ -150,7 +150,7 @@ result
 ```r
 ##load the simulation data or the real data with the specific format from summary statistics.
 ###Here we used the simulation data above.
-load("./reproduce/simulation_data_generate/data_generate_summary.Rdata")
+load("./reproduce/simulation_data_generate/data_generate_summary.RData")
 
 ##run GIFT
 result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=T)
@@ -177,7 +177,7 @@ library(RSQLite)
 ##load the simulation data or the real data with the specific format from individual-level data.
 ###Here we used the simulation data.
 dir=getwd()
-load("./reproduce/simulation_data_generate/data_generate_individual.Rdata")
+load("./reproduce/simulation_data_generate/data_generate_individual.RData")
 
 ##If you need compute own weights, the following additional steps are required.
 
@@ -318,7 +318,7 @@ library(gtools)
 ##load the pindex from the simulation data.
 ##You can also load from the weight file directly.
 dir=getwd()
-load("./reproduce/simulation_data_generate/data_generate_individual.Rdata")
+load("./reproduce/simulation_data_generate/data_generate_individual.RData")
 
 ##prepare the eQTL-derived weights
 weights <- "./reproduce/FOCUS/weight.db"
@@ -401,7 +401,7 @@ library(MVIWAS)
 ##load the simulation data or the real data with the specific format from the summary statistics
 ###Here we used the simulation data.
 dir=getwd()
-load("./reproduce/simulation_data_generate/data_generate_summary.Rdata")
+load("./reproduce/simulation_data_generate/data_generate_summary.RData")
 
 ##prepare the eQTL-derived weights
 p=sum(pindex)
@@ -504,7 +504,7 @@ impu <- function(x) {
 
 ##load the phenotype
 setwd(dir)
-load("./reproduce/simulation_data_generate/data_generate_individual.Rdata")
+load("./reproduce/simulation_data_generate/data_generate_individual.RData")
 
 Z <- NULL
 P <- NULL
@@ -543,7 +543,7 @@ result
 ##load the simulation data or the real data with the specific format from the summary statistics
 ###Here we used the simulation data.
 dir=getwd()
-load("./reproduce/simulation_data_generate/data_generate_summary.Rdata")
+load("./reproduce/simulation_data_generate/data_generate_summary.RData")
 
 Z <- NULL
 P <- NULL
