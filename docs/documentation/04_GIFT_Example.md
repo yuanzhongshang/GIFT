@@ -19,7 +19,8 @@ The function `GIFT_individual` is the main function for GIFT with individual-lev
 
 The optional inputs are:
 - maxiter: The user-defined maximum iteration, with the default to be 1000.
-- tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4. 
+- tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4.
+- pleio: The user-defined option of controlling the pleiotropy, with the default to be 0. If 'pleio' is set to 0, the analysis will be performed without controlling any SNP; If 'pleio' is set to 1, the analysis will be performed controlling the top SNP; If 'pleio' is set to 2, the analysis will be performed controlling the top two SNPs. 
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux. 
 
 #### Step 1: Pre-process the genotype data with different formats.
@@ -47,7 +48,7 @@ load(paste0(dir, "/example/simulation/individual/individual_data.RData"))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, ncores=1)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=1)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene within a focal region. 
 ```r
@@ -57,6 +58,26 @@ result
 2    COX7C    0.02111053 8.028104e-01
 3    RASA1    0.35309347 7.131827e-06
 4 TMEM161B   -0.03306309 3.257628e-01
+```
+Indeed, horizontal pleiotropy occurs when SNPs affect the trait of interest through pathways other than or in addition to the gene and is partical important to control for as it is widespread in TWAS
+applications. Here, we used 'pleio' in the function to control the pleiotropic effects of the top one/two SNPs in a focal region.
+```r
+#### control the top SNP
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=1, ncores=1)
+result
+      gene causal_effect            p
+1     CCNH    0.01503796 8.519840e-01
+2    COX7C    0.02175502 8.019002e-01
+3    RASA1    0.35411571 6.906036e-06
+4 TMEM161B   -0.03311768 3.255081e-01
+#### control the top two SNPs
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=2, ncores=1)
+result
+      gene causal_effect            p
+1     CCNH    0.04643405 1.000000e+00
+2    COX7C    0.01620003 7.640883e-01
+3    RASA1    0.32028155 2.116944e-06
+4 TMEM161B   -0.03371455 3.059351e-01
 ```
 
 ### GIFT: Using summary statistics as input
@@ -73,7 +94,8 @@ The function `GIFT_summary` is the main function for GIFT with summary statistic
 The optional inputs are:
 - R: Estimated correlation matrix of gene expressions, with the default to be an identity matrix.
 - maxiter: The user-defined maximum iteration, with the default to be 1000.
-- tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4. 
+- tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4.
+- pleio: The user-defined option of controlling the pleiotropy, with the default to be 0. If 'pleio' is set to 0, the analysis will be performed without controlling any SNP; If 'pleio' is set to 1, the analysis will be performed controlling the top SNP; If 'pleio' is set to 2, the analysis will be performed controlling the top two SNPs. 
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux.
 - in_sample_LD: A logical value represents whether in-sample LD was used, with the default to be False. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)\*Sigma1+s1\*E and (1-s2)\*Sigma2+s2\*E where both s1 and s2 are estimated by function estimate_s_rss() in susieR. A grid search algorithm is performed over the range from 0.1 to 1 once the estimation from susieR does not work well. The function estimate_s_rss() depends on another R package "susieR".
 
@@ -112,7 +134,7 @@ R <- as.matrix(read.table(paste0(dir, "/example/simulation/summary/R.txt")))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=T)
+result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=T)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
 ```r
@@ -127,7 +149,7 @@ Note that, the summary statistics version of GIFT often requires the in-sample L
 ```r
 ### load the LD matrix from 1,000 Genomes project
 LD <- as.matrix(read.table("./example/simulation/summary/LDmatrix10000G.txt"))
-result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, ncores=1, in_sample_LD=F)
+result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=F)
 result
       gene causal_effect            p
 1     CCNH   0.018184848 7.947008e-01
@@ -254,7 +276,7 @@ load("./example/realdata/realdata.RData")
 #### perform conditional fine-mapping for TWAS analysis
 library(GIFT)
 library(parallel)
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, ncores=8)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=8)
 result
        gene causal_effect             p
 1     ABCA1 -1.857260e+00 2.938669e-179
