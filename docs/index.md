@@ -41,7 +41,8 @@ All feedback, bug reports and suggestions are warmly welcomed! Please make sure 
 
 How to cite `GIFT`
 -------------------
-Lu Liu, Ran Yan, Ping Guo, Jiadong Ji, Weiming Gong, Fuzhong Xue, Zhongshang Yuan, and Xiang Zhou (2023). Conditional transcriptome-wide association study for fine-mapping causal genes.
+Liu, L., Yan, R., Guo, P. et al. Conditional transcriptome-wide association study for fine-mapping candidate causal genes. Nat Genet 56, 348–356 (2024).
+[https://doi.org/10.1038/s41588-023-01645-y](https://doi.org/10.1038/s41588-023-01645-y)
 
 How to use `GIFT`
 -------------------
