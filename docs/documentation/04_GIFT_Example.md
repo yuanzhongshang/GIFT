@@ -166,7 +166,8 @@ The function `GIFT_two_stage_summ` is developed for conditional fine-mapping in 
 - Sigma: LD matrix from GWAS data.
 - n: Sample size of GWAS data.
 - gene: The vector of gene names.
-  
+- in_sample_LD: A logical value represents whether in-sample LD was used, with the default to be False. If in-sample LD was not used, the LD matrix is regularized to be (1-s)\*Sigma+s\*E where s is estimated by function estimate_s_rss() in susieR.
+
 #### Step 1: Read the eQTL weight.
 Gene expression prediction is the key for two-stage TWAS methods. The commonly used prediction models include lasso and elastic net (enet) as implemented in prediXcan, Best Linear Unbiased Prediction (BLUP), the top SNPs (top1) and Bayesian sparse linear mixed model (BSLMM) as implemented in TWAS/FUSION, latent Dirichlet process regression (DPR) as implemented in both DPR and TIGAR. For a specific region, the weights from all genes can be represented to be a block diagonal matrix. The function `weightconvert` is able to convert a list including weights for multiple genes into a required block diagonal matrix for GIFT.
 ```r
@@ -210,7 +211,7 @@ gene=c("CCNH", "COX7C", "RASA1", "TMEM161B")
 
 #### Step 4: Conditional fine-mapping for TWAS analysis.
 ```r
-result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene)
+result<-GIFT_two_stage_summ(betax, betay, se_betay, Sigma, n, gene, in_sample_LD = T)
 ```
 The result is a data frame including the z-scores and p values for each gene in a focal region. 
 ```r
