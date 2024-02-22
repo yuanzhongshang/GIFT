@@ -6,16 +6,22 @@
 #' @param Sigma LD matrix from GWAS data.
 #' @param n Sample size of GWAS data.
 #' @param gene The gene names vector.
+#' @param in_sample_LD A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E, where s1 and s2 are estimated by estimate_s_rss in susieR, and E is an identity matrix. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".
 #' @return A data frame including the z scores and p values for the gene-based test. 
 
-GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene){
+GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene, in_sample_LD = F){
   
   if(sum(is.na(Sigma)) != 0){
     cat("Correlation Matrix cannot contain NA values.", "\n")
   }else if(var(c(nrow(betax), nrow(betay), nrow(se_betay), nrow(Sigma), ncol(Sigma))) != 0){
     cat("The numbers of rows in betax, betay, se_betay, and Sigma (rows and columns) are not matched.", "\n")
   }else{
-    
+
+  if(in_sample_LD==F){
+     library(susieR)
+     s <- estimate_s_rss(betay/se_betay, Sigma, n, r_tol = 1e-08, method = "null-mle")
+     Sigma <- (1-s)*Sigma + s*diag(length(betay))
+  }
     nsnps <- nrow(betay)
     
     ZTY <- matrix(diag(Sigma) * betay, ncol = 1);
