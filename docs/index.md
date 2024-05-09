@@ -52,4 +52,6 @@ The GIFT Manual: [here](https://github.com/yuanzhongshang/GIFT/blob/main/docs/GI
 
 The genome-wide eQTL summary statistics from GEUVADIS data
 -------------------
-This data will be availible soon: [here](https://www.dropbox.com/scl/fo/4nqcmkblerspfmva5stwf/ANHZU_kX2AlveEEbx9DKbZU?rlkey=qjcxprlk83t7pw8ka2ne2v4w9&dl=0).
+This data is availible in the dropbox: [here](https://www.dropbox.com/scl/fo/4nqcmkblerspfmva5stwf/ANHZU_kX2AlveEEbx9DKbZU?rlkey=qjcxprlk83t7pw8ka2ne2v4w9&dl=0).
+
+The correlation matrix among gene expressions for each chromosome from GEUVADIS data is also availible in the dropbox: [here](https://www.dropbox.com/home/GEUVADIS/correlation%20matrix).
