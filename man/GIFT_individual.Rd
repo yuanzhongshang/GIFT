@@ -9,33 +9,37 @@ GIFT_individual(
   Y,
   Zx,
   Zy,
+  gene,
   pindex,
-  max_iterin = 1000,
-  epsin = 1e-04,
-  Cores = 1
+  maxiter = 1000,
+  tol = 1e-04,
+  pleio = 0,
+  ncores = 1
 )
 }
 \arguments{
-\item{X}{complex gene expression matrix, each column is the standardized specific expression.}
+\item{X}{Complex gene expression matrix, each column is the standardized specific expression.}
 
-\item{Y}{standarized trait vector.}
+\item{Y}{Standarized trait vector.}
 
-\item{Zx}{standardized cis-genotype matrix in eQTL data.}
+\item{Zx}{Standardized cis-genotype matrix from eQTL data.}
 
-\item{Zy}{standardized cis-genotype matrix in GWAS data.}
+\item{Zy}{Standardized cis-genotype matrix from GWAS data.}
 
-\item{pindex}{a vector with each element represents the number of cis-SNPs for each gene.}
+\item{gene}{The gene names vector.}
 
-\item{max_iterin}{The maximum iteration, which can be determined by users.}
+\item{pindex}{A vector with each element represents the number of cis-SNPs for each gene.}
 
-\item{epsin}{The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.}
+\item{maxiter}{The maximum iteration, which can be determined by users.}
 
-\item{Cores}{The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.}
+\item{tol}{The convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, which can be determined by users.}
+
+\item{pleio}{The option of controlling the pleiotropy, which can be determined by users. If pleio is set to 0, analysis will perform without controlling any SNP; If pleio is set to 1, analysis will perform  controlling the top SNP; If pleio is set to 2, analysis will perform controlling the top two SNPs.}
+
+\item{ncores}{The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.}
 }
 \value{
-A list of estimated parameters including the p values for the gene-based test. 
-\item{causal_effect}{The estimates of causal effect for each gene in a specific region}
-\item{gene_based_test_pvalue}{The p values for each gene by the gene-based test}
+A data frame including the causal effect estimates and p values for the gene-based test.
 }
 \description{
 GIFT_individual applies a likelihood-based approach, accounting for the correlated cis-SNPs and genes in a region

@@ -9,43 +9,50 @@ GIFT_summary(
   Zscore2,
   Sigma1,
   Sigma2,
-  R,
   n1,
   n2,
+  gene,
   pindex,
-  max_iterin = 1000,
-  epsin = 1e-04,
-  Cores = 1
+  R = NULL,
+  maxiter = 1000,
+  tol = 1e-04,
+  pleio = 0,
+  ncores = 1,
+  in_sample_LD = F
 )
 }
 \arguments{
-\item{Sigma1}{the LD matrix in eQTL data}
+\item{Sigma1}{LD matrix from eQTL data.}
 
-\item{Sigma2}{the LD matrix in GWAS data,both Sigma2sin and sigma1sin are often the same from the reference panel}
+\item{Sigma2}{LD matrix from GWAS data, both Sigma1 and Sigma2 are often the same from the reference panel.}
 
-\item{R}{the estimated correlation matrix of gene expressions}
+\item{n1}{Sample size of eQTL data.}
 
-\item{n1}{the sample size of eQTL data}
+\item{n2}{Sample size of GWAS data.}
 
-\item{n2}{the sample size of GWAS data}
+\item{gene}{The gene names vector.}
 
-\item{pindex}{a vector with each element represents the number of cis-SNPs for each gene.}
+\item{pindex}{A vector with each element represents the number of cis-SNPs for each gene.}
 
-\item{max_iterin}{The maximum iteration, which can be determined by users.}
+\item{R}{Estimated correlation matrix of gene expressions.}
 
-\item{epsin}{The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.}
+\item{maxiter}{The maximum iteration, which can be determined by users.}
 
-\item{Cores}{The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.}
+\item{tol}{The convergence tolerance of the absolute value of the difference  between the nth and (n+1)th log likelihood, which can be determined by users.}
 
-\item{Zscore_1}{the Zscore matrix of the cis-SNP effect size matrix, each column for one specific gene in eQTL data}
+\item{pleio}{The option of controlling the pleiotropy, which can be determined by users. If pleio is set to 0, analysis will perform without controlling any SNP; If pleio is set to 1, analysis will perform  controlling the top SNP; If pleio is set to 2, analysis will perform controlling the top two SNPs.}
 
-\item{Zscore_2}{the Zscore vector of the cis-SNP effect size vector for one specific trait in GWAS data}
+\item{ncores}{The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.}
+
+\item{in_sample_LD}{A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E, where s1 and s2 are estimated by estimate_s_rss in susieR, and E is an identity matrix. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".}
+
+\item{Zscore_1}{Zscore matrix of the cis-SNP effect size matrix, each column for one specific gene from eQTL data.}
+
+\item{Zscore_2}{Zscore vector of the cis-SNP effect size vector from GWAS data.}
 }
 \value{
-A list of estimated parameters including the p values for the gene-based test. 
-\item{causal_effect}{The estimates of causal effect for each gene in a specific region}
-\item{gene_based_test_pvalue}{The p values for each gene by the gene-based test}
+A data frame including the causal effect estimates and p values for the gene-based test.
 }
 \description{
-GIFT_individual applies a likelihood-based approach, accounting for the correlated cis-SNPs and genes in a region
+GIFT_summary applies a likelihood-based approach, accounting for the correlated cis-SNPs and genes in a region
 }
