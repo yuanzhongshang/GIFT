@@ -100,81 +100,134 @@ pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfi
   eQTLgene <- gsub("eQTL","",eQTLfile)
   split_character <- "."
   gene <- unique(sub("\\.[^.]*$", "", eQTLgene))
+  pindexcum <- c(0,cumsum(pindex))
   
+  cat("Processing the eQTL data:\n")
   eQTLz <- NULL
   for(i in 1:length(gene)){
+    cat(gene[i],":\n")
     eQTLdata=read.table(eQTLfile[i],header = T)
-    eQTLz1 <- NULL
+    eQTLz1 <- rep(0,length(snplist))
     ##plink format
     if(sum(colnames(eQTLdata) %in% "T")!=0){
-      for(j in 1:length(snplist)){
-        eQTLz1[j] <- eQTLdata[eQTLdata$SNP==snplist[j],]$T
-      }
+	  cat("Reading the plink format summary statistics: ")
+      eQTLz1 <- eQTLdata[match(snplist,eQTLdata$SNP),]$T
+	    if(sum(is.na(eQTLz1))>0){
+	      cat("You input only the cis-SNP for each gene, setting the z-scores of SNPs other than the cis-SNP for each gene to zero. ")
+	  	  tmp=eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]
+	    	eQTLz1 <- rep(0,length(snplist))
+	    	eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]=tmp
+	    }
+	  cat("Success!\n")
     }
     ##gemma format
     if(sum(colnames(eQTLdata) %in% "beta")!=0){
-      for(j in 1:length(snplist)){
-        eQTLz1[j] <- eQTLdata[eQTLdata$rs==snplist[j],]$beta/eQTLdata[eQTLdata$rs==snplist[j],]$se
-      }
+	    cat("Reading the gemma format summary statistics: ")
+      eQTLz1 <- eQTLdata[match(snplist,eQTLdata$rs),]$beta/eQTLdata[match(snplist,eQTLdata$rs),]$se
+	    if(sum(is.na(eQTLz1))>0){
+  	    cat("You input only the cis-SNP for each gene, setting the z-scores of SNPs other than the cis-SNP for each gene to zero. ")
+    		tmp=eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]
+    		eQTLz1 <- rep(0,length(snplist))
+    		eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]=tmp
+	    }
+	  cat("Success!\n")
     }
     ##SAIGE format
     if(sum(colnames(eQTLdata) %in% "Tstat")!=0){
-      for(j in 1:length(snplist)){
-        eQTLz1[j] <- eQTLdata[eQTLdata$MarkerID==snplist[j],]$BETA/eQTLdata[eQTLdata$MarkerID==snplist[j],]$SE
-      }
+	    cat("Reading the SAIGE format summary statistics: ")
+      eQTLz1 <- eQTLdata[match(snplist,eQTLdata$MarkerID),]$BETA/eQTLdata[match(snplist,eQTLdata$MarkerID),]$SE
+  	  if(sum(is.na(eQTLz1))>0){
+    	  cat("You input only the cis-SNP for each gene, setting the z-scores of SNPs other than the cis-SNP for each gene to zero. ")
+    		tmp=eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]
+    		eQTLz1 <- rep(0,length(snplist))
+    		eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]=tmp
+	    }
+	  cat("Success!\n")
     }
     eQTLz <- cbind(eQTLz,eQTLz1)
   }
+  if(sum(is.na(eQTLz))>0){
+    cat("Unmatched SNP list. Please check your SNP list. \n")
+  }
   
+  cat("Processing the GWAS data:\n")
   GWASdata <- read.table(GWASfile,header=T)
   GWASz <- NULL
   ##plink format
   if(sum(colnames(GWASdata) %in% "T")!=0){
-    for(j in 1:length(snplist)){
-      GWASz[j] <- GWASdata[GWASdata$SNP==snplist[j],]$T
-    }
-  }
+    cat("Reading the plink format summary statistics: ")
+    GWASz <- GWASdata[match(snplist,GWASdata$SNP),]$T
+  	cat("Success!\n")
+  }  
   ##gemma format
   if(sum(colnames(GWASdata) %in% "beta")!=0){
-    for(j in 1:length(snplist)){
-      GWASz[j] <- GWASdata[GWASdata$rs==snplist[j],]$beta/GWASdata[GWASdata$rs==snplist[j],]$se
-    }
+    cat("Reading the gemma format summary statistics: ")
+    GWASz <- GWASdata[match(snplist,GWASdata$rs),]$beta/GWASdata[match(snplist,GWASdata$rs),]$se
+  	cat("Success!\n")
   }
   ##saige format
   if(sum(colnames(GWASdata) %in% "Tstat")!=0){
-    for(j in 1:length(snplist)){
-      GWASz[j] <- GWASdata[GWASdata$MarkerID==snplist[j],]$BETA/GWASdata[GWASdata$MarkerID==snplist[j],]$SE
-    }
+    cat("Reading the SAIGE format summary statistics: ")
+    GWASz <- GWASdata[match(snplist,GWASdata$MarkerID),]$BETA/GWASdata[match(snplist,GWASdata$MarkerID),]$SE
+    cat("Success!\n")
+  }
+  if(sum(is.na(GWASz))>0){
+    cat("Unmatched SNP list. Please check your SNP list. \n")
   }
   
-  if(sum(grep(".txt",eQTLLDfile))!=0){     
+  cat("Processing the LD matrix:\n")
+  if(sum(grep(".txt",eQTLLDfile))!=0){ 
+    cat("Reading the txt format LD matrix from eQTL data: ")
     LDmatrix1 <- read.table(eQTLLDfile)
   }
   if(sum(grep(".h5",eQTLLDfile))!=0){     
     if (!requireNamespace("rhdf5", quietly = TRUE)) {
       if (!require("BiocManager", quietly = TRUE))
         install.packages("BiocManager")
-      BiocManager::install("rhdf5")
+        BiocManager::install("rhdf5")
     }
     library(rhdf5)
+  	cat("Reading the h5 format LD matrix from eQTL data: ")
     LDmatrix1 <- h5read(eQTLLDfile, "matrix")
   }
   LDmatrix1 <- as.matrix(LDmatrix1)
-  
-  if(sum(grep(".txt",GWASLDfile))!=0){     
-    LDmatrix2 <- read.table(GWASLDfile)
+  if(dim(LDmatrix1)[1]!=length(snplist)){
+    cat("Converting the LD matrix of the unique SNP list to the LD matrix of the input SNP list.")
+  	LDmatrix1 <- LDmatrix1[match(snplist,colnames(LDmatrix1)),match(snplist,colnames(LDmatrix1))]
+  	cat("Success!\n")
+  }else{
+    cat("Success!\n")
+  }
+  if(sum(is.na(LDmatrix1))>0){
+    cat("LD matrix cannot contain missing values or missing column names. Please check your LD matrix. \n")
   }
   
+  if(sum(grep(".txt",GWASLDfile))!=0){  
+    cat("Reading the txt format LD matrix from GWAS data: ")  
+    LDmatrix2 <- read.table(GWASLDfile)
+  }
   if(sum(grep(".h5",GWASLDfile))!=0){     
     if (!requireNamespace("rhdf5", quietly = TRUE)) {
       if (!require("BiocManager", quietly = TRUE))
         install.packages("BiocManager")
-      BiocManager::install("rhdf5")
+        BiocManager::install("rhdf5")
     }
     library(rhdf5)
+  	cat("Reading the h5 format LD matrix from GWAS data: ")  
     LDmatrix2 <- h5read(GWASLDfile, "matrix")
   }  
   LDmatrix2 <- as.matrix(LDmatrix2)
+  if(dim(LDmatrix2)[1]!=length(snplist)){
+    cat("Converting the LD matrix of the unique SNP list to the LD matrix of the input SNP list.")
+  	LDmatrix2 <- LDmatrix2[match(snplist,colnames(LDmatrix2)),match(snplist,colnames(LDmatrix2))]
+  	cat("Success!\n")
+  }else{
+    cat("Success!\n")
+  }
+  if(sum(is.na(LDmatrix2))>0){
+    cat("LD matrix cannot contain missing values or missing column names. Please check your LD matrix. \n")
+  }
+  
   r <- list(gene = gene, pindex = pindex, Zscore1 = eQTLz, Zscore2 = GWASz, LDmatrix1 = LDmatrix1, LDmatrix2 = LDmatrix2)
   return(r)
 }
@@ -202,33 +255,36 @@ weightconvert <- function(weightlist){
 #' @return A list including the beta vector, corresponding se vector and LD matrix from GWAS data.
 
 pre_process_twostage <- function(GWASfile, GWASLDfile, snplist){
-  
+
+  cat("Processing the GWAS data:\n")
   GWASdata <- read.table(GWASfile,header=T)
   beta <- NULL
   se <- NULL
   ##plink format
   if(sum(colnames(GWASdata) %in% "T")!=0){
-    for(j in 1:length(snplist)){
-      beta[j] <- GWASdata[GWASdata$SNP==snplist[j],]$BETA
-      se[j] <- GWASdata[GWASdata$SNP==snplist[j],]$SE
-    }
+    cat("Reading the plink format summary statistics: ")
+    beta <- GWASdata[match(snplist,GWASdata$SNP),]$BETA
+    se <- GWASdata[match(snplist,GWASdata$SNP),]$SE
+    cat("Success!\n")
   }
   ##gemma format
   if(sum(colnames(GWASdata) %in% "beta")!=0){
-    for(j in 1:length(snplist)){
-      beta[j] <- GWASdata[GWASdata$rs==snplist[j],]$beta
-      se[j] <- GWASdata[GWASdata$rs==snplist[j],]$se
-    }
+    cat("Reading the gemma format summary statistics: ")
+    beta <- GWASdata[match(snplist,GWASdata$rs),]$beta
+    se <- GWASdata[match(snplist,GWASdata$rs),]$se
+    cat("Success!\n")
   }
   ##saige format
   if(sum(colnames(GWASdata) %in% "Tstat")!=0){
-    for(j in 1:length(snplist)){
-      beta[j] <- GWASdata[GWASdata$MarkerID==snplist[j],]$BETA
-      se[j] <- GWASdata[GWASdata$MarkerID==snplist[j],]$SE
-    }
+    cat("Reading the SAIGE format summary statistics: ")
+    beta <- GWASdata[match(snplist,GWASdata$MarkerID),]$BETA
+    se <- GWASdata[match(snplist,GWASdata$MarkerID),]$SE
+    cat("Success!\n")
   }
-  
-  if(sum(grep(".txt",GWASLDfile))!=0){     
+
+  cat("Processing the LD matrix:\n")
+  if(sum(grep(".txt",GWASLDfile))!=0){
+    cat("Reading the txt format LD matrix from eQTL data: ")
     LDmatrix <- read.table(GWASLDfile)
   }
   
@@ -236,12 +292,24 @@ pre_process_twostage <- function(GWASfile, GWASLDfile, snplist){
     if (!requireNamespace("rhdf5", quietly = TRUE)) {
       if (!require("BiocManager", quietly = TRUE))
         install.packages("BiocManager")
-      BiocManager::install("rhdf5")
+        BiocManager::install("rhdf5")
     }
     library(rhdf5)
+    cat("Reading the h5 format LD matrix from eQTL data: ")
     LDmatrix <- h5read(GWASLDfile, "matrix")
   }  
   LDmatrix <- as.matrix(LDmatrix)
+  if(dim(LDmatrix)[1]!=length(snplist)){
+    cat("Converting the LD matrix of the unique SNP list to the LD matrix of the input SNP list.")
+  	LDmatrix <- LDmatrix[match(snplist,colnames(LDmatrix)),match(snplist,colnames(LDmatrix))]
+	  cat("Success!\n")
+  }else{
+    cat("Success!\n")
+  }
+  if(sum(is.na(LDmatrix))>0){
+    cat("LD matrix cannot contain missing values or missing column names. Please check your LD matrix. \n")
+  }
+  
   r <- list(beta = beta, se = se, LDmatrix = LDmatrix)
   return(r)
 }
