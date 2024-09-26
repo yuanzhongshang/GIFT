@@ -10,12 +10,13 @@ We conducted the simulations based on the realistic genotypes from GEUVADIS (n1=
 
 ### GIFT: Using individual-level data as input
 The function `GIFT_individual` is the main function for GIFT with individual-level data. The essential inputs are:
-- X: The standardized gene expression matrix for all genes in a specific region from eQTL data. 
+- X: The standardized gene expression matrix for all genes in a specific region from eQTL data.
 - Y: The standardized trait vector from GWAS data.
-- Zx: The standardized cis-genotype matrix for all genes in a specific region from eQTL data.
-- Zy: The standardized cis-genotype matrix for all genes in a specific region from GWAS data.
+- Zx: The standardized cis-genotype matrix for all genes in a specific region from eQTL data. The columns represent the stacked genotypes of cis-SNPs for each gene.
+- Zy: The standardized cis-genotype matrix for all genes in a specific region from GWAS data. The columns represent the stacked genotypes of cis-SNPs for each gene.
 - gene: The gene name vector represents the genes in a specific region, the order of the gene name should be consistent with that in X.
 - pindex: A vector with each element representing the number of cis-SNPs for each gene.
+![GIFT\_pipeline](GIFT_individual_inputs.png)
 
 The optional inputs are:
 - maxiter: The user-defined maximum iteration, with the default to be 1000.
@@ -82,14 +83,15 @@ result
 
 ### GIFT: Using summary statistics as input
 The function `GIFT_summary` is the main function for GIFT with summary statistics. The essential inputs are:
-- Zscore_1: Zscore matrix of the cis-SNP effect size for all genes in a specific region from eQTL data.
-- Zscore_2: Zscore vector of the cis-SNP effect size for all genes in a specific region from GWAS data.
+- Zscore_1: Zscore matrix of the cis-SNP effect size for all genes in a specific region from eQTL data. The rows represent the z-scores of stacked cis-SNPs for all genes. If you only have the cis-eQTL summary statistics, you can directly set the value in the blue boxes to be zero in the figure below.
+- Zscore_2: Zscore vector of the cis-SNP effect size for all genes in a specific region from GWAS data. The rows represent the z-scores of stacked cis-SNPs for all genes.
 - Sigma1: LD matrix from eQTL data.
 - Sigma2: LD matrix from GWAS data, both Sigma1 and Sigma2 are often from the same reference panel.
 - n1: Sample size of eQTL data.
 - n2: Sample size of GWAS data.
 - gene: The gene name vector, the order of the gene name should be consistent with that in Zscore_1.
 - pindex: A vector with each element represents the number of cis-SNPs for each gene.
+![GIFT\_pipeline](GIFT_summary_inputs.png)
 
 The optional inputs are:
 - R: Estimated correlation matrix of gene expressions, with the default to be an identity matrix.
@@ -100,7 +102,9 @@ The optional inputs are:
 - in_sample_LD: A logical value represents whether in-sample LD was used, with the default to be False. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)\*Sigma1+s1\*E and (1-s2)\*Sigma2+s2\*E where both s1 and s2 are estimated by function estimate_s_rss() in susieR. A grid search algorithm is performed over the range from 0.1 to 1 once the estimation from susieR does not work well. The function estimate_s_rss() depends on another R package "susieR".
 
 #### Step 1: Pre-process the summary statistics with different formats.
-The function `pre_process_summary` is able to convert different summary statistics and LD matrix data formats to GIFT inputs. In particular, this function is flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also flexible to handle LD matrix either from matrix or a long format such as h5 format. We provide the the genome-wide eQTL summary statistics from GEUVADIS data in [dropbox](https://www.dropbox.com/scl/fo/4nqcmkblerspfmva5stwf/ANHZU_kX2AlveEEbx9DKbZU?rlkey=qjcxprlk83t7pw8ka2ne2v4w9&dl=0), and you can follow the [code](https://github.com/yuanzhongshang/GIFT/issues/6#issuecomment-2067722099) to obtain the approximation estimation of R from the summary statistics. Besides, we also provide the correlation matrix among gene expressions for each chromosome from GEUVADIS data. You can access it [here](https://www.dropbox.com/scl/fo/7mssyexppzqknj6a7vjfc/AFW5ZHaRYDMsEGozc9i8R7c?rlkey=rnnxdbu2kile9l4dvcw5hnyi7&dl=0). Here, we take various data formats from example data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). 
+The function `pre_process_summary` is able to convert different summary statistics and LD matrix data formats to GIFT inputs. In particular, this function is flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also flexible to handle LD matrix either from matrix or a long format such as h5 format. We provide the the genome-wide eQTL summary statistics from GEUVADIS data in [dropbox](https://www.dropbox.com/scl/fo/4nqcmkblerspfmva5stwf/ANHZU_kX2AlveEEbx9DKbZU?rlkey=qjcxprlk83t7pw8ka2ne2v4w9&dl=0), and you can follow the [code](https://github.com/yuanzhongshang/GIFT/issues/6#issuecomment-2067722099) to obtain the approximation estimation of R from the summary statistics. Besides, we also provide the correlation matrix among gene expressions for each chromosome from GEUVADIS data. You can access it [here](https://www.dropbox.com/scl/fo/7mssyexppzqknj6a7vjfc/AFW5ZHaRYDMsEGozc9i8R7c?rlkey=rnnxdbu2kile9l4dvcw5hnyi7&dl=0). Additionally, [eQTLGen Consortium](https://www.eqtlgen.org/phase1.html) provides the cis-eQTL and trans-eQTL results; our lab provides the [cis-eQTL mapping summary statistics](https://xiangzhou.github.io/resources/) for African American and European American from GENOA. If you only have the cis-eQTL summary statistics, you can directly set the value in the blue boxes to be zero in the figure above. In other words, GIFT can handle inputs containing cis-SNPs for each gene. We have already modified the pre-processing function to include this step.
+
+Here, we take various data formats from example data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html). 
 ```r
 library(GIFT)
 dir <- getwd()
