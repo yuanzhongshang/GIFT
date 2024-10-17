@@ -19,7 +19,7 @@
 
 GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, n1, n2, gene, pindex, R = NULL, maxiter = 1000, tol = 1e-4, pleio = 0, ncores = 1, in_sample_LD = F, filter = T){
   
-  if(filter==T & sum(pindex)>500){
+  if(filter==T & n2>100000){
     Zscore2_p<-pchisq(Zscore2^2, df = 1, lower.tail = FALSE) 
     genes<-rep(gene, pindex)
     inclu<-which(Zscore2_p<0.05)
