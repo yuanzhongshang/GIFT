@@ -6,10 +6,11 @@
 #' @param Sigma LD matrix from GWAS data.
 #' @param n Sample size of GWAS data.
 #' @param gene The gene names vector.
+#' @param pindex A vector with each element represents the number of cis-SNPs for each gene.
 #' @param in_sample_LD A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s)*Sigma+s*E and (1-s2)*Sigma2+s2*E, where s is estimated by estimate_s_rss in susieR, and E is an identity matrix.
 #' @return A data frame including the z scores and p values for the gene-based test. 
 
-GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene, in_sample_LD = F){
+GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene, pindex, in_sample_LD = F){
   
   if(sum(is.na(Sigma)) != 0){
     cat("Correlation Matrix cannot contain NA values.", "\n")
@@ -23,20 +24,19 @@ GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene, in_sampl
      Sigma <- (1-s)*Sigma + s*diag(length(betay))
   }
     nsnps <- nrow(betay)
-    
-    ZTY <- matrix(diag(Sigma) * betay, ncol = 1);
-    YTY_list <- list()
-    for(SNP in 1:nrow(Sigma)){
-      YTY_list[[length(YTY_list) + 1]] <- (n)*Sigma[SNP, SNP]*(se_betay^2)[SNP, 1] + betay[SNP,1]*ZTY[SNP,]
-    }
-    
-    YTY <- median((do.call("rbind", YTY_list))[,1])
-    
-    beta <- matrix(solve(t(betax) %*% Sigma %*% betax) %*% t(betax) %*% (ZTY), ncol = 1)
-    sigma0 <- as.numeric(unlist((YTY - t(ZTY)%*%betax%*%solve(t(betax)%*%Sigma%*%betax)%*%t(betax)%*%ZTY)/(n - ncol(betax))))
-    se <- matrix(sqrt(diag(solve(t(betax) %*% Sigma %*% betax) * c(sigma0))), ncol = 1)
+  
+    ZTY <- diag(Sigma) * betay
+    YTY_list <- (n * diag(Sigma) * (se_betay^2)) + (betay * ZTY)
+    YTY <- median(YTY_list)
+
+    betax_Sigma_inv <- solve(t(betax) %*% Sigma %*% betax)
+	betax_ZTY <- t(betax) %*% ZTY
+    beta <- matrix(betax_Sigma_inv %*% betax_ZTY, ncol = 1)
+    sigma0 <- as.numeric((YTY - t(betax_ZTY) %*% betax_Sigma_inv %*% betax_ZTY)/(n - ncol(betax)))
+    se <- matrix(sqrt(diag(betax_Sigma_inv * c(sigma0))), ncol = 1)
+	
     Z <- matrix(beta/se, ncol = 1)
-    p <- matrix(2*pnorm(-abs(Z), 0, 1), ncol = 1)
+    p <- matrix(pchisq(Z^2, df = 1, lower.tail = FALSE) , ncol = 1)
     result <- data.frame(gene = gene, z = Z, p = p)
     
     return(result)

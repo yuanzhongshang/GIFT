@@ -14,10 +14,30 @@
 #' @param pleio The option of controlling the pleiotropy, which can be determined by users. If pleio is set to 0, analysis will perform without controlling any SNP; If pleio is set to 1, analysis will perform  controlling the top SNP; If pleio is set to 2, analysis will perform controlling the top two SNPs.
 #' @param ncores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
 #' @param in_sample_LD A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E, where s1 and s2 are estimated by estimate_s_rss in susieR, and E is an identity matrix. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".
+#' @param filter A logical value, which represents whether filter the SNP with GWAS P>0.05. This step will improve the computational speed.
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 
-GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, n1, n2, gene, pindex, R = NULL, maxiter = 1000, tol = 1e-4, pleio = 0, ncores = 1, in_sample_LD = F){
+GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, n1, n2, gene, pindex, R = NULL, maxiter = 1000, tol = 1e-4, pleio = 0, ncores = 1, in_sample_LD = F, filter = T){
   
+  if(filter==T & sum(pindex)>500){
+    Zscore2_p<-pchisq(Zscore2^2, df = 1, lower.tail = FALSE) 
+    genes<-rep(gene, pindex)
+    inclu<-which(Zscore2_p<0.05)
+    for (g in unique(gene)) {
+      gene_snp_indices <- which(genes == g) 
+      if (length(intersect(gene_snp_indices, inclu)) == 0) {
+        inclu <- c(inclu, gene_snp_indices[which.min(Zscore2_p[gene_snp_indices])])  
+      }
+    }
+    inclu=sort(inclu)
+    Zscore1<-Zscore1[inclu,]
+    Zscore2<-Zscore2[inclu]
+    Sigma1<-Sigma1[inclu,inclu]
+    Sigma2<-Sigma2[inclu,inclu]
+    pindex<-as.numeric(table(genes[inclu]))
+    pindex_ordered <- names(table(genes[inclu]))
+    pindex<-pindex[match(gene, pindex_ordered)]
+  }
   betax<-Zscore1/sqrt(n1-1)
   betay<-Zscore2/sqrt(n2-1)
   betax<-as.matrix(betax)
@@ -32,7 +52,7 @@ GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, n1, n2, gene, pindex, R
   if(in_sample_LD==T){
 	result <- try({
 	  if(pleio == 0){
-	    H1=GIFT_summarycpp(betax, betay, Sigma1, Sigma2, R, constrFactor, pindex, k, n1, n2, maxiter, tol)
+	    H1<-GIFT_summarycpp(betax, betay, Sigma1, Sigma2, R, constrFactor, pindex, k, n1, n2, maxiter, tol)
 	    loglik0 <- H1$loglik[length(H1$loglik)]
 
 	    Cores=min(c(k,ncores))

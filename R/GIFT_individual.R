@@ -10,9 +10,10 @@
 #' @param tol The convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, which can be determined by users.
 #' @param pleio The option of controlling the pleiotropy, which can be determined by users. If pleio is set to 0, analysis will perform without controlling any SNP; If pleio is set to 1, analysis will perform  controlling the top SNP; If pleio is set to 2, analysis will perform controlling the top two SNPs.
 #' @param ncores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
+#' @param filter A logical value, which represents whether filter the SNP with GWAS P>0.05. This step will improve the computational speed.
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 
-GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =1000, tol=1e-4, pleio=0, ncores=1){
+GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =1000, tol=1e-4, pleio=0, ncores=1, filter = T){
   
   k<-length(pindex)
   eQTLdata<-na.omit(cbind(X,Zx))
@@ -34,7 +35,23 @@ GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =1000, tol=1e-4, p
     Y<-as.vector(scale(Yin_NA))
     Zx<-scale(Zxin_NA)
     Zy<-scale(Zyin_NA)
-
+    if(filter==T & sum(pindex)>500){
+    Zscore2_p<-pchisq(((t(Zy) %*% Y)/sqrt(dim(Zy)[1]-1))^2, df = 1, lower.tail = FALSE) 
+    genes<-rep(gene, pindex)
+    inclu<-which(Zscore2_p<0.05)
+    for (g in unique(gene)) {
+      gene_snp_indices <- which(genes == g) 
+      if (length(intersect(gene_snp_indices, inclu)) == 0) {
+        inclu <- c(inclu, gene_snp_indices[which.min(Zscore2_p[gene_snp_indices])])  
+      }
+    }
+    inclu=sort(inclu)
+    Zx<-Zx[,inclu]
+    Zy<-Zy[,inclu]
+    pindex<-as.numeric(table(genes[inclu]))
+    pindex_ordered <- names(table(genes[inclu]))
+    pindex<-pindex[match(gene, pindex_ordered)]
+  }
     #################################################################################
     if(pleio == 0){
       constrFactor <- numeric(k)
