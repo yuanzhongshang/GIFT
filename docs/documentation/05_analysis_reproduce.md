@@ -133,7 +133,7 @@ library(GIFT)
 load("./reproduce/simulation_data_generate/data_generate_individual.RData")
 
 ##run GIFT
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=1)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=1, filter=F)
 
 result
          gene   causal_effect            p
@@ -153,7 +153,7 @@ result
 load("./reproduce/simulation_data_generate/data_generate_summary.RData")
 
 ##run GIFT
-result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=T)
+result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=T, filter=F)
 
 result
          gene    causal_effect           p
