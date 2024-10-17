@@ -35,7 +35,7 @@ GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =1000, tol=1e-4, p
     Y<-as.vector(scale(Yin_NA))
     Zx<-scale(Zxin_NA)
     Zy<-scale(Zyin_NA)
-    if(filter==T & sum(pindex)>500){
+    if(filter==T & dim(Zy)[1]>100000){
     Zscore2_p<-pchisq(((t(Zy) %*% Y)/sqrt(dim(Zy)[1]-1))^2, df = 1, lower.tail = FALSE) 
     genes<-rep(gene, pindex)
     inclu<-which(Zscore2_p<0.05)
