@@ -21,7 +21,7 @@ using namespace std;
 
 
 void lmm_pxem_ptr2_individual(const arma::vec& X, const arma::mat& Zx, arma::mat Omega,  const int& maxIter,
-                     arma::mat& SigG, arma::vec& d, const arma::vec& constrp,int k, double& loglik_max,
+                     arma::vec& SigGdiag, arma::vec& d, const arma::vec& constrp,int k, double& loglik_max,
                      int& iteration, arma::mat& Sigb, arma::vec& mub){
   
   int n = X.n_elem/k, p = Zx.n_cols ;
@@ -44,11 +44,9 @@ void lmm_pxem_ptr2_individual(const arma::vec& X, const arma::mat& Zx, arma::mat
     su += n;
   }
   
-  vec SigGdiag = zeros<vec>(k);
   for(int v=0; v < k; v++){
     SigGdiag(v) = 1.0;
   }
-  SigG.diag() = SigGdiag;
 
   int r=0;
   vec rr(k);
@@ -78,7 +76,7 @@ void lmm_pxem_ptr2_individual(const arma::vec& X, const arma::mat& Zx, arma::mat
   vec loglik(maxIter);
   loglik(0) = -datum::inf;
   
-  mat SigG_inv(k,k),Sigb_inv(p,p),Op = ones<mat>(p,1), K1(p,p), Omega_inv(k,k), OR(k,k),invOR(k,k);
+  mat Sigb_inv(p,p),Op = ones<mat>(p,1), K1(p,p), Omega_inv(k,k), OR(k,k),invOR(k,k);
 
   double  E, M;
 
@@ -119,9 +117,8 @@ void lmm_pxem_ptr2_individual(const arma::vec& X, const arma::mat& Zx, arma::mat
   iteration = maxIter-1;
   for (int iter = 1; iter < maxIter; iter ++ ) {
     // E-step
-	SigG_inv = diagmat(1.0/(SigG.diag()));
 	mat B1=zeros(1,1);
-	vec O2=SigG_inv.diag();
+	vec O2=1.0/SigGdiag;
 	for(int v=0; v < k; v++){	  
 	  mat O1=ones<mat>(constrp(v),1);
 	  mat O=as_scalar(O2(v))*O1;
@@ -151,7 +148,6 @@ void lmm_pxem_ptr2_individual(const arma::vec& X, const arma::mat& Zx, arma::mat
 
     E = (n-1) * accu(Omega % Omega_inv % (O2*O2.t())) - 2*sum(mub % in) + sum(mub%(K1*mub));
     M = accu(mub % (1.0/d) % mub);
-   	vec SigGdiag = SigG.diag();
 	
 	loglik(iter) = - n*sum(log(SigGdiag % SigGdiag))*0.5 - sum(log(d))/2 - E/2- M/2 - sum(log(RR.diag())) - n*k/2*log(2*datum::pi);
 
@@ -178,7 +174,6 @@ void lmm_pxem_ptr2_individual(const arma::vec& X, const arma::mat& Zx, arma::mat
 	  }
 	  SigGdiag(g)= 2*p1/(-(p2-p1/SigGdiag(g))+sqrt(pow((p2-p1/SigGdiag(g)),2)+4*n*p1));
 	}
-	SigG.diag() = SigGdiag;
 	
     r=0;
 	for(int v=0; v < k; v++){
@@ -233,14 +228,13 @@ List GIFT_individualcpp(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Zy, ar
     // initialization using lmm_pxem
   double sigma2y,loglik0;
   int iter0;
-  mat SigG = zeros<mat>(k,k);
   mat Sigb = zeros<mat>(p,p);
-  vec mub  = zeros<vec>(p), d = zeros<vec>(p);
+  vec mub  = zeros<vec>(p), d = zeros<vec>(p), SigGdiag = zeros<vec>(k);
 
-  lmm_pxem_ptr2_individual(X, Zx, Omega, maxIter , SigG , d , constrp, k, loglik0 , iter0 , Sigb , mub);
+  lmm_pxem_ptr2_individual(X, Zx, Omega, maxIter , SigGdiag , d , constrp, k, loglik0 , iter0 , Sigb , mub);
 
   //declaration of variables used within loop
-  mat Omega_inv(k,k), OR(k,k), invOR(k,k),Sigb_inv(p,p), R(p,p), invR(p,p), SigG_inv(k,k), K1(p,p), K2(p,p), In1 = eye(n1,n1);
+  mat Omega_inv(k,k), OR(k,k), invOR(k,k),Sigb_inv(p,p), R(p,p), invR(p,p), K1(p,p), K2(p,p), In1 = eye(n1,n1);
   vec mutmp(p),  mu(p),  res_y(n2), G(n1);
 	
   //initialization of parameters
@@ -264,7 +258,6 @@ List GIFT_individualcpp(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Zy, ar
     contrn(v) = su;
     su += n1;
   }
-  vec SigGdiag = zeros<vec>(k);
 
   OR = chol(Omega);
   invOR = inv(OR);
@@ -327,11 +320,9 @@ List GIFT_individualcpp(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Zy, ar
   int Iteration = 1;
   for (int iter = 2; iter <= maxIter; iter ++ ) {
     // E-step
-
-	SigG_inv = diagmat(1.0/(SigG.diag()));
-    vec eVal = SigG.diag() % SigG.diag();
+    vec eVal = SigGdiag % SigGdiag;
 	mat B1=zeros(1,1);
-	vec O2=SigG_inv.diag();
+	vec O2=1.0/SigGdiag;
 	for(int v=0; v < k; v++){	  
 	  mat O1=ones<mat>(constrp(v),1);
 	  mat O=as_scalar(O2(v))*O1;
@@ -413,8 +404,6 @@ List GIFT_individualcpp(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Zy, ar
     }
     alpha2 = alpha*alpha.t();
 
-    SigGdiag=SigG.diag();
-
 	for(int g = 0; g < k; g++){
 	  vec G = X.subvec(contrn(g),contrn(g+1)-1)-lambda*Zx.submat(0,constrp1(g),n1-1,constrp1(g+1)-1)*mu.subvec(constrp1(g),constrp1(g+1)-1);
 	  double p1=(sum(G%G)* as_scalar(Omega_inv(g,g)) +lambda2*trace((XK24.submat(constrp1(g),constrp1(g),constrp1(g+1)-1,constrp1(g+1)-1))*(Sigb.submat(constrp1(g),constrp1(g),constrp1(g+1)-1,constrp1(g+1)-1))));
@@ -425,7 +414,6 @@ List GIFT_individualcpp(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Zy, ar
 	  }
 	  SigGdiag(g)= 2*p1/(-(p2-p1/SigGdiag(g))+sqrt(pow((p2-p1/SigGdiag(g)),2)+4*n1*p1));
 	}
-	SigG = diagmat(SigGdiag);
 	
 	A1=zeros(1,1);
 	for(int v=0; v < k; v++){	  
@@ -483,7 +471,7 @@ List GIFT_individualcpp(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Zy, ar
     
     
     List output =List::create(Rcpp::Named("alpha") = alpha,
-                        Rcpp::Named("sigmaG") = SigG % SigG,
+                        Rcpp::Named("sigmaG") = SigGdiag % SigGdiag,
                         Rcpp::Named("sigmaY") = sigma2y,
                         Rcpp::Named("sigmaZdiag") = d,
                         Rcpp::Named("loglik_seq") = loglik_out,
@@ -513,14 +501,13 @@ List GIFT_individualcpppleio(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Z
     // initialization using lmm_pxem
   double sigma2y,loglik0;
   int iter0;
-  mat SigG = zeros<mat>(k,k);
   mat Sigb = zeros<mat>(p,p);
-  vec mub  = zeros<vec>(p), d = zeros<vec>(p);
+  vec mub  = zeros<vec>(p), d = zeros<vec>(p), SigGdiag = zeros<vec>(k);
 
-  lmm_pxem_ptr2_individual(X, Zx, Omega, maxIter , SigG , d , constrp, k, loglik0 , iter0 , Sigb , mub);
+  lmm_pxem_ptr2_individual(X, Zx, Omega, maxIter , SigGdiag , d , constrp, k, loglik0 , iter0 , Sigb , mub);
 
   //declaration of variables used within loop
-  mat Omega_inv(k,k), OR(k,k), invOR(k,k), Sigb_inv(p,p), R(p,p), invR(p,p), SigG_inv(k,k), K1(p,p), K2(p,p), In1 = eye(n1,n1);
+  mat Omega_inv(k,k), OR(k,k), invOR(k,k), Sigb_inv(p,p), R(p,p), invR(p,p), K1(p,p), K2(p,p), In1 = eye(n1,n1);
   vec mutmp(p), mu(p), res_y(n2), G(n1);
 	
   //initialization of parameters
@@ -544,7 +531,6 @@ List GIFT_individualcpppleio(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Z
     contrn(v) = su;
     su += n1;
   }
-  vec SigGdiag = zeros<vec>(k);
 
   OR = chol(Omega);
   invOR = inv(OR);
@@ -613,10 +599,9 @@ List GIFT_individualcpppleio(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Z
   for (int iter = 2; iter <= maxIter; iter ++ ) {
   // E-step
 
-	SigG_inv = diagmat(1.0/(SigG.diag()));
-  vec eVal = SigG.diag() % SigG.diag();
+    vec eVal = SigGdiag % SigGdiag;
 	mat B1=zeros(1,1);
-	vec O2=SigG_inv.diag();
+	vec O2=1.0/SigGdiag;
 	for(int v=0; v < k; v++){	  
 	  mat O1=ones<mat>(constrp(v),1);
 	  mat O=as_scalar(O2(v))*O1;
@@ -715,8 +700,6 @@ List GIFT_individualcpppleio(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Z
     }
     alpha2 = alpha*alpha.t();
 
-    SigGdiag=SigG.diag();
-
 	for(int g = 0; g < k; g++){
 	  vec G = X.subvec(contrn(g),contrn(g+1)-1)-lambda*Zx.submat(0,constrp1(g),n1-1,constrp1(g+1)-1)*mu.subvec(constrp1(g),constrp1(g+1)-1);
 	  double p1=(sum(G%G)* as_scalar(Omega_inv(g,g)) +lambda2*trace((XK24.submat(constrp1(g),constrp1(g),constrp1(g+1)-1,constrp1(g+1)-1))*(Sigb.submat(constrp1(g),constrp1(g),constrp1(g+1)-1,constrp1(g+1)-1))));
@@ -727,7 +710,6 @@ List GIFT_individualcpppleio(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Z
 	  }
 	  SigGdiag(g)= 2*p1/(-(p2-p1/SigGdiag(g))+sqrt(pow((p2-p1/SigGdiag(g)),2)+4*n1*p1));
 	}
-	SigG = diagmat(SigGdiag);
 	
 	A1=zeros(1,1);
 	for(int v=0; v < k; v++){	  
@@ -785,7 +767,7 @@ List GIFT_individualcpppleio(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Z
     
     
     List output =List::create(Rcpp::Named("alpha") = alpha,
-                        Rcpp::Named("sigmaG") = SigG % SigG,
+                        Rcpp::Named("sigmaG") = SigGdiag % SigGdiag,
                         Rcpp::Named("sigmaY") = sigma2y,
                         Rcpp::Named("sigmaZdiag") = d,
                         Rcpp::Named("loglik_seq") = loglik_out,

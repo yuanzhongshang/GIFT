@@ -21,7 +21,7 @@ using namespace std;
 
 
 void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arma::mat Omega, arma::mat Omega_inv, arma::mat XK24, int n, const int& maxIter,
-                     arma::mat& SigG, arma::vec& d, const arma::vec& constrp,int k, double& loglik_max,
+                     arma::vec& SigGdiag, arma::vec& d, const arma::vec& constrp,int k, double& loglik_max,
                      int& iteration, arma::mat& Sigb, arma::vec& mub){
   
   int p = betaxh.n_rows ;
@@ -38,11 +38,9 @@ void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arm
   double G = 0, G1 = 0;
   
   // initialize
-  vec SigGdiag = zeros<vec>(k);
   for(int v=0; v < k; v++){
     SigGdiag(v) = 1.0;
   }
-  SigG.diag() = SigGdiag;
 
   int r=0;
   vec rr(k);
@@ -72,7 +70,7 @@ void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arm
   vec loglik(maxIter);
   loglik(0) = -datum::inf;
   
-  mat SigG_inv(k,k),Sigb_inv(p,p),Op = ones<mat>(p,1), K1(p,p);
+  mat Sigb_inv(p,p),Op = ones<mat>(p,1), K1(p,p);
 
   double  E, M;
 
@@ -81,10 +79,9 @@ void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arm
   iteration = maxIter-1;
   for (int iter = 1; iter < maxIter; iter ++ ) {
     // E-step
-	SigG_inv = diagmat(1.0/(SigG.diag()));
-	vec eVal =  SigG.diag() % SigG.diag();
+	vec eVal =  SigGdiag % SigGdiag;
 	mat B1=zeros(1,1);
-	vec O2=SigG_inv.diag();
+	vec O2=1.0/SigGdiag;
 	for(int v=0; v < k; v++){	  
 	  mat O1=ones<mat>(constrp(v),1);
 	  mat O=as_scalar(O2(v))*O1;
@@ -131,8 +128,6 @@ void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arm
 
     lambda2 = pow(lambda , 2);
 
-	vec SigGdiag = SigG.diag();
-
 	for(int g = 0; g < k; g++){
 	  G = as_scalar((n-1)-2*(n-1)*lambda*sum(mub.subvec(constrp2(g),constrp2(g+1)-1) % betaxh.submat(constrp2(g),g,constrp2(g+1)-1,g)) + lambda2 * mub.subvec(constrp2(g),constrp2(g+1)-1).t() * Sigma1.submat(constrp2(g),constrp2(g),constrp2(g+1)-1,constrp2(g+1)-1) * mub.subvec(constrp2(g),constrp2(g+1)-1));
 	  double p1=(G* as_scalar(Omega_inv(g,g)) +lambda2*trace((XK24.submat(constrp2(g),constrp2(g),constrp2(g+1)-1,constrp2(g+1)-1))*(Sigb.submat(constrp2(g),constrp2(g),constrp2(g+1)-1,constrp2(g+1)-1))));
@@ -148,7 +143,6 @@ void lmm_pxem_ptr2_summary(const arma::mat& betaxh, const arma::mat& Sigma1, arm
 		SigGdiag(g)= 1;
 	  }
 	}
-	SigG = diagmat(SigGdiag);
 
     r=0;
     int summ1=0;
@@ -211,11 +205,10 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
   //initialization of parameters
   double sigma2y,loglik0;
   int iter0;
-  mat SigG = zeros<mat>(k,k);
   mat Sigb = zeros<mat>(p,p);
-  vec mub  = zeros<vec>(p), d = zeros<vec>(p);
+  vec mub  = zeros<vec>(p), d = zeros<vec>(p), SigGdiag = zeros<vec>(k);
   
-  mat Omega_inv(k,k), OR(k,k), invOR(k,k),Sigb_inv(p,p), R(p,p), invR(p,p), SigG_inv(k,k), K1(p,p), K2(p,p);
+  mat Omega_inv(k,k), OR(k,k), invOR(k,k),Sigb_inv(p,p), R(p,p), invR(p,p), K1(p,p), K2(p,p);
   vec mutmp(p),  mu(p);
  
   double lambda = 1, lambda2 = lambda*lambda, G = 0, G1 = 0;
@@ -231,8 +224,6 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
 	sum0 += constrp(v);
 	constrp1(v+1) = sum0;
   }
-	  
-  vec SigGdiag = zeros<vec>(k);
 
   OR = chol(Omega);
   invOR = inv(OR);
@@ -255,7 +246,7 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
   mat XK24 = symmatu(XK23);
   
   // initialization using lmm_pxem
-  lmm_pxem_ptr2_summary(betaxh, Sigma1, Omega, Omega_inv, XK24, n1, maxIter, SigG, d, constrp, k, loglik0, iter0, Sigb, mub);
+  lmm_pxem_ptr2_summary(betaxh, Sigma1, Omega, Omega_inv, XK24, n1, maxIter, SigGdiag, d, constrp, k, loglik0, iter0, Sigb, mub);
   
   // initialization of likelihood
   loglik(0) = NAN;
@@ -263,10 +254,9 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
   for (int iter = 2; iter <= maxIter; iter ++ ) {
 		
     // E-step
-	SigG_inv = diagmat(1.0/(SigG.diag()));
-	vec eVal =  SigG.diag() % SigG.diag();
+	vec eVal =  SigGdiag % SigGdiag;
 	mat B1=zeros(1,1);
-	vec O2=SigG_inv.diag();
+	vec O2=1.0/SigGdiag;
 	for(int v=0; v < k; v++){	  
 	  mat O1=ones<mat>(constrp(v),1);
 	  mat O=as_scalar(O2(v))*O1;
@@ -347,8 +337,6 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
       alpha(a) = (tmp-tmp1)/trde;
 	}
     alpha2 = alpha*alpha.t();
-	
-	SigGdiag=SigG.diag();
 
 	for(int g = 0; g < k; g++){
 	  G = as_scalar((n1-1)-2*(n1-1)*lambda*sum(mu.subvec(constrp1(g),constrp1(g+1)-1) % betaxh.submat(constrp1(g),g,constrp1(g+1)-1,g)) + lambda2 * mu.subvec(constrp1(g),constrp1(g+1)-1).t() * Sigma1.submat(constrp1(g),constrp1(g),constrp1(g+1)-1,constrp1(g+1)-1) * mu.subvec(constrp1(g),constrp1(g+1)-1));
@@ -365,7 +353,6 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
 		SigGdiag(g)= 1;
 	  }
 	}
-	SigG = diagmat(SigGdiag);
 
 	A1=zeros(1,1);
 	for(int v=0; v < k; v++){	  
@@ -424,7 +411,7 @@ List GIFT_summarycpp(arma::mat betax, arma::vec betay, arma::mat Sigma1s, arma::
     
     
     List output =List::create(Rcpp::Named("alpha") = alpha,
-                        Rcpp::Named("sigmaG") = SigG % SigG,
+                        Rcpp::Named("sigmaG") = SigGdiag % SigGdiag,
                         Rcpp::Named("sigmaY") = sigma2y,
                         Rcpp::Named("sigmaZdiag") = d,
                         Rcpp::Named("loglik_seq") = loglik_out,
@@ -458,11 +445,10 @@ List GIFT_summarycpppleio(arma::mat betax, arma::vec betay, arma::mat Sigma1s, a
   //initialization of parameters
   double sigma2y,loglik0;
   int iter0;
-  mat SigG = zeros<mat>(k,k);
   mat Sigb = zeros<mat>(p,p);
-  vec mub  = zeros<vec>(p), d = zeros<vec>(p);
+  vec mub  = zeros<vec>(p), d = zeros<vec>(p), SigGdiag = zeros<vec>(k);
   
-  mat Omega_inv(k,k), OR(k,k), invOR(k,k),Sigb_inv(p,p), R(p,p), invR(p,p), SigG_inv(k,k), K1(p,p), K2(p,p);
+  mat Omega_inv(k,k), OR(k,k), invOR(k,k),Sigb_inv(p,p), R(p,p), invR(p,p), K1(p,p), K2(p,p);
   vec mutmp(p),  mu(p);
  
   double lambda = 1, lambda2 = lambda*lambda, G = 0, G1 = 0;
@@ -478,8 +464,6 @@ List GIFT_summarycpppleio(arma::mat betax, arma::vec betay, arma::mat Sigma1s, a
 	sum0 += constrp(v);
 	constrp1(v+1) = sum0;
   }
-	  
-  vec SigGdiag = zeros<vec>(k);
 
   OR = chol(Omega);
   invOR = inv(OR);
@@ -506,7 +490,7 @@ List GIFT_summarycpppleio(arma::mat betax, arma::vec betay, arma::mat Sigma1s, a
   gamma = inv(Sigma2.submat(pleioidx,pleioidx))*betayh.elem(pleioidx)*(n2-1);
   
   // initialization using lmm_pxem
-  lmm_pxem_ptr2_summary(betaxh, Sigma1, Omega, Omega_inv, XK24, n1, maxIter, SigG, d, constrp, k, loglik0, iter0, Sigb, mub);
+  lmm_pxem_ptr2_summary(betaxh, Sigma1, Omega, Omega_inv, XK24, n1, maxIter, SigGdiag, d, constrp, k, loglik0, iter0, Sigb, mub);
   
   // initialization of likelihood
   loglik(0) = NAN;
@@ -514,10 +498,9 @@ List GIFT_summarycpppleio(arma::mat betax, arma::vec betay, arma::mat Sigma1s, a
   for (int iter = 2; iter <= maxIter; iter ++ ) {
 		
     // E-step
-	SigG_inv = diagmat(1.0/(SigG.diag()));
-	vec eVal =  SigG.diag() % SigG.diag();
+	vec eVal =  SigGdiag % SigGdiag;
 	mat B1=zeros(1,1);
-	vec O2=SigG_inv.diag();
+	vec O2=1.0/SigGdiag;
 	for(int v=0; v < k; v++){	  
 	  mat O1=ones<mat>(constrp(v),1);
 	  mat O=as_scalar(O2(v))*O1;
@@ -609,8 +592,6 @@ List GIFT_summarycpppleio(arma::mat betax, arma::vec betay, arma::mat Sigma1s, a
       alpha(a) = (tmp-tmp1)/trde;
 	}
     alpha2 = alpha*alpha.t();
-	
-	SigGdiag=SigG.diag();
 
 	for(int g = 0; g < k; g++){
 	  G = as_scalar((n1-1)-2*(n1-1)*lambda*sum(mu.subvec(constrp1(g),constrp1(g+1)-1) % betaxh.submat(constrp1(g),g,constrp1(g+1)-1,g)) + lambda2 * mu.subvec(constrp1(g),constrp1(g+1)-1).t() * Sigma1.submat(constrp1(g),constrp1(g),constrp1(g+1)-1,constrp1(g+1)-1) * mu.subvec(constrp1(g),constrp1(g+1)-1));
@@ -627,7 +608,6 @@ List GIFT_summarycpppleio(arma::mat betax, arma::vec betay, arma::mat Sigma1s, a
 		SigGdiag(g)= 1;
 	  }
 	}
-	SigG = diagmat(SigGdiag);
 
 	A1=zeros(1,1);
 	for(int v=0; v < k; v++){	  
@@ -686,7 +666,7 @@ List GIFT_summarycpppleio(arma::mat betax, arma::vec betay, arma::mat Sigma1s, a
     
     
     List output =List::create(Rcpp::Named("alpha") = alpha,
-                        Rcpp::Named("sigmaG") = SigG % SigG,
+                        Rcpp::Named("sigmaG") = SigGdiag % SigGdiag,
                         Rcpp::Named("sigmaY") = sigma2y,
                         Rcpp::Named("sigmaZdiag") = d,
                         Rcpp::Named("loglik_seq") = loglik_out,
