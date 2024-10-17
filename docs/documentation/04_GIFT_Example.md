@@ -23,6 +23,7 @@ The optional inputs are:
 - tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4.
 - pleio: The user-defined option of controlling the pleiotropy, with the default to be 0. If 'pleio' is set to 0, the analysis will be performed without controlling any SNP; If 'pleio' is set to 1, the analysis will be performed controlling the top SNP; If 'pleio' is set to 2, the analysis will be performed controlling the top two SNPs. 
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux. 
+- filter: The user-defined logical value, with the default to be TRUE. If 'filter' is set to TRUE, the analysis will be performed using the SNPs with a GWAS p-value < 0.05 when the GWAS sample size over 100,000. This step will improve the computational speed.
 
 #### Step 1: Pre-process the genotype data with different formats.
 The function `pre_process_individual` is able to convert different genotype data formats to GIFT inputs. In particular, this function is flexible to handle plink binary format (.bim/.fam./.bed), vcf, ped/map format, csv, and tsv file. Here, we take various genotype data formats from GEUVADIS data in [page](https://yuanzhongshang.github.io/GIFT/documentation/03_data.html) for example. Of note, in this step, cis-genotype matrix has been standardized to have a mean of zero and standard derivation of one. 
@@ -49,7 +50,7 @@ load(paste0(dir, "/example/simulation/individual/individual_data.RData"))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=1)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=1, filter=T)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene within a focal region. 
 ```r
@@ -64,7 +65,7 @@ Indeed, horizontal pleiotropy occurs when SNPs affect the trait of interest thro
 applications. Here, we used 'pleio' in the function to control the pleiotropic effects of the top one/two SNPs in a focal region.
 ```r
 #### control the top SNP
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=1, ncores=1)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=1, ncores=1, filter=T)
 result
       gene causal_effect            p
 1     CCNH    0.01503796 8.519840e-01
@@ -72,7 +73,7 @@ result
 3    RASA1    0.35411571 6.906036e-06
 4 TMEM161B   -0.03311768 3.255081e-01
 #### control the top two SNPs
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=2, ncores=1)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=2, ncores=1, filter=T)
 result
       gene causal_effect            p
 1     CCNH    0.04643405 1.000000e+00
@@ -100,6 +101,7 @@ The optional inputs are:
 - pleio: The user-defined option of controlling the pleiotropy, with the default to be 0. If 'pleio' is set to 0, the analysis will be performed without controlling any SNP; If 'pleio' is set to 1, the analysis will be performed controlling the top SNP; If 'pleio' is set to 2, the analysis will be performed controlling the top two SNPs. 
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux.
 - in_sample_LD: A logical value represents whether in-sample LD was used, with the default to be False. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)\*Sigma1+s1\*E and (1-s2)\*Sigma2+s2\*E where both s1 and s2 are estimated by function estimate_s_rss() in susieR. A grid search algorithm is performed over the range from 0.1 to 1 once the estimation from susieR does not work well. The function estimate_s_rss() depends on another R package "susieR".
+- filter: The user-defined logical value, with the default to be TRUE. If 'filter' is set to TRUE, the analysis will be performed using the SNPs with a GWAS p-value < 0.05 when the GWAS sample size over 100,000. This step will improve the computational speed.
 
 #### Step 1: Pre-process the summary statistics with different formats.
 The function `pre_process_summary` is able to convert different summary statistics and LD matrix data formats to GIFT inputs. In particular, this function is flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also flexible to handle LD matrix either from matrix or a long format such as h5 format. We provide the the genome-wide eQTL summary statistics from GEUVADIS data in [dropbox](https://www.dropbox.com/scl/fo/4nqcmkblerspfmva5stwf/ANHZU_kX2AlveEEbx9DKbZU?rlkey=qjcxprlk83t7pw8ka2ne2v4w9&dl=0), and you can follow the [code](https://github.com/yuanzhongshang/GIFT/issues/6#issuecomment-2067722099) to obtain the approximation estimation of R from the summary statistics. Besides, we also provide the correlation matrix among gene expressions for each chromosome from GEUVADIS data. You can access it [here](https://www.dropbox.com/scl/fo/7mssyexppzqknj6a7vjfc/AFW5ZHaRYDMsEGozc9i8R7c?rlkey=rnnxdbu2kile9l4dvcw5hnyi7&dl=0). Additionally, [eQTLGen Consortium](https://www.eqtlgen.org/phase1.html) provides the cis-eQTL and trans-eQTL results; our lab provides the [cis-eQTL mapping summary statistics](https://xiangzhou.github.io/resources/) for African American and European American from GENOA. If you only have the cis-eQTL summary statistics, you can directly set the value in the blue boxes to be zero in the figure above. In other words, GIFT can handle inputs containing cis-SNPs for each gene. We have already modified the pre-processing function to include this step.
@@ -138,7 +140,7 @@ R <- as.matrix(read.table(paste0(dir, "/example/simulation/summary/R.txt")))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=T)
+result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=T, filter=T)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
 ```r
@@ -153,7 +155,7 @@ Note that, the summary statistics version of GIFT often requires the in-sample L
 ```r
 ### load the LD matrix from 1,000 Genomes project
 LD <- as.matrix(read.table("./example/simulation/summary/LDmatrix10000G.txt"))
-result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=F)
+result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=F, filter=T)
 result
       gene causal_effect            p
 1     CCNH   0.018184848 7.947008e-01
@@ -200,7 +202,7 @@ GWASLDfile <- "./example/simulation/summary/pre_process/LDmatrix2.txt"
 snplist <- read.table("./example/simulation/summary/pre_process/snplist.txt")$V1
 #### pre-process the file to be a list including the beta vector, corresponding se vector and LD matrix from GWAS data
 convert <- pre_process_twostage(GWASfile, GWASLDfile, snplist)
-betay <- as.matrix(convert$beta)
+betay <- as.vector(convert$beta)
 se_betay <- as.matrix(convert$se)
 Sigma <- convert$LDmatrix
 ```
@@ -281,7 +283,7 @@ load("./example/realdata/realdata.RData")
 #### perform conditional fine-mapping for TWAS analysis
 library(GIFT)
 library(parallel)
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=8)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=8, filter=T)
 result
        gene causal_effect             p
 1     ABCA1 -1.857260e+00 2.938669e-179
