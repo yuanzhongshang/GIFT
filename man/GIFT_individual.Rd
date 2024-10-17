@@ -14,7 +14,8 @@ GIFT_individual(
   maxiter = 1000,
   tol = 1e-04,
   pleio = 0,
-  ncores = 1
+  ncores = 1,
+  filter = T
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ GIFT_individual(
 \item{pleio}{The option of controlling the pleiotropy, which can be determined by users. If pleio is set to 0, analysis will perform without controlling any SNP; If pleio is set to 1, analysis will perform  controlling the top SNP; If pleio is set to 2, analysis will perform controlling the top two SNPs.}
 
 \item{ncores}{The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.}
+
+\item{filter}{A logical value, which represents whether filter the SNP with GWAS P>0.05. This step will improve the computational speed.}
 }
 \value{
 A data frame including the causal effect estimates and p values for the gene-based test.

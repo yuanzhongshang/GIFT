@@ -18,7 +18,8 @@ GIFT_summary(
   tol = 1e-04,
   pleio = 0,
   ncores = 1,
-  in_sample_LD = F
+  in_sample_LD = F,
+  filter = T
 )
 }
 \arguments{
@@ -45,6 +46,8 @@ GIFT_summary(
 \item{ncores}{The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.}
 
 \item{in_sample_LD}{A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E, where s1 and s2 are estimated by estimate_s_rss in susieR, and E is an identity matrix. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".}
+
+\item{filter}{A logical value, which represents whether filter the SNP with GWAS P>0.05. This step will improve the computational speed.}
 
 \item{Zscore_1}{Zscore matrix of the cis-SNP effect size matrix, each column for one specific gene from eQTL data.}
 
