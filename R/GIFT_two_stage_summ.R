@@ -6,11 +6,10 @@
 #' @param Sigma LD matrix from GWAS data.
 #' @param n Sample size of GWAS data.
 #' @param gene The gene names vector.
-#' @param pindex A vector with each element represents the number of cis-SNPs for each gene.
 #' @param in_sample_LD A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s)*Sigma+s*E and (1-s2)*Sigma2+s2*E, where s is estimated by estimate_s_rss in susieR, and E is an identity matrix.
 #' @return A data frame including the z scores and p values for the gene-based test. 
 
-GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene, pindex, in_sample_LD = F){
+GIFT_two_stage_summ <- function(betax, betay, se_betay, Sigma, n, gene, in_sample_LD = F){
   
   if(sum(is.na(Sigma)) != 0){
     cat("Correlation Matrix cannot contain NA values.", "\n")
