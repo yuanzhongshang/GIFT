@@ -19,8 +19,8 @@ The function `GIFT_individual` is the main function for GIFT with individual-lev
 ![GIFT\_pipeline](GIFT_individual_inputs.png)
 
 The optional inputs are:
-- maxiter: The user-defined maximum iteration, with the default to be 1000.
-- tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4.
+- maxiter: The user-defined maximum iteration, with the default to be 100.
+- tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-3.
 - pleio: The user-defined option of controlling the pleiotropy, with the default to be 0. If 'pleio' is set to 0, the analysis will be performed without controlling any SNP; If 'pleio' is set to 1, the analysis will be performed controlling the top SNP; If 'pleio' is set to 2, the analysis will be performed controlling the top two SNPs. 
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux. 
 - filter: The user-defined logical value, with the default to be T. If 'filter' is set to T, the analysis will be performed using the SNPs with a GWAS p-value < 0.05 when the GWAS sample size over 100,000. This step will improve the computational speed.
@@ -50,35 +50,35 @@ load(paste0(dir, "/example/simulation/individual/individual_data.RData"))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=1, filter=T)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=100, tol=1e-3, pleio=0, ncores=1, filter=T)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene within a focal region. 
 ```r
 result
       gene causal_effect            p
-1     CCNH    0.01209639 8.594982e-01
-2    COX7C    0.02111053 8.028104e-01
-3    RASA1    0.35309347 7.131827e-06
-4 TMEM161B   -0.03306309 3.257628e-01
+1     CCNH    0.01393691 8.567936e-01
+2    COX7C    0.02137385 8.030216e-01
+3    RASA1    0.35142810 7.122607e-06
+4 TMEM161B   -0.03313658 3.256314e-01
 ```
 Indeed, horizontal pleiotropy occurs when SNPs affect the trait of interest through pathways other than or in addition to the gene and is partical important to control for as it is widespread in TWAS
 applications. Here, we used 'pleio' in the function to control the pleiotropic effects of the top one/two SNPs in a focal region.
 ```r
 #### control the top SNP
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=1, ncores=1, filter=T)
-result
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=100, tol=1e-3, pleio=1, ncores=1, filter=T)
       gene causal_effect            p
-1     CCNH    0.01503796 8.519840e-01
-2    COX7C    0.02175502 8.019002e-01
-3    RASA1    0.35411571 6.906036e-06
-4 TMEM161B   -0.03311768 3.255081e-01
+1     CCNH    0.01499428 8.456540e-01
+2    COX7C    0.02163585 8.018316e-01
+3    RASA1    0.35421252 6.862475e-06
+4 TMEM161B   -0.03312626 3.252345e-01
+
 #### control the top two SNPs
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=2, ncores=1, filter=T)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=100, tol=1e-3, pleio=2, ncores=1, filter=T)
 result
       gene causal_effect            p
-1     CCNH    0.04643405 1.000000e+00
-2    COX7C    0.01620003 7.640883e-01
-3    RASA1    0.32028155 2.116944e-06
+1     CCNH    0.04643412 1.000000e+00
+2    COX7C    0.01620005 7.646110e-01
+3    RASA1    0.32028143 2.115897e-06
 4 TMEM161B   -0.03371455 3.059351e-01
 ```
 
@@ -96,8 +96,8 @@ The function `GIFT_summary` is the main function for GIFT with summary statistic
 
 The optional inputs are:
 - R: Estimated correlation matrix of gene expressions, with the default to be an identity matrix.
-- maxiter: The user-defined maximum iteration, with the default to be 1000.
-- tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-4.
+- maxiter: The user-defined maximum iteration, with the default to be 100.
+- tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-3.
 - pleio: The user-defined option of controlling the pleiotropy, with the default to be 0. If 'pleio' is set to 0, the analysis will be performed without controlling any SNP; If 'pleio' is set to 1, the analysis will be performed controlling the top SNP; If 'pleio' is set to 2, the analysis will be performed controlling the top two SNPs. 
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux.
 - in_sample_LD: A logical value represents whether in-sample LD was used, with the default to be F. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)\*Sigma1+s1\*E and (1-s2)\*Sigma2+s2\*E where both s1 and s2 are estimated by function estimate_s_rss() in susieR. A grid search algorithm is performed over the range from 0.1 to 1 once the estimation from susieR does not work well. The function estimate_s_rss() depends on another R package "susieR".
@@ -140,28 +140,28 @@ R <- as.matrix(read.table(paste0(dir, "/example/simulation/summary/R.txt")))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=T, filter=T)
+result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=100, tol=1e-3, pleio=0, ncores=1, in_sample_LD=T, filter=T)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
 ```r
 result
       gene causal_effect            p
-1     CCNH    0.01160943 8.651676e-01
-2    COX7C    0.02205361 7.943974e-01
-3    RASA1    0.35339282 8.671951e-06
-4 TMEM161B   -0.03373786 3.197526e-01 
+1     CCNH    0.01316765 8.602123e-01
+2    COX7C    0.02227241 7.928144e-01
+3    RASA1    0.35198062 8.662834e-06
+4 TMEM161B   -0.03380084 3.196861e-01
 ```
 Note that, the summary statistics version of GIFT often requires the in-sample LD matrix. If the in-sample LD matrix is not available, it can be also calculated from the reference panel data (e.g., 1,000 Genomes project). It would be better to ensure the ethnicity of the reference panel is consistent with that of the analyzed data, details in [here](https://yuanzhongshang.github.io/GIFT/documentation/06_Summary_statistic_issues.html). If in-sample LD was not used, the LD matrix is regularized to be (1-s1)\*Sigma1+s1\*E and (1-s2)\*Sigma2+s2\*E where both s1 and s2 are estimated by [estimate_s_rss](https://stephenslab.github.io/susieR/reference/estimate_s_rss.html) in susieR. A grid search algorithm is performed over the range from 0.1 to 1 once the estimation from susieR does not work well. The LD matrix from 1,000 Genomes project is also provided.
 ```r
 ### load the LD matrix from 1,000 Genomes project
 LD <- as.matrix(read.table("./example/simulation/summary/LDmatrix10000G.txt"))
-result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=F, filter=T)
+result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=100, tol=1e-3, pleio=0, ncores=1, in_sample_LD=F, filter=T)
 result
       gene causal_effect            p
-1     CCNH   0.018184848 7.947008e-01
-2    COX7C   0.006001928 8.894354e-01
-3    RASA1   0.323391569 2.281911e-05
-4 TMEM161B  -0.065659508 3.244583e-02
+1     CCNH   0.020470524 7.953100e-01
+2    COX7C   0.006081369 8.892783e-01
+3    RASA1   0.320639369 2.284785e-05
+4 TMEM161B  -0.065766665 3.245101e-02
 ```
 
 ### Two-stage version of GIFT: Using pre-trained weights and summary statistics as input
@@ -283,17 +283,18 @@ load("./example/realdata/realdata.RData")
 #### perform conditional fine-mapping for TWAS analysis
 library(GIFT)
 library(parallel)
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=8, filter=T)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=100, tol=1e-3, pleio=0, ncores=8, filter=T)
 result
        gene causal_effect             p
-1     ABCA1 -1.857260e+00 2.938669e-179
-2 NIPSNAP3A -1.500607e+01  1.971649e-01
-3      TAL2 -3.555218e-02  4.157664e-01
-4     FSD1L  7.122696e-04  1.000000e+00
-5   SLC44A1 -6.702161e-02  1.171462e-01
-6   TMEM38B -2.780012e-03  7.819523e-01
-7 NIPSNAP3B -2.223423e+00  8.610865e-01
-8      FKTN  3.041027e-02  9.781747e-01
+1     ABCA1   2.277286969 7.548665e-179
+2 NIPSNAP3A  -3.383125022  7.307875e-01
+3      TAL2  -0.215699089  6.765749e-01
+4     FSD1L  -0.009743902  9.954436e-01
+5   SLC44A1  -0.310627129  1.218212e-01
+6   TMEM38B  -0.004919898  1.000000e+00
+7 NIPSNAP3B  -2.418222266  1.000000e+00
+8      FKTN   0.134974204  9.464903e-01
+
 #### visualize the result by Manhattan plot
 GIFTresult=result
 GIFTresult$BP=TWASresult$BP
