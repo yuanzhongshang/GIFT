@@ -145,9 +145,9 @@ void lmm_pxem_ptr2_individual(const arma::vec& X, const arma::mat& Zx, arma::mat
 	
 	loglik(iter) = - n*sum(log(SigGdiag % SigGdiag))*0.5 - sum(log(d))/2 - E/2- M/2 - sum(log(RR.diag())) - n*k/2*log(2*datum::pi);
 
-    //if ( loglik(iter) - loglik(iter - 1) < 0 ){
-    //  perror("The likelihood failed to increase!");
-    //}
+    if ( loglik(iter) - loglik(iter - 1) < -1e-7 ){
+      perror("The likelihood failed to increase!");
+    }
     
     if (abs(loglik(iter) - loglik(iter - 1)) < 1e-10) {
       iteration = iter;
@@ -364,9 +364,9 @@ List GIFT_individualcpp(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Zy, ar
       
     loglike_twas_individual(R, E, res_ysum, M, eVal, d, sigma2y, n1 , n2, loglik(iter - 1));
      
-    //if ( loglik(iter - 1) - loglik(iter - 2) < -1e-7){
-    //  perror("The likelihood failed to increase!");
-    //}
+    if ( loglik(iter - 1) - loglik(iter - 2) < -1e-5){
+      perror("The likelihood failed to increase!");
+    }
     // M-step
 	  
     double tr1 = trace(K1*Sigb);
@@ -652,9 +652,9 @@ List GIFT_individualcpppleio(arma::vec X, arma::vec y, arma::mat Zx, arma::mat Z
       
     loglike_twas_individual(R, E, res_ysum, M, eVal, d, sigma2y, n1 , n2, loglik(iter - 1));
      
-    //if ( loglik(iter - 1) - loglik(iter - 2) < -1e-7){
-    //  perror("The likelihood failed to increase!");
-    //}
+    if ( loglik(iter - 1) - loglik(iter - 2) < -1e-5){
+      perror("The likelihood failed to increase!");
+    }
     // M-step
 	  
     double tr1 = trace(K1*Sigb);
