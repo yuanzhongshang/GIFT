@@ -14,8 +14,8 @@ GIFT_summary(
   gene,
   pindex,
   R = NULL,
-  maxiter = 1000,
-  tol = 1e-04,
+  maxiter = 100,
+  tol = 1e-03,
   pleio = 0,
   ncores = 1,
   in_sample_LD = F,
@@ -23,6 +23,10 @@ GIFT_summary(
 )
 }
 \arguments{
+\item{Zscore_1}{Zscore matrix of the cis-SNP effect size matrix, each column for one specific gene from eQTL data.}
+
+\item{Zscore_2}{Zscore vector of the cis-SNP effect size vector from GWAS data.}
+
 \item{Sigma1}{LD matrix from eQTL data.}
 
 \item{Sigma2}{LD matrix from GWAS data, both Sigma1 and Sigma2 are often the same from the reference panel.}
@@ -47,11 +51,7 @@ GIFT_summary(
 
 \item{in_sample_LD}{A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E, where s1 and s2 are estimated by estimate_s_rss in susieR, and E is an identity matrix. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".}
 
-\item{filter}{A logical value, which represents whether filter the SNP with GWAS P>0.05. This step will improve the computational speed.}
-
-\item{Zscore_1}{Zscore matrix of the cis-SNP effect size matrix, each column for one specific gene from eQTL data.}
-
-\item{Zscore_2}{Zscore vector of the cis-SNP effect size vector from GWAS data.}
+\item{filter}{A logical value, which represents whether filter the SNP with GWAS P>0.05 when the GWAS sample size over 100,000. This step will improve the computational speed.}
 }
 \value{
 A data frame including the causal effect estimates and p values for the gene-based test.
