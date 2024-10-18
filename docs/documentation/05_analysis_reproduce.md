@@ -133,17 +133,18 @@ library(GIFT)
 load("./reproduce/simulation_data_generate/data_generate_individual.RData")
 
 ##run GIFT
-result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=1000, tol=1e-4, pleio=0, ncores=1, filter=T)
+result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=100, tol=1e-3, pleio=0, ncores=1, filter=T)
 
 result
-         gene   causal_effect            p
-1     C4orf29    0.3940422901 0.0001300531
-2     C4orf33   -0.0274405121 0.7029942822
-3      LARP1B   -0.1511359367 0.2229299816
-4      PGRMC2    0.1500225583 0.0690925279
-5       PHF17   -0.0574943210 0.1795472908
-6 RP11-420A23.1  0.0756822259 0.3894757754
-7       SCLT1   -0.0004761227 0.9933530763
+           gene causal_effect            p
+1       C4orf29  0.3960856907 0.0001294718
+2       C4orf33 -0.0274764328 0.7029436847
+3        LARP1B -0.1485976992 0.2228474081
+4        PGRMC2  0.1491667252 0.0690383561
+5         PHF17 -0.0575508216 0.1795502163
+6 RP11-420A23.1  0.0749542623 0.3895547946
+7         SCLT1 -0.0003616375 1.0000000000
+
 ```
 
 ### Using summary statistics as input
@@ -153,17 +154,17 @@ result
 load("./reproduce/simulation_data_generate/data_generate_summary.RData")
 
 ##run GIFT
-result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=1000, tol=1e-4, pleio=0, ncores=1, in_sample_LD=T, filter=T)
+result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=100, tol=1e-3, pleio=0, ncores=1, in_sample_LD=T, filter=T)
 
 result
-         gene    causal_effect           p
-1     C4orf29     0.411634628 9.111960e-06
-2     C4orf33     0.007711403 7.982367e-01
-3      LARP1B    -0.107352053 2.677252e-01
-4      PGRMC2     0.135373699 4.580617e-02
-5       PHF17    -0.046618238 1.993550e-01
-6 RP11-420A23.1   0.041653980 4.335418e-01
-7       SCLT1    -0.013595634 7.343946e-01
+           gene causal_effect            p
+1       C4orf29   0.410449087 9.015665e-06
+2       C4orf33   0.007738882 7.971784e-01
+3        LARP1B  -0.108524174 2.665893e-01
+4        PGRMC2   0.135714320 4.555127e-02
+5         PHF17  -0.046589484 1.986309e-01
+6 RP11-420A23.1   0.041792289 4.329285e-01
+7         SCLT1  -0.013644859 7.362300e-01
 ```
 
 ## Run FOCUS
