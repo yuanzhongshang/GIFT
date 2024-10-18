@@ -4,13 +4,7 @@
 #include <R.h>
 #include <Rmath.h>
 #include <cmath>
-#include <set>
-#include <stdio.h>
-#include <stdlib.h> 
-#include <cstring>
 #include <Rcpp.h>
-#include <ctime>
-
 
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
 // [[Rcpp::plugins(cpp11)]]
