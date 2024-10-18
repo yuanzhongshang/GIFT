@@ -26,8 +26,8 @@ See [Tutorial](https://yuanzhongshang.github.io/GIFT/) for detailed documentatio
 
 | Version | Description                                                                                                                                                                                                                                             |
 |---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [1.0](https://github.com/yuanzhongshang/GIFT/releases/tag/v1.0) | Initial release.                                                                                                                                                                                                                   |
-| 2.0 | Optimized some code and added a filter parameter to improve running speed. More to come soon.                                                                                                                                       |
+| [1.0](https://github.com/yuanzhongshang/GIFT/tree/v1.0) | Initial release.                                                                                                                                                                                                                   |
+| [2.0](https://github.com/yuanzhongshang/GIFT/tree/v2.0) | Optimized some code and added a filter parameter to improve running speed. More to come soon.                                                                                                                                       |
 
 ## Development
 This R package is developed by Lu Liu, Zhongshang Yuan and Xiang Zhou.
