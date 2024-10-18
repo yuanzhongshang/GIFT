@@ -17,7 +17,7 @@
 #' @param filter A logical value, which represents whether filter the SNP with GWAS P>0.05. This step will improve the computational speed.
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 
-GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, n1, n2, gene, pindex, R = NULL, maxiter = 1000, tol = 1e-4, pleio = 0, ncores = 1, in_sample_LD = F, filter = T){
+GIFT_summary<-function(Zscore1, Zscore2, Sigma1, Sigma2, n1, n2, gene, pindex, R = NULL, maxiter = 100, tol = 1e-3, pleio = 0, ncores = 1, in_sample_LD = F, filter = T){
   
   if(filter==T & n2>100000){
     Zscore2_p<-pchisq(Zscore2^2, df = 1, lower.tail = FALSE) 
