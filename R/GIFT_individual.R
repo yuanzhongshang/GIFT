@@ -10,7 +10,7 @@
 #' @param tol The convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, which can be determined by users.
 #' @param pleio The option of controlling the pleiotropy, which can be determined by users. If pleio is set to 0, analysis will perform without controlling any SNP; If pleio is set to 1, analysis will perform  controlling the top SNP; If pleio is set to 2, analysis will perform controlling the top two SNPs.
 #' @param ncores The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.
-#' @param filter A logical value, which represents whether filter the SNP with GWAS P>0.05. This step will improve the computational speed.
+#' @param filter A logical value, which represents whether filter the SNP with GWAS P>0.05 when the GWAS sample size over 100,000. This step will improve the computational speed.
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 
 GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =100, tol=1e-3, pleio=0, ncores=1, filter = T){
