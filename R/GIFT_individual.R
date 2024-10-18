@@ -13,7 +13,7 @@
 #' @param filter A logical value, which represents whether filter the SNP with GWAS P>0.05. This step will improve the computational speed.
 #' @return A data frame including the causal effect estimates and p values for the gene-based test. 
 
-GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =1000, tol=1e-4, pleio=0, ncores=1, filter = T){
+GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =100, tol=1e-3, pleio=0, ncores=1, filter = T){
   
   k<-length(pindex)
   eQTLdata<-na.omit(cbind(X,Zx))
