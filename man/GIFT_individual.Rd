@@ -11,8 +11,8 @@ GIFT_individual(
   Zy,
   gene,
   pindex,
-  maxiter = 1000,
-  tol = 1e-04,
+  maxiter = 100,
+  tol = 1e-03,
   pleio = 0,
   ncores = 1,
   filter = T
@@ -39,7 +39,7 @@ GIFT_individual(
 
 \item{ncores}{The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.}
 
-\item{filter}{A logical value, which represents whether filter the SNP with GWAS P>0.05. This step will improve the computational speed.}
+\item{filter}{A logical value, which represents whether filter the SNP with GWAS P>0.05 when the GWAS sample size over 100,000. This step will improve the computational speed.}
 }
 \value{
 A data frame including the causal effect estimates and p values for the gene-based test.
