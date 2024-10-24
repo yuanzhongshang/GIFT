@@ -24,10 +24,11 @@ See [Tutorial](https://yuanzhongshang.github.io/GIFT/) for detailed documentatio
 
 ## Version History
 
-| Version | Description                                                                                                                                                                                                                                             |
-|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [1.0](https://github.com/yuanzhongshang/GIFT/tree/v1.0) | Initial release.                                                                                                                                                                                                                   |
-| [2.0](https://github.com/yuanzhongshang/GIFT/tree/v2.0) | Optimized some code and added a filter parameter to improve running speed. More to come soon.                                                                                                                                       |
+| Version | Updated      | Description                                                                                                                                                                                                                                             |
+|---------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [1.0](https://github.com/yuanzhongshang/GIFT/tree/v1.0) | 2022-10-31| Initial release.                                                                                                                                                                                                                   |
+| [2.0](https://github.com/yuanzhongshang/GIFT/tree/v2.0) | 2024-10-17|Optimized some code and added a filter parameter to improve running speed.                                                                                                                                 |
+| [2.1](https://github.com/yuanzhongshang/GIFT/tree/v2.0) | 2024-10-24|Optimized some code and added a split parameter to improve running speed.                                                                                                                                       |
 
 ## Development
 This R package is developed by Lu Liu, Zhongshang Yuan and Xiang Zhou.
