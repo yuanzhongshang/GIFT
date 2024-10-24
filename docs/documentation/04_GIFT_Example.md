@@ -128,14 +128,12 @@ Zscore1 <- convert$Zscore1
 Zscore2 <- convert$Zscore2
 LDmatrix1 <- convert$LDmatrix1
 LDmatrix2 <- convert$LDmatrix2
+n1 <- convert$n1
+n2 <- convert$n2
 ```
 
-#### Step 2: Read other datasets.
+#### Step 2: Read the estimated correlated matrix of gene expressions.
 ```r
-### input the sample sizes of eQTL data and GWAS data
-n1 <- 465
-n2 <- 5000
-### load the estimated correlated matrix of gene expressions
 R <- as.matrix(read.table(paste0(dir, "/example/simulation/summary/R.txt")))
 ```
 
