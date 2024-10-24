@@ -8,7 +8,7 @@ description: ~
 
 ### Dependencies 
 * R version >= 4.0.0.
-* R packages: Rcpp, RcppArmadillo, parallel
+* R packages: Rcpp, RcppArmadillo, parallel, foreach, doParallel, susieR
 
 
 #### 1. Install `devtools` if necessary
