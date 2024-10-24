@@ -101,6 +101,7 @@ pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfi
   split_character <- "."
   gene <- unique(sub("\\.[^.]*$", "", eQTLgene))
   pindexcum <- c(0,cumsum(pindex))
+  n1 <- NULL
   
   cat("Processing the eQTL data:\n")
   eQTLz <- NULL
@@ -112,11 +113,12 @@ pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfi
     if(sum(colnames(eQTLdata) %in% "T")!=0){
       cat("Reading the plink format summary statistics: ")
       eQTLz1 <- eQTLdata[match(snplist,eQTLdata$SNP),]$T
+	  n1[i] <- median(eQTLdata[match(snplist,eQTLdata$SNP),]$NMISS)
       if(sum(is.na(eQTLz1))>0){
-	cat("You input only the cis-SNP for each gene, setting the z-scores of SNPs other than the cis-SNP for each gene to zero. ")
-	tmp=eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]
-	eQTLz1 <- rep(0,length(snplist))
-	eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]=tmp
+		cat("You input only the cis-SNP for each gene, setting the z-scores of SNPs other than the cis-SNP for each gene to zero. ")
+		tmp=eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]
+		eQTLz1 <- rep(0,length(snplist))
+		eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]=tmp
       }
       cat("Success!\n")
     }
@@ -124,6 +126,7 @@ pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfi
     if(sum(colnames(eQTLdata) %in% "beta")!=0){
       cat("Reading the gemma format summary statistics: ")
       eQTLz1 <- eQTLdata[match(snplist,eQTLdata$rs),]$beta/eQTLdata[match(snplist,eQTLdata$rs),]$se
+	  n1[i] <- median(eQTLdata[match(snplist,eQTLdata$rs),]$n_obs)
       if(sum(is.na(eQTLz1))>0){
   	cat("You input only the cis-SNP for each gene, setting the z-scores of SNPs other than the cis-SNP for each gene to zero. ")
     	tmp=eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]
@@ -136,6 +139,7 @@ pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfi
     if(sum(colnames(eQTLdata) %in% "Tstat")!=0){
       cat("Reading the SAIGE format summary statistics: ")
       eQTLz1 <- eQTLdata[match(snplist,eQTLdata$MarkerID),]$BETA/eQTLdata[match(snplist,eQTLdata$MarkerID),]$SE
+	  n1[i] <- median(eQTLdata[match(snplist,eQTLdata$MarkerID),]$N)
       if(sum(is.na(eQTLz1))>0){
     	 cat("You input only the cis-SNP for each gene, setting the z-scores of SNPs other than the cis-SNP for each gene to zero. ")
     	 tmp=eQTLz1[(pindexcum[i]+1):pindexcum[i+1]]
@@ -146,6 +150,7 @@ pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfi
     }
     eQTLz <- cbind(eQTLz,eQTLz1)
   }
+  n1 <- median(n1)
   if(sum(is.na(eQTLz))>0){
     cat("Unmatched SNP list. Please check your SNP list. \n")
   }
@@ -153,22 +158,27 @@ pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfi
   cat("Processing the GWAS data:\n")
   GWASdata <- read.table(GWASfile,header=T)
   GWASz <- NULL
+  n2 <- NULL
+  
   ##plink format
   if(sum(colnames(GWASdata) %in% "T")!=0){
     cat("Reading the plink format summary statistics: ")
     GWASz <- GWASdata[match(snplist,GWASdata$SNP),]$T
+	n2 <- median(GWASdata[match(snplist,GWASdata$SNP),]$NMISS)
     cat("Success!\n")
   }  
   ##gemma format
   if(sum(colnames(GWASdata) %in% "beta")!=0){
     cat("Reading the gemma format summary statistics: ")
     GWASz <- GWASdata[match(snplist,GWASdata$rs),]$beta/GWASdata[match(snplist,GWASdata$rs),]$se
+	n2 <- median(GWASdata[match(snplist,GWASdata$rs),]$n_obs)
     cat("Success!\n")
   }
   ##saige format
   if(sum(colnames(GWASdata) %in% "Tstat")!=0){
     cat("Reading the SAIGE format summary statistics: ")
     GWASz <- GWASdata[match(snplist,GWASdata$MarkerID),]$BETA/GWASdata[match(snplist,GWASdata$MarkerID),]$SE
+	n2 <- median(GWASdata[match(snplist,GWASdata$MarkerID),]$N)
     cat("Success!\n")
   }
   if(sum(is.na(GWASz))>0){
@@ -228,7 +238,7 @@ pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfi
     cat("LD matrix cannot contain missing values or missing column names. Please check your LD matrix. \n")
   }
   
-  r <- list(gene = gene, pindex = pindex, Zscore1 = eQTLz, Zscore2 = GWASz, LDmatrix1 = LDmatrix1, LDmatrix2 = LDmatrix2)
+  r <- list(gene = gene, pindex = pindex, Zscore1 = eQTLz, Zscore2 = GWASz, LDmatrix1 = LDmatrix1, LDmatrix2 = LDmatrix2, n1 = n1, n2 = n2)
   return(r)
 }
 
