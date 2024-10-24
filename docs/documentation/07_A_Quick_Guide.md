@@ -3,11 +3,11 @@ layout: page
 title: A Quick Guide
 ---
 
-GIFT is a Gene-based Integrative Fine-mapping for performing conditional TWAS analysis. GIFT examines one genomic region at a time, jointly models the GReX of all genes residing in the focal region, and carries out TWAS conditional analysis in a maximum likelihood framework. We used LD blocks defined by LDetect: [hg19] (https://github.com/yuanzhongshang/GIFT/tree/main/reproduce/LDetect), [hg38](https://github.com/mancusolab/ma-focus/tree/master/pyfocus/data/ld_blocks). For each region, we focus on protein-coding genes and long intergenic noncoding RNAs (lincRNAs) that are annotated in GENCODE (release 12). The latest release can also be downloaded [here](https://www.gencodegenes.org/human/). Other definitions can also be used to determine LD blocks. 
+GIFT is a Gene-based Integrative Fine-mapping for performing conditional TWAS analysis. GIFT examines one genomic region at a time, jointly models the GReX of all genes residing in the focal region, and carries out TWAS conditional analysis in a maximum likelihood framework. We used LD blocks defined by LDetect: [hg19](https://github.com/yuanzhongshang/GIFT/tree/main/reproduce/LDetect), [hg38](https://github.com/mancusolab/ma-focus/tree/master/pyfocus/data/ld_blocks). For each region, we focus on protein-coding genes and long intergenic noncoding RNAs (lincRNAs) that are annotated in GENCODE (release 12). The latest release can also be downloaded [here](https://www.gencodegenes.org/human/). Other definitions can also be used to determine LD blocks. 
 
 Data Availability
 -------------------
-The commonly used eQTL summary statistics includes: genome-wide eQTL summary statistics from GEUVADIS data in [dropbox](https://www.dropbox.com/scl/fo/4nqcmkblerspfmva5stwf/ANHZU_kX2AlveEEbx9DKbZU?rlkey=qjcxprlk83t7pw8ka2ne2v4w9&dl=0), cis-eQTL and trans-eQTL summary statistics from [eQTLGen Consortium](https://www.eqtlgen.org/phase1.html), and cis-eQTL mapping summary statistics for African American and European American from [GENOA](https://xiangzhou.github.io/resources/).
+The commonly used eQTL summary statistics includes: genome-wide eQTL summary statistics from [GEUVADIS data](https://www.dropbox.com/scl/fo/4nqcmkblerspfmva5stwf/ANHZU_kX2AlveEEbx9DKbZU?rlkey=qjcxprlk83t7pw8ka2ne2v4w9&dl=0), cis-eQTL and trans-eQTL summary statistics from [eQTLGen Consortium](https://www.eqtlgen.org/phase1.html), and cis-eQTL mapping summary statistics for African American and European American from [GENOA](https://xiangzhou.github.io/resources/).
 
 The commonly used GWAS summary statistics can be downloaded in [GWAS Catalog](https://www.ebi.ac.uk/gwas/), [GWAS ATLAS](https://atlas.ctglab.nl/), [IEU Open GWAS Project](https://gwas.mrcieu.ac.uk/), [FinnGen](https://www.finngen.fi/en/access_results), [Biobank Japan](https://pheweb.jp/) and [Neale Lab UK Biobank GWAS results](https://www.nealelab.is/uk-biobank).
 
@@ -24,13 +24,13 @@ Following these steps, you can obtain data in the format like [here](https://yua
 
 Running GIFT with Summary Statistics
 -------------------
-We recommend performing the GIFT analysis using the summary statistic version. If you have individual-level data, please [convert it into into the corresponding summary statistics](https://yuanzhongshang.github.io/GIFT/documentation/05_analysis_reproduce.html#convert-the-individual-level-data-into-the-summary-statistics). First, ensure GIFT is successfully installed. For more details, refer to the (installation guide)[https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html].
+We recommend performing the GIFT analysis using the summary statistic version. If you have individual-level data, please [convert it into into the corresponding summary statistics](https://yuanzhongshang.github.io/GIFT/documentation/05_analysis_reproduce.html#convert-the-individual-level-data-into-the-summary-statistics). First, ensure GIFT is successfully installed. For more details, refer to the [installation guide](https://yuanzhongshang.github.io/GIFT/documentation/02_installation.html).
 ```r
 #devtools::install_github('yuanzhongshang/GIFT')
 library(GIFT)
 ```
 #### Step 1: Pre-process the summary statistics with different formats.
-In this guild, we use the simulations based on the realistic genotypes from GEUVADIS (n1=465) and UK Biobank (n2=5,000) in a region on chr 5 as an example. This region includes four genes: RASA1, COX7C, CCNH and TMEM161B. We set RASA1 as the causal gene with the effect size being sqrt(0.1).Here, we convert different summary statistics (plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt)) and LD matrix data formats (matrix (.txt) or h5 format (.h5)) to GIFT inputs. 
+In this guild, we use the simulations based on the realistic genotypes from GEUVADIS (n1=465) and UK Biobank (n2=5,000) in a region on chr 5 as an example. This region includes four genes: RASA1, COX7C, CCNH and TMEM161B. We set RASA1 as the causal gene with the effect size being sqrt(0.1). Here, we convert different summary statistics (plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt)) and LD matrix data formats (matrix (.txt) or h5 format (.h5)) to GIFT inputs. 
 ```r
 library(GIFT)
 dir <- getwd()
@@ -86,3 +86,7 @@ result
 3    RASA1   0.319433644 7.881041e-05
 4 TMEM161B  -0.064599635 3.086057e-02
 ```
+
+Contact
+-------------------
+If you have any questions, feel free to leave messages on the [github issues](https://github.com/yuanzhongshang/GIFT/issues).
