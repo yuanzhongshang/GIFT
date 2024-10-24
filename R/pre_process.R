@@ -91,7 +91,7 @@ pre_process_individual <- function(filelocation, plinkexe="plink"){
 #' @param GWASLDfile A file path for the LD matrix from GWAS data.
 #' @param snplist A vector represents the cis-SNP list for all genes in a region.
 #' @param pindex A vector with each element represents the number of cis-SNPs for each gene.
-#' @return A list including the gene names, cis-SNP numbers for each gene, z-scores from eQTL data and GWAS data, LD matrix from eQTL data and GWAS data. 
+#' @return A list including the gene names, cis-SNP numbers for each gene, z-scores from eQTL data and GWAS data, LD matrice from eQTL data and GWAS data, sample sizes from eQTL data and GWAS data. 
 
 pre_process_summary <- function(eQTLfilelocation, eQTLLDfile, GWASfile, GWASLDfile, snplist, pindex){
   
