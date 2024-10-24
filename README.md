@@ -28,7 +28,7 @@ See [Tutorial](https://yuanzhongshang.github.io/GIFT/) for detailed documentatio
 |---------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [1.0](https://github.com/yuanzhongshang/GIFT/tree/v1.0) | 2022-10-31| Initial release.                                                                                                                                                                                                                   |
 | [2.0](https://github.com/yuanzhongshang/GIFT/tree/v2.0) | 2024-10-17|Optimized some code and added a filter parameter to improve running speed.                                                                                                                                 |
-| [2.1](https://github.com/yuanzhongshang/GIFT/tree/v2.1) | 2024-10-24|Add parallel processing support for Windows system and a split parameter for extra large region.                                                                                                                                       |
+| [2.1](https://github.com/yuanzhongshang/GIFT/tree/v2.1) | 2024-10-24|Add parallel processing support for Windows system and a split parameter.                                                                                                                                       |
 
 ## Development
 This R package is developed by Lu Liu, Zhongshang Yuan and Xiang Zhou.
