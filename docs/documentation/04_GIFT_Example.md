@@ -99,7 +99,7 @@ The optional inputs are:
 - maxiter: The user-defined maximum iteration, with the default to be 100.
 - tol: The user-defined convergence tolerance of the absolute value of the difference between the nth and (n+1)th log likelihood, with the default value as 1e-3.
 - pleio: The user-defined option of controlling the pleiotropy, with the default to be 0. If 'pleio' is set to 0, the analysis will be performed without controlling any SNP; If 'pleio' is set to 1, the analysis will be performed controlling the top SNP; If 'pleio' is set to 2, the analysis will be performed controlling the top two SNPs. 
-- ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. Of note, the incorporated function mclapply() depends on another R package "parallel" in Linux.
+- ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. If you use the Windows system, foreach() depends on another R package "doParallel" would be used. Otherwise, mclapply() depends on another R package "parallel" would be used.
 - in_sample_LD: A logical value represents whether in-sample LD was used, with the default to be F. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)\*Sigma1+s1\*E and (1-s2)\*Sigma2+s2\*E where both s1 and s2 are estimated by function estimate_s_rss() in susieR. A grid search algorithm is performed over the range from 0.1 to 1 once the estimation from susieR does not work well. The function estimate_s_rss() depends on another R package "susieR".
 - filter: The user-defined logical value, with the default to be T. If 'filter' is set to T, the analysis will be performed using the SNPs with a GWAS p-value < 0.05 when the GWAS sample size over 100,000. This step will improve the computational speed.
 
@@ -282,7 +282,6 @@ We used GIFT to perform the condition TWAS fine-mapping in a region on chr 9 (10
 load("./example/realdata/realdata.RData")
 #### perform conditional fine-mapping for TWAS analysis
 library(GIFT)
-library(parallel)
 result <- GIFT_individual(X, Y, Zx, Zy, gene, pindex, maxiter=100, tol=1e-3, pleio=0, ncores=8, filter=T)
 result
        gene causal_effect             p
