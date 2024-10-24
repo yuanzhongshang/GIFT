@@ -29,6 +29,9 @@ We recommend performing the GIFT analysis using the summary statistic version. I
 #devtools::install_github('yuanzhongshang/GIFT')
 library(GIFT)
 ```
+The essential inputs of main function `GIFT_summary` for conditional analysis per region are: (1) Zscores from both eQTL data (`Zscore_1`) and GWAS data (`Zscore_2`), (2) LD matrice from both eQTL data (`Sigma1`) and GWAS data (`Sigma2`) (if these two matrices are unavailable, both `Sigma1` and `Sigma2` are often from the same reference panel), (3) Sample sizes of eQTL data (`n1`) and GWAS data(`n2`) , (4) gene name (`gene`), (5) the number of cis-SNPs for each gene (`pindex`). There are also optional parameters of `GIFT_summary`, function, which can be found in the [documentation](https://yuanzhongshang.github.io/GIFT/documentation/04_GIFT_Example.html#gift-using-summary-statistics-as-input). 
+![GIFT\_pipeline](GIFT_summary_inputs.png)
+
 #### Step 1: Pre-process the summary statistics with different formats.
 In this guild, we use the simulations based on the realistic genotypes from GEUVADIS (n1=465) and UK Biobank (n2=5,000) in a region on chr 5 as an example. This region includes four genes: RASA1, COX7C, CCNH and TMEM161B. We set RASA1 as the causal gene with the effect size being sqrt(0.1). Here, we convert different summary statistics (plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt)) and LD matrix data formats (matrix (.txt) or h5 format (.h5)) to GIFT inputs. 
 ```r
@@ -45,7 +48,7 @@ GWASfile <- paste0(dir,"/example/simulation/summary/pre_process/saige/GWAS.txt")
 eQTLLDfile <- paste0(dir, "/example/simulation/summary/pre_process/LDmatrix1.h5")
 GWASLDfile <- paste0(dir, "/example/simulation/summary/pre_process/LDmatrix2.h5")
 
-#### load the SNP list and cis-SNP number for each gene in a region
+#### load the SNP list and cis-SNP number for each gene in a region, snplist is the (p1+p2+…+pk) vector for stacked cis-SNPs of each gene.
 snplist <- read.table(paste0(dir, "/example/simulation/summary/pre_process/snplist.txt"))$V1
 pindex <- c(41, 23, 63, 96)
 
