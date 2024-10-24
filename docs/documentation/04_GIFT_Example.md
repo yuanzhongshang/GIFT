@@ -102,6 +102,7 @@ The optional inputs are:
 - ncores: The number of cores used in analysis, with the default to be 1. The analysis will be performed with parallel computing once the number of cores is greater than 1. If you use the Windows system, foreach() depends on another R package "doParallel" would be used. Otherwise, mclapply() depends on another R package "parallel" would be used.
 - in_sample_LD: A logical value represents whether in-sample LD was used, with the default to be F. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)\*Sigma1+s1\*E and (1-s2)\*Sigma2+s2\*E where both s1 and s2 are estimated by function estimate_s_rss() in susieR. A grid search algorithm is performed over the range from 0.1 to 1 once the estimation from susieR does not work well. The function estimate_s_rss() depends on another R package "susieR".
 - filter: The user-defined logical value, with the default to be T. If 'filter' is set to T, the analysis will be performed using the SNPs with a GWAS p-value < 0.05 when the GWAS sample size over 100,000. This step will improve the computational speed.
+- split: The user-defined numeric value, with the default to be 5. If ‘split’ is set to 5, the analysis will condition on SNPs from the 5 genes upstream and 5 genes downstream of each gene when the number of SNPs over 5,000 and the number of genes over 10. If ‘split’ is set to NULL, this step is skipped. This step enhances computational efficiency for the large region.
 
 #### Step 1: Pre-process the summary statistics with different formats.
 The function `pre_process_summary` is able to convert different summary statistics and LD matrix data formats to GIFT inputs. In particular, this function is flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt). While, this function is also flexible to handle LD matrix either from matrix or a long format such as h5 format. We provide the the genome-wide eQTL summary statistics from GEUVADIS data in [dropbox](https://www.dropbox.com/scl/fo/4nqcmkblerspfmva5stwf/ANHZU_kX2AlveEEbx9DKbZU?rlkey=qjcxprlk83t7pw8ka2ne2v4w9&dl=0), and you can follow the [code](https://github.com/yuanzhongshang/GIFT/issues/6#issuecomment-2067722099) to obtain the approximation estimation of R from the summary statistics. Besides, we also provide the correlation matrix among gene expressions for each chromosome from GEUVADIS data. You can access it [here](https://www.dropbox.com/scl/fo/7mssyexppzqknj6a7vjfc/AFW5ZHaRYDMsEGozc9i8R7c?rlkey=rnnxdbu2kile9l4dvcw5hnyi7&dl=0). Additionally, [eQTLGen Consortium](https://www.eqtlgen.org/phase1.html) provides the cis-eQTL and trans-eQTL results; our lab provides the [cis-eQTL mapping summary statistics](https://xiangzhou.github.io/resources/) for African American and European American from GENOA. If you only have the cis-eQTL summary statistics, you can directly set the value in the blue boxes to be zero in the figure above. In other words, GIFT can handle inputs containing cis-SNPs for each gene. We have already modified the pre-processing function to include this step.
@@ -140,7 +141,7 @@ R <- as.matrix(read.table(paste0(dir, "/example/simulation/summary/R.txt")))
 
 #### Step 3: Perform conditional fine-mapping for TWAS analysis.
 ```r
-result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=100, tol=1e-3, pleio=0, ncores=1, in_sample_LD=T, filter=T)
+result <- GIFT_summary(Zscore1, Zscore2, LDmatrix1, LDmatrix2, n1, n2, gene, pindex, R=R, maxiter=100, tol=1e-3, pleio=0, ncores=1, in_sample_LD=T, filter=T, split=5)
 ```
 The result is a data frame including the causal effect estimates and p values for each gene in a focal region. 
 ```r
@@ -155,7 +156,7 @@ Note that, the summary statistics version of GIFT often requires the in-sample L
 ```r
 ### load the LD matrix from 1,000 Genomes project
 LD <- as.matrix(read.table(paste0(dir, "/example/simulation/summary/LDmatrix10000G.txt")))
-result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=100, tol=1e-3, pleio=0, ncores=1, in_sample_LD=F, filter=T)
+result <- GIFT_summary(Zscore1, Zscore2, LD, LD, n1, n2, gene, pindex, R=R, maxiter=100, tol=1e-3, pleio=0, ncores=1, in_sample_LD=F, filter=T, split=5)
 result
       gene causal_effect            p
 1     CCNH   0.020470524 7.953100e-01
