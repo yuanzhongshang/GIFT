@@ -15,11 +15,12 @@ GIFT_summary(
   pindex,
   R = NULL,
   maxiter = 100,
-  tol = 1e-03,
+  tol = 0.001,
   pleio = 0,
   ncores = 1,
   in_sample_LD = F,
-  filter = T
+  filter = T,
+  split = 5
 )
 }
 \arguments{
@@ -47,11 +48,14 @@ GIFT_summary(
 
 \item{pleio}{The option of controlling the pleiotropy, which can be determined by users. If pleio is set to 0, analysis will perform without controlling any SNP; If pleio is set to 1, analysis will perform  controlling the top SNP; If pleio is set to 2, analysis will perform controlling the top two SNPs.}
 
-\item{ncores}{The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. The function mclapply() depends on another R package "parallel" in Linux.}
+\item{ncores}{The number of cores used in analysis. If the number of cores is greater than 1, analysis will perform with fast parallel computing. If you use the Windows system, foreach() depends on another R package "doParallel" would be used. Otherwise, mclapply() depends on another R package "parallel" would be used.}
 
 \item{in_sample_LD}{A logical value, which represents whether in-sample LD was used. If in-sample LD was not used, the LD matrix is regularized to be (1-s1)*Sigma1+s1*E and (1-s2)*Sigma2+s2*E, where s1 and s2 are estimated by estimate_s_rss in susieR, and E is an identity matrix. A grid search is performed over the range from 0.1 to 1 if the estimation does not work. The function estimate_s_rss() depends on another R package "susieR".}
 
 \item{filter}{A logical value, which represents whether filter the SNP with GWAS P>0.05 when the GWAS sample size over 100,000. This step will improve the computational speed.}
+
+\item{split}{A numeric value, which represents the window size of conditional genes when the number of SNPs over 5,000 and the number of genes over 10. This step enhances computational efficiency for the large region. If split is set to NULL, this step is skipped.}
+
 }
 \value{
 A data frame including the causal effect estimates and p values for the gene-based test.

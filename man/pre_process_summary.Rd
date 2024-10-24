@@ -27,7 +27,7 @@ pre_process_summary(
 \item{pindex}{A vector with each element represents the number of cis-SNPs for each gene.}
 }
 \value{
-A list including the gene names, cis-SNP numbers for each gene, z-scores from eQTL data and GWAS data, LD matrix from eQTL data and GWAS data.
+A list including the gene names, cis-SNP numbers for each gene, z-scores from eQTL data and GWAS data, LD matrice from eQTL data and GWAS data, sample sizes from eQTL data and GWAS data. 
 }
 \description{
 pre_process_summary flexible to handle association test output from plink (.qassoc), GEMMA (.assoc.txt) and SAIGE (.txt); and LD matrix either from matrix or a long format such as h5 format.
