@@ -94,8 +94,6 @@ Running Speed Improvement
 -------------------
 In the process, GIFT operates within a joint likelihood framework, accounting for the uncertainty in the constructed GReX. We acknowledge that this comprehensive approach can result in slower computational speed. Techincally, GIFT supports parallel processing for each gene using the `ncores` parameter. Increasing this value can significantly improve speed if your computational resources allow. On Windows, GIFT utilizes the foreach() function in combination with the "doParallel" R package. On non-Windows systems, GIFT uses mclapply() from the "parallel" R package.
 
-Using all cis-SNPs in the region ensures effective type I error control and high statistical power with reduced false discoveries. To optimize computational efficiency, GIFT defaults to `filter=T` and `split=5`.  With `filter=T`, the analysis will be performed using the SNPs with a GWAS p-value < 0.05 when the GWAS sample size over 100,000. These SNPs are more likely to exhibit pleiotropy, which is crucial for distinguishing between causal and non-causal genes. `split=5` means that, when the region contains more than 5,000 SNPs and over 10 genes, the analysis will condition on SNPs from the 5 genes upstream and 5 genes downstream of each gene to enhance performance in large regions.
-
 Contact
 -------------------
 If you have any questions, feel free to leave messages on the [github issues](https://github.com/yuanzhongshang/GIFT/issues).
