@@ -29,7 +29,7 @@ GIFT_individual<-function(X, Y, Zx, Zy, gene, pindex, maxiter =100, tol=1e-3, pl
   
   Zyin_NA_sd<-as.vector(apply(Zyin_NA,2,sd))
   
-  if(sd(Zxin_NA)!=0 & sd(Zyin_NA)!=0 & sum(Zxin_NA_sd==0)==0 & sum(Zyin_NA_sd==0)==0){
+  if(sum(Zxin_NA_sd==0)==0 & sum(Zyin_NA_sd==0)==0){
     
     X<-as.vector(xin_NA)
     Y<-as.vector(scale(Yin_NA))
